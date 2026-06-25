@@ -78,3 +78,34 @@ export async function publicarInstagram(
   if (!res.ok || data.error) throw new Error(data.error?.message ?? "Erro ao publicar no Instagram");
   return data.id as string;
 }
+
+// Grupos requerem User Token (não Page Token) + permissão publish_to_groups
+export async function publicarGrupo(
+  groupId: string,
+  userToken: string,
+  message: string,
+  imageUrl?: string
+): Promise<string> {
+  const body: Record<string, string> = { message, access_token: userToken };
+  if (imageUrl) body.link = imageUrl;
+  const res = await fetch(`${BASE}/${groupId}/feed`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  const data = await res.json();
+  if (!res.ok || data.error) throw new Error(data.error?.message ?? "Erro ao publicar no grupo");
+  return data.id as string;
+}
+
+export async function resolverIdGrupo(
+  vanityOrId: string,
+  userToken: string
+): Promise<{ id: string; name: string }> {
+  const res = await fetch(
+    `${BASE}/${vanityOrId}?fields=id,name&access_token=${encodeURIComponent(userToken)}`
+  );
+  const data = await res.json();
+  if (!res.ok || data.error) throw new Error(data.error?.message ?? "Grupo não encontrado");
+  return { id: data.id, name: data.name };
+}
