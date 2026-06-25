@@ -507,3 +507,96 @@ asyncio.run(export_slides())
 8. **Content padding clears UI** — body text never overlaps progress bar or arrow
 9. **Hook-first copy** — Slide 1 exists to stop the scroll, not to introduce the brand
 10. **Iterate fast** — show preview, fix specific slides, don't rebuild from scratch
+
+---
+
+## Contexto Campos Figueira
+
+Esta seção define configurações e padrões específicos para o **Escritório Campos Figueira** — imobiliária e serviços de engenharia em Mogi das Cruzes, SP.
+
+### Identidade Visual Padrão
+
+| Elemento | Valor Padrão |
+|----------|-------------|
+| Brand Name | Escritório Campos Figueira |
+| Instagram Handle | @escritoriocamposfigueira |
+| Cor Primária | #1B3A6B (azul profissional imobiliário) |
+| Cor Secundária | #C9A84C (dourado para destaque) |
+| Cor de Fundo | #F8F5F0 (off-white cálido) |
+| Fonte Headings | Playfair Display (autoridade imobiliária) |
+| Fonte Body | Inter (legibilidade) |
+| Tom | Profissional, confiável, especialista local |
+| Idioma padrão | Português (BR) |
+
+### Tipos de Carrossel Prioritários
+
+#### 1. Apresentação de Imóvel
+- **Slide 1 (Hook):** Foto principal do imóvel + preço em destaque
+- **Slide 2-4:** Fotos dos cômodos principais com características-chave
+- **Slide 5:** Localização + benefícios do bairro em Mogi das Cruzes
+- **Slide 6:** Tabela: área, quartos, vagas, andar
+- **Slide 7 (CTA):** "Agende sua visita" + link na bio / WhatsApp
+
+#### 2. Conteúdo Educativo — Engenharia
+- **Slide 1 (Hook):** Pergunta provocadora (ex: "Seu imóvel está regularizado?")
+- **Slide 2-5:** Passo a passo do processo (habite-se, AVCB, regularização)
+- **Slide 6:** Erros comuns e como evitar
+- **Slide 7 (CTA):** "Fale com nosso engenheiro" + contato
+
+#### 3. Mercado Imobiliário Mogi das Cruzes
+- **Slide 1:** Dado impactante local (ex: "Mogi das Cruzes valorizou X% em 2025")
+- **Slide 2-4:** Análise por bairro/tipo de imóvel
+- **Slide 5:** Tendências para comprador / locatário / proprietário
+- **Slide 6:** Dicas práticas baseadas no contexto local
+- **Slide 7 (CTA):** "Consulte um especialista local"
+
+#### 4. Depoimento / Prova Social
+- **Slide 1:** Foto do cliente (com permissão) + resultado alcançado
+- **Slide 2-3:** Situação antes e depois
+- **Slide 4-5:** Trecho do depoimento em destaque
+- **Slide 6:** Dados da transação (opcional — com permissão)
+- **Slide 7 (CTA):** "Seja o próximo"
+
+### Regras de Conformidade Meta (HOUSING)
+
+Ao criar carrosséis para uso em anúncios pagos Meta:
+
+1. **NUNCA incluir linguagem que sugira preferência por perfil de cliente** (ex: "perfeito para famílias", "ideal para casais jovens")
+2. **Evitar referências a raça, religião, origem nacional, gênero, estado civil ou deficiência**
+3. **Não usar termos como "bairro exclusivo", "comunidade fechada" de forma discriminatória**
+4. **Sempre incluir texto legal mínimo:** "Consulte condições. Imagem meramente ilustrativa."
+5. Para conteúdo orgânico (não pago), as restrições são menos rígidas, mas manter linguagem inclusiva
+
+### Hashtags Padrão para Mogi das Cruzes
+
+```
+#mogidascruzes #imovelmogicruz #imobiliariamogi #casasmogi #apartamentosmogi
+#engenhariacivil #regularizacaodeimovel #haiteuse #avcb #mercadoimobiliario
+#comprecasa #aluguelsp #escritoriocamposfigueira #mogicruz #altotietê
+```
+
+### Checklist Pré-Publicação de Carrossel
+
+Antes de publicar qualquer carrossel da Campos Figueira:
+- [ ] Aprovação humana do conteúdo (Leonor ou responsável)
+- [ ] Conformidade HOUSING verificada (se for usar em anúncio)
+- [ ] Dados e preços confirmados como atuais
+- [ ] Logos e marca d'água aplicados
+- [ ] CTA e link na bio atualizados
+- [ ] Hashtags revisadas para relevância
+- [ ] Imagem de capa otimizada para parar o scroll
+
+### Fluxo de Aprovação
+
+```
+Claude gera carrossel HTML
+  ↓
+Exportação via Playwright para PNGs
+  ↓
+Pacote de aprovação (/criar-pacote-aprovacao)
+  ↓
+Revisão humana (Leonor / equipe)
+  ↓
+Se aprovado: /publicar-conteudo-aprovado
+Se rejeitado: iterar com feedback específico
+```
