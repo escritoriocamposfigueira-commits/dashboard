@@ -18,7 +18,7 @@ type PostResult = {
 };
 
 export async function POST(request: NextRequest) {
-  const { token, imageUrls } = await request.json();
+  const { token, imageUrls, posts } = await request.json();
 
   const envToken = process.env.META_PAGE_TOKEN;
   const accessToken = envToken || token;
@@ -29,8 +29,9 @@ export async function POST(request: NextRequest) {
 
   const urls: Record<string, string> = imageUrls ?? {};
   const results: PostResult[] = [];
+  const postList = (posts && Array.isArray(posts) && posts.length > 0) ? posts : calendar.posts;
 
-  for (const post of calendar.posts) {
+  for (const post of postList) {
     const dataHora = `${post.data}T${post.hora}:00-03:00`;
     const result: PostResult = {
       ref: post.ref,
