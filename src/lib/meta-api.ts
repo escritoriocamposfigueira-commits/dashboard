@@ -33,15 +33,44 @@ export async function criarContainerInstagram(
   igUserId: string,
   token: string,
   imageUrl: string,
-  caption: string
+  caption: string,
+  scheduledTime?: string
 ): Promise<string> {
+  const body: Record<string, string | number | boolean> = {
+    image_url: imageUrl,
+    caption,
+    access_token: token,
+  };
+  if (scheduledTime) {
+    body.scheduled_publish_time = Math.floor(new Date(scheduledTime).getTime() / 1000);
+    body.published = false;
+  }
   const res = await fetch(`${BASE}/${igUserId}/media`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ image_url: imageUrl, caption, access_token: token }),
+    body: JSON.stringify(body),
   });
   const data = await res.json();
   if (!res.ok || data.error) throw new Error(data.error?.message ?? "Erro ao criar container");
+  return data.id as string;
+}
+
+export async function agendarInstagram(
+  igUserId: string,
+  token: string,
+  imageUrl: string,
+  caption: string,
+  dataHora: string
+): Promise<string> {
+  const containerId = await criarContainerInstagram(igUserId, token, imageUrl, caption, dataHora);
+  // Para posts agendados, media_publish confirma o agendamento (não publica imediatamente)
+  const res = await fetch(`${BASE}/${igUserId}/media_publish`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ creation_id: containerId, access_token: token }),
+  });
+  const data = await res.json();
+  if (!res.ok || data.error) throw new Error(data.error?.message ?? "Erro ao agendar no Instagram");
   return data.id as string;
 }
 

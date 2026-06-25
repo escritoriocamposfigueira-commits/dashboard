@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import calendario from "@/content/calendario-julho-2026.json";
 
 type Post = (typeof calendario.posts)[number];
-type Status = "idle" | "ok" | "erro";
+type Status = "idle" | "ok" | "erro" | "skip";
 
 type GrupoStatus = { nome: string; status: Status; erro?: string };
 
@@ -17,31 +17,23 @@ type PostStatus = {
   erro?: string;
 };
 
-const GRUPOS_NOMES = [
-  "Venda e Locação MDC",
-  "Negócios MDC",
-  "Grupo MDC (618...)",
-];
-
 export default function AgendadorPage() {
   const [token, setToken] = useState("");
   const [tokenNome, setTokenNome] = useState<string | null>(null);
   const [tokenValido, setTokenValido] = useState<boolean | null>(null);
   const [verificando, setVerificando] = useState(false);
 
-  // User Token separado — necessário para grupos
   const [userToken, setUserToken] = useState("");
   const [userTokenNome, setUserTokenNome] = useState<string | null>(null);
   const [userTokenValido, setUserTokenValido] = useState<boolean | null>(null);
   const [verificandoUser, setVerificandoUser] = useState(false);
 
-  const [agendandoFb, setAgendandoFb] = useState(false);
-  const [fbProgresso, setFbProgresso] = useState(0);
-  const [fbResultados, setFbResultados] = useState<Record<string, PostStatus>>({});
-
+  const [agendando, setAgendando] = useState(false);
+  const [resultados, setResultados] = useState<Record<string, PostStatus>>({});
   const [imageUrls, setImageUrls] = useState<Record<string, string>>({});
-  const [igPublicando, setIgPublicando] = useState<Record<string, boolean>>({});
   const [gruposPublicando, setGruposPublicando] = useState<Record<string, boolean>>({});
+
+  const [mostrarFotos, setMostrarFotos] = useState(false);
 
   useEffect(() => {
     const salvo = localStorage.getItem("meta_token");
@@ -92,60 +84,30 @@ export default function AgendadorPage() {
     }
   }
 
-  async function agendarTodosFacebook() {
+  async function agendarTudo() {
     if (!token.trim()) return;
-    setAgendandoFb(true);
-    setFbProgresso(0);
-    setFbResultados({});
+    setAgendando(true);
+    setResultados({});
 
     const res = await fetch("/api/meta/agendar", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token }),
+      body: JSON.stringify({ token, imageUrls }),
     });
     const data = await res.json();
 
     const mapa: Record<string, PostStatus> = {};
     for (const r of data.results) {
       mapa[r.ref] = {
-        facebook: r.status,
-        fbId: r.id,
+        facebook: r.facebook,
+        instagram: r.instagram,
+        fbId: r.fbId,
+        igId: r.igId,
         erro: r.erro,
-        instagram: fbResultados[r.ref]?.instagram ?? "idle",
-        igId: fbResultados[r.ref]?.igId,
-        grupos: fbResultados[r.ref]?.grupos,
       };
     }
-    setFbResultados(mapa);
-    setFbProgresso(data.ok);
-    setAgendandoFb(false);
-  }
-
-  async function publicarInstagram(post: Post) {
-    const imgUrl = imageUrls[post.ref];
-    if (!imgUrl || !token.trim()) return;
-
-    setIgPublicando((p) => ({ ...p, [post.ref]: true }));
-    try {
-      const res = await fetch("/api/meta/publicar-instagram", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token, ref: post.ref, caption: post.caption, imageUrl: imgUrl }),
-      });
-      const data = await res.json();
-      setFbResultados((prev) => ({
-        ...prev,
-        [post.ref]: {
-          ...prev[post.ref],
-          instagram: data.status,
-          igId: data.id,
-          erro: data.erro,
-          facebook: prev[post.ref]?.facebook ?? "idle",
-        },
-      }));
-    } finally {
-      setIgPublicando((p) => ({ ...p, [post.ref]: false }));
-    }
+    setResultados(mapa);
+    setAgendando(false);
   }
 
   async function publicarNosGrupos(post: Post) {
@@ -163,7 +125,7 @@ export default function AgendadorPage() {
         }),
       });
       const data = await res.json();
-      setFbResultados((prev) => ({
+      setResultados((prev) => ({
         ...prev,
         [post.ref]: {
           ...prev[post.ref],
@@ -181,11 +143,9 @@ export default function AgendadorPage() {
     }
   }
 
-  const fbOk = Object.values(fbResultados).filter((r) => r.facebook === "ok").length;
-  const igOk = Object.values(fbResultados).filter((r) => r.instagram === "ok").length;
-  const gruposOk = Object.values(fbResultados).filter(
-    (r) => r.grupos && r.grupos.every((g) => g.status === "ok")
-  ).length;
+  const fbOk = Object.values(resultados).filter((r) => r.facebook === "ok").length;
+  const igOk = Object.values(resultados).filter((r) => r.instagram === "ok").length;
+  const fotosPreenchidas = Object.values(imageUrls).filter(Boolean).length;
 
   return (
     <div className="min-h-screen p-6" style={{ background: "#0b0f1a", color: "#f1f5f9" }}>
@@ -193,16 +153,14 @@ export default function AgendadorPage() {
 
         {/* Cabeçalho */}
         <div className="flex items-center gap-3">
-          <div
-            className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-sm"
-            style={{ background: "linear-gradient(135deg, #1877f2, #833ab4)" }}
-          >
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-sm"
+            style={{ background: "linear-gradient(135deg, #1877f2, #833ab4)" }}>
             📣
           </div>
           <div>
             <h1 className="text-xl font-bold text-white">Agendador Meta</h1>
             <p className="text-xs" style={{ color: "#64748b" }}>
-              Facebook + Instagram + Grupos — 40 posts · Julho 2026
+              Facebook + Instagram juntos — 40 posts · Julho 2026
             </p>
           </div>
           <a href="/" className="ml-auto text-xs px-3 py-1.5 rounded-lg" style={{ background: "#1e3a5f", color: "#60a5fa" }}>
@@ -213,7 +171,7 @@ export default function AgendadorPage() {
         {/* Tokens */}
         <div className="rounded-xl p-5 space-y-5" style={{ background: "#1a2236", border: "1px solid #2a3550" }}>
           {/* Page Token */}
-          <div className="space-y-3">
+          <div className="space-y-2">
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-bold text-white">🔑 Page Access Token</h2>
               {tokenValido === true && (
@@ -222,29 +180,18 @@ export default function AgendadorPage() {
                 </span>
               )}
               {tokenValido === false && (
-                <span className="text-xs px-2 py-1 rounded-full" style={{ background: "#7f1d1d", color: "#f87171" }}>
-                  ❌ Inválido
-                </span>
+                <span className="text-xs px-2 py-1 rounded-full" style={{ background: "#7f1d1d", color: "#f87171" }}>❌ Inválido</span>
               )}
             </div>
-            <p className="text-xs" style={{ color: "#64748b" }}>
-              Usado para agendar no Facebook Page e publicar no Instagram.
-            </p>
+            <p className="text-xs" style={{ color: "#64748b" }}>Token da página — para agendar Facebook e Instagram juntos.</p>
             <div className="flex gap-2">
-              <input
-                type="password"
-                value={token}
-                onChange={(e) => setToken(e.target.value)}
-                placeholder="Cole seu Page Access Token aqui"
+              <input type="password" value={token} onChange={(e) => setToken(e.target.value)}
+                placeholder="Cole o Page Access Token da Escritório Campos Figueira"
                 className="flex-1 px-3 py-2 rounded-lg text-sm text-white outline-none"
-                style={{ background: "#0b0f1a", border: "1px solid #2a3550" }}
-              />
-              <button
-                onClick={verificarToken}
-                disabled={verificando || !token}
+                style={{ background: "#0b0f1a", border: "1px solid #2a3550" }} />
+              <button onClick={verificarToken} disabled={verificando || !token}
                 className="px-4 py-2 rounded-lg text-sm font-semibold disabled:opacity-50"
-                style={{ background: "#1877f2", color: "white" }}
-              >
+                style={{ background: "#1877f2", color: "white" }}>
                 {verificando ? "..." : "Verificar"}
               </button>
             </div>
@@ -253,7 +200,7 @@ export default function AgendadorPage() {
           <div style={{ borderTop: "1px solid #2a3550" }} />
 
           {/* User Token */}
-          <div className="space-y-3">
+          <div className="space-y-2">
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-bold text-white">👤 User Token — Grupos</h2>
               {userTokenValido === true && (
@@ -262,108 +209,95 @@ export default function AgendadorPage() {
                 </span>
               )}
               {userTokenValido === false && (
-                <span className="text-xs px-2 py-1 rounded-full" style={{ background: "#7f1d1d", color: "#f87171" }}>
-                  ❌ Inválido
-                </span>
+                <span className="text-xs px-2 py-1 rounded-full" style={{ background: "#7f1d1d", color: "#f87171" }}>❌ Inválido</span>
               )}
             </div>
-            <p className="text-xs" style={{ color: "#64748b" }}>
-              Necessário para publicar nos grupos. Use <strong style={{ color: "#f1f5f9" }}>User Token</strong>{" "}
-              (não Page Token) com permissão{" "}
-              <code className="px-1 rounded" style={{ background: "#0b0f1a" }}>publish_to_groups</code>.
-            </p>
+            <p className="text-xs" style={{ color: "#64748b" }}>Token pessoal com permissão <code className="px-1 rounded" style={{ background: "#0b0f1a" }}>publish_to_groups</code> para os 3 grupos.</p>
             <div className="flex gap-2">
-              <input
-                type="password"
-                value={userToken}
-                onChange={(e) => setUserToken(e.target.value)}
-                placeholder="Cole seu User Access Token aqui"
+              <input type="password" value={userToken} onChange={(e) => setUserToken(e.target.value)}
+                placeholder="Cole o User Access Token aqui"
                 className="flex-1 px-3 py-2 rounded-lg text-sm text-white outline-none"
-                style={{ background: "#0b0f1a", border: "1px solid #2a3550" }}
-              />
-              <button
-                onClick={verificarUserToken}
-                disabled={verificandoUser || !userToken}
+                style={{ background: "#0b0f1a", border: "1px solid #2a3550" }} />
+              <button onClick={verificarUserToken} disabled={verificandoUser || !userToken}
                 className="px-4 py-2 rounded-lg text-sm font-semibold disabled:opacity-50"
-                style={{ background: "#6366f1", color: "white" }}
-              >
+                style={{ background: "#6366f1", color: "white" }}>
                 {verificandoUser ? "..." : "Verificar"}
               </button>
             </div>
-            {/* Grupos configurados */}
-            <div className="flex gap-2 flex-wrap">
-              {GRUPOS_NOMES.map((nome) => (
-                <span key={nome} className="text-xs px-2 py-1 rounded-full" style={{ background: "#1e1e3a", color: "#818cf8" }}>
-                  👥 {nome}
-                </span>
-              ))}
-            </div>
           </div>
-
-          <details className="text-xs" style={{ color: "#64748b" }}>
-            <summary className="cursor-pointer hover:text-white">Como obter os tokens (4 passos)</summary>
-            <ol className="mt-3 space-y-2 list-decimal list-inside leading-relaxed">
-              <li>
-                Acesse{" "}
-                <a href="https://developers.facebook.com/tools/explorer/" target="_blank" rel="noopener noreferrer" style={{ color: "#60a5fa" }}>
-                  developers.facebook.com/tools/explorer
-                </a>
-              </li>
-              <li>
-                Para o <strong style={{ color: "#f1f5f9" }}>Page Token</strong>: Gerar Token → marque
-                <code className="mx-1 px-1 rounded" style={{ background: "#0b0f1a" }}>pages_manage_posts</code>
-                <code className="mx-1 px-1 rounded" style={{ background: "#0b0f1a" }}>instagram_content_publish</code>
-                → selecione a Página.
-              </li>
-              <li>
-                Para o <strong style={{ color: "#f1f5f9" }}>User Token</strong> (grupos): Gerar Token → marque
-                <code className="mx-1 px-1 rounded" style={{ background: "#0b0f1a" }}>publish_to_groups</code>
-                → <strong style={{ color: "#f8d000" }}>NÃO</strong> selecione página.
-              </li>
-              <li>
-                Grupos só permitem publicação <strong style={{ color: "#f1f5f9" }}>imediata</strong> — não é possível agendar.
-                Publique no momento certo.
-              </li>
-            </ol>
-          </details>
         </div>
 
-        {/* Facebook — Agendar Todos */}
+        {/* Fotos (opcional antes de agendar) */}
+        <div className="rounded-xl p-5 space-y-3" style={{ background: "#1a2236", border: "1px solid #2a3550" }}>
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-sm font-bold text-white">🖼️ URLs das Fotos <span className="font-normal text-xs" style={{ color: "#64748b" }}>(opcional — para agendar Instagram junto)</span></h2>
+              <p className="text-xs mt-0.5" style={{ color: "#64748b" }}>
+                Se preencher a URL da foto, o Instagram é agendado junto com o Facebook automaticamente.
+                {fotosPreenchidas > 0 && <span style={{ color: "#34d399" }}> {fotosPreenchidas}/40 fotos adicionadas.</span>}
+              </p>
+            </div>
+            <button onClick={() => setMostrarFotos(!mostrarFotos)}
+              className="text-xs px-3 py-1.5 rounded-lg"
+              style={{ background: "#1e3a5f", color: "#60a5fa" }}>
+              {mostrarFotos ? "Ocultar" : "Adicionar fotos"}
+            </button>
+          </div>
+
+          {mostrarFotos && (
+            <div className="space-y-2 max-h-96 overflow-y-auto pr-1">
+              {calendario.posts.map((post) => (
+                <div key={post.ref} className="flex items-center gap-3">
+                  <span className="font-mono text-xs w-8 shrink-0" style={{ color: "#64748b" }}>{post.ref}</span>
+                  <span className="text-xs w-40 shrink-0 truncate" style={{ color: "#94a3b8" }}>{post.imovel}</span>
+                  <input type="url" value={imageUrls[post.ref] ?? ""}
+                    onChange={(e) => setImageUrls((prev) => ({ ...prev, [post.ref]: e.target.value }))}
+                    placeholder="https://... URL da foto"
+                    className="flex-1 px-2 py-1.5 rounded text-xs text-white outline-none"
+                    style={{ background: "#0b0f1a", border: "1px solid #2a3550" }} />
+                  {imageUrls[post.ref] && <span style={{ color: "#34d399" }}>✅</span>}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Agendar Tudo */}
         <div className="rounded-xl p-5 space-y-4" style={{ background: "#1a2236", border: "1px solid #2a3550" }}>
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-sm font-bold text-white">📘 Facebook — Agendar 40 Posts</h2>
+              <h2 className="text-sm font-bold text-white">🚀 Agendar Facebook + Instagram — 40 Posts</h2>
               <p className="text-xs mt-0.5" style={{ color: "#64748b" }}>
-                Agenda todos os posts no Facebook Planner com data e hora exatas
+                Um clique agenda tudo. Facebook agenda para julho. Instagram agenda junto se tiver foto.
               </p>
             </div>
-            {fbOk > 0 && (
-              <span className="text-xs font-bold" style={{ color: "#34d399" }}>{fbOk}/40 agendados</span>
-            )}
+            <div className="text-right text-xs space-y-0.5">
+              {fbOk > 0 && <div style={{ color: "#34d399" }}>📘 {fbOk}/40 FB</div>}
+              {igOk > 0 && <div style={{ color: "#c084fc" }}>📸 {igOk}/40 IG</div>}
+            </div>
           </div>
 
-          <button
-            onClick={agendarTodosFacebook}
-            disabled={agendandoFb || !token || tokenValido === false}
+          <button onClick={agendarTudo}
+            disabled={agendando || !token || tokenValido === false}
             className="w-full py-3 rounded-lg font-semibold text-sm disabled:opacity-40 transition-opacity hover:opacity-90"
-            style={{ background: "#1877f2", color: "white" }}
-          >
-            {agendandoFb ? `Agendando... (${fbProgresso}/40)` : "🚀 Agendar Todos os 40 Posts no Facebook"}
+            style={{ background: "linear-gradient(135deg, #1877f2, #833ab4)", color: "white" }}>
+            {agendando ? "Agendando..." : `🚀 Agendar Todos os 40 Posts ${fotosPreenchidas > 0 ? `(+ ${fotosPreenchidas} no Instagram)` : ""}`}
           </button>
 
-          {Object.keys(fbResultados).length > 0 && (
-            <div className="space-y-1 max-h-64 overflow-y-auto">
+          {Object.keys(resultados).length > 0 && (
+            <div className="space-y-1 max-h-72 overflow-y-auto">
               {calendario.posts.map((post) => {
-                const s = fbResultados[post.ref];
+                const s = resultados[post.ref];
                 return (
-                  <div key={post.ref} className="flex items-center gap-3 py-1.5 px-3 rounded-lg text-xs" style={{ background: "#0b0f1a" }}>
+                  <div key={post.ref} className="flex items-center gap-2 py-1.5 px-3 rounded-lg text-xs" style={{ background: "#0b0f1a" }}>
                     <span className="font-mono w-8 shrink-0" style={{ color: "#64748b" }}>{post.ref}</span>
                     <span className="flex-1 truncate" style={{ color: "#94a3b8" }}>{post.imovel}</span>
-                    <span style={{ color: "#64748b" }}>{post.data} {post.hora}</span>
-                    {s?.facebook === "ok" && <span style={{ color: "#34d399" }}>✅ FB</span>}
-                    {s?.facebook === "erro" && (
-                      <span title={s.erro} style={{ color: "#f87171" }}>❌ {s.erro?.slice(0, 30)}</span>
-                    )}
+                    <span style={{ color: "#64748b" }}>{post.data}</span>
+                    {s?.facebook === "ok" && <span style={{ color: "#60a5fa" }}>✅ FB</span>}
+                    {s?.facebook === "erro" && <span title={s.erro} style={{ color: "#f87171" }}>❌ FB</span>}
+                    {s?.instagram === "ok" && <span style={{ color: "#c084fc" }}>✅ IG</span>}
+                    {s?.instagram === "erro" && <span title={s.erro} style={{ color: "#f87171" }}>❌ IG</span>}
+                    {s?.instagram === "skip" && imageUrls[post.ref] === undefined && <span style={{ color: "#334155" }}>— IG</span>}
                     {!s && <span style={{ color: "#334155" }}>—</span>}
                   </div>
                 );
@@ -372,101 +306,47 @@ export default function AgendadorPage() {
           )}
         </div>
 
-        {/* Instagram + Grupos — Por Post */}
+        {/* Grupos — Por Post */}
         <div className="rounded-xl p-5 space-y-4" style={{ background: "#1a2236", border: "1px solid #2a3550" }}>
           <div>
-            <h2 className="text-sm font-bold text-white">📸 Instagram + 👥 Grupos — Publicar por Post</h2>
+            <h2 className="text-sm font-bold text-white">👥 Publicar nos 3 Grupos — Por Post</h2>
             <p className="text-xs mt-0.5" style={{ color: "#64748b" }}>
-              Cole a URL pública da foto, publique no Instagram e/ou nos 3 grupos do Facebook.
-              {igOk > 0 && <span style={{ color: "#34d399" }}> {igOk} no IG.</span>}
-              {gruposOk > 0 && <span style={{ color: "#818cf8" }}> {gruposOk} posts em todos os grupos.</span>}
+              Grupos só permitem publicação imediata (não agendada). Publique no momento certo.
             </p>
           </div>
 
-          <div className="space-y-2 max-h-[700px] overflow-y-auto pr-1">
+          <div className="space-y-2 max-h-96 overflow-y-auto pr-1">
             {calendario.posts.map((post) => {
-              const igStatus = fbResultados[post.ref]?.instagram;
-              const grupos = fbResultados[post.ref]?.grupos;
-              const publicandoIg = igPublicando[post.ref];
-              const publicandoGrupos = gruposPublicando[post.ref];
-              const todosGruposOk = grupos && grupos.every((g) => g.status === "ok");
+              const grupos = resultados[post.ref]?.grupos;
+              const publicando = gruposPublicando[post.ref];
+              const todosOk = grupos && grupos.every((g) => g.status === "ok");
 
               return (
-                <div
-                  key={post.ref}
-                  className="rounded-lg p-3 space-y-2"
-                  style={{
-                    background: "#0b0f1a",
-                    border: `1px solid ${igStatus === "ok" && todosGruposOk ? "#14532d" : igStatus === "erro" ? "#7f1d1d" : "#2a3550"}`,
-                  }}
-                >
-                  {/* Cabeçalho do post */}
-                  <div className="flex items-start gap-3">
-                    <div className="shrink-0">
-                      <span className="font-mono text-xs" style={{ color: "#64748b" }}>{post.ref}</span>
-                      <p className="text-xs font-semibold text-white">{post.imovel}</p>
-                      <p className="text-xs" style={{ color: "#64748b" }}>{post.data} · {post.hora}</p>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs leading-relaxed line-clamp-2" style={{ color: "#94a3b8" }}>
-                        {post.caption.split("\n")[0]}
-                      </p>
-                    </div>
-                    <div className="shrink-0 flex flex-col gap-1 items-end">
-                      {igStatus === "ok" && <span className="text-xs" style={{ color: "#34d399" }}>✅ IG</span>}
-                      {igStatus === "erro" && <span className="text-xs" style={{ color: "#f87171" }}>❌ IG</span>}
-                      {todosGruposOk && <span className="text-xs" style={{ color: "#818cf8" }}>✅ Grupos</span>}
-                    </div>
-                  </div>
-
-                  {/* URL da imagem */}
-                  <input
-                    type="url"
-                    value={imageUrls[post.ref] ?? ""}
-                    onChange={(e) => setImageUrls((prev) => ({ ...prev, [post.ref]: e.target.value }))}
-                    placeholder="https://... URL pública da foto (necessária para Instagram)"
-                    className="w-full px-2 py-1.5 rounded text-xs text-white outline-none"
-                    style={{ background: "#131928", border: "1px solid #2a3550" }}
-                  />
-
-                  {/* Botões */}
-                  <div className="flex gap-2">
-                    {igStatus !== "ok" && (
-                      <button
-                        onClick={() => publicarInstagram(post)}
-                        disabled={publicandoIg || !imageUrls[post.ref] || !token}
-                        className="flex-1 px-3 py-1.5 rounded text-xs font-semibold disabled:opacity-40"
-                        style={{ background: "linear-gradient(135deg, #833ab4, #fd1d1d)", color: "white" }}
-                      >
-                        {publicandoIg ? "Publicando IG..." : "📸 Instagram"}
-                      </button>
-                    )}
-                    {!todosGruposOk && (
-                      <button
-                        onClick={() => publicarNosGrupos(post)}
-                        disabled={publicandoGrupos || !userToken || userTokenValido === false}
-                        className="flex-1 px-3 py-1.5 rounded text-xs font-semibold disabled:opacity-40"
-                        style={{ background: "linear-gradient(135deg, #1877f2, #6366f1)", color: "white" }}
-                      >
-                        {publicandoGrupos ? "Publicando grupos..." : "👥 3 Grupos FB"}
+                <div key={post.ref} className="rounded-lg p-3 space-y-2"
+                  style={{ background: "#0b0f1a", border: `1px solid ${todosOk ? "#14532d" : "#2a3550"}` }}>
+                  <div className="flex items-center gap-3">
+                    <span className="font-mono text-xs w-8" style={{ color: "#64748b" }}>{post.ref}</span>
+                    <span className="flex-1 text-xs font-semibold text-white truncate">{post.imovel}</span>
+                    <span className="text-xs" style={{ color: "#64748b" }}>{post.data}</span>
+                    {todosOk && <span className="text-xs" style={{ color: "#818cf8" }}>✅ Grupos</span>}
+                    {!todosOk && (
+                      <button onClick={() => publicarNosGrupos(post)}
+                        disabled={publicando || !userToken || userTokenValido === false}
+                        className="px-3 py-1 rounded text-xs font-semibold disabled:opacity-40"
+                        style={{ background: "linear-gradient(135deg, #1877f2, #6366f1)", color: "white" }}>
+                        {publicando ? "..." : "👥 Publicar nos Grupos"}
                       </button>
                     )}
                   </div>
-
-                  {/* Status dos grupos */}
                   {grupos && grupos.length > 0 && (
                     <div className="flex gap-2 flex-wrap">
                       {grupos.map((g) => (
-                        <span
-                          key={g.nome}
-                          className="text-xs px-2 py-0.5 rounded-full"
+                        <span key={g.nome} className="text-xs px-2 py-0.5 rounded-full"
                           style={{
                             background: g.status === "ok" ? "#14532d" : g.status === "erro" ? "#7f1d1d" : "#1e1e3a",
                             color: g.status === "ok" ? "#34d399" : g.status === "erro" ? "#f87171" : "#818cf8",
-                          }}
-                          title={g.erro}
-                        >
-                          {g.status === "ok" ? "✅" : g.status === "erro" ? "❌" : "⏳"} {g.nome}
+                          }} title={g.erro}>
+                          {g.status === "ok" ? "✅" : "❌"} {g.nome}
                         </span>
                       ))}
                     </div>

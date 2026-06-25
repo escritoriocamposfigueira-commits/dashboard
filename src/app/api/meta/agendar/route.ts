@@ -1,21 +1,24 @@
 import { NextRequest } from "next/server";
-import { agendarFacebook } from "@/lib/meta-api";
+import { agendarFacebook, agendarInstagram } from "@/lib/meta-api";
 import calendar from "@/content/calendario-julho-2026.json";
 
 const PAGE_ID = "512040582222121";
+const IG_USER_ID = "17841461388445580";
 
 type PostResult = {
   ref: string;
   imovel: string;
   data: string;
   hora: string;
-  status: "ok" | "erro";
-  id?: string;
+  facebook: "ok" | "erro" | "skip";
+  instagram: "ok" | "erro" | "skip";
+  fbId?: string;
+  igId?: string;
   erro?: string;
 };
 
 export async function POST(request: NextRequest) {
-  const { token } = await request.json();
+  const { token, imageUrls } = await request.json();
 
   const envToken = process.env.META_PAGE_TOKEN;
   const accessToken = envToken || token;
@@ -24,20 +27,49 @@ export async function POST(request: NextRequest) {
     return Response.json({ erro: "Token obrigatório" }, { status: 400 });
   }
 
+  const urls: Record<string, string> = imageUrls ?? {};
   const results: PostResult[] = [];
 
   for (const post of calendar.posts) {
     const dataHora = `${post.data}T${post.hora}:00-03:00`;
+    const result: PostResult = {
+      ref: post.ref,
+      imovel: post.imovel,
+      data: post.data,
+      hora: post.hora,
+      facebook: "skip",
+      instagram: "skip",
+    };
+
+    // Facebook
     try {
       const id = await agendarFacebook(PAGE_ID, accessToken, post.caption, dataHora);
-      results.push({ ref: post.ref, imovel: post.imovel, data: post.data, hora: post.hora, status: "ok", id });
+      result.facebook = "ok";
+      result.fbId = id;
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "Erro desconhecido";
-      results.push({ ref: post.ref, imovel: post.imovel, data: post.data, hora: post.hora, status: "erro", erro: msg });
+      result.facebook = "erro";
+      result.erro = e instanceof Error ? e.message : "Erro desconhecido";
     }
+
+    // Instagram — só agenda se tiver URL da foto
+    const imgUrl = urls[post.ref];
+    if (imgUrl) {
+      try {
+        const igId = await agendarInstagram(IG_USER_ID, accessToken, imgUrl, post.caption, dataHora);
+        result.instagram = "ok";
+        result.igId = igId;
+      } catch (e: unknown) {
+        result.instagram = "erro";
+        result.erro = e instanceof Error ? e.message : "Erro desconhecido";
+      }
+    }
+
+    results.push(result);
   }
 
-  const ok = results.filter((r) => r.status === "ok").length;
-  const erros = results.filter((r) => r.status === "erro").length;
-  return Response.json({ results, ok, erros, total: results.length });
+  const fbOk = results.filter((r) => r.facebook === "ok").length;
+  const igOk = results.filter((r) => r.instagram === "ok").length;
+  const erros = results.filter((r) => r.facebook === "erro").length;
+
+  return Response.json({ results, fbOk, igOk, erros, total: results.length });
 }
