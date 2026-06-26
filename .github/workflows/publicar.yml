@@ -1,0 +1,41 @@
+name: Publicar imóveis (servidor 24h)
+
+# Servidor 24h grátis do GitHub. Publica sozinho com o PC desligado.
+# 2 imóveis por dia: 09:00 e 18:00 (horário de Brasília = UTC-3).
+on:
+  schedule:
+    - cron: "0 12 * * *"   # 09:00 BRT
+    - cron: "0 21 * * *"   # 18:00 BRT
+  workflow_dispatch: {}     # botão "Run workflow" para testar manualmente
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publicar-imoveis
+  cancel-in-progress: false
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar o projeto
+        uses: actions/checkout@v4
+
+      - name: Instalar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Publicar próximo imóvel (FB Feed + FB Story + IG Story)
+        env:
+          META_PAGE_TOKEN: ${{ secrets.META_PAGE_TOKEN }}
+        run: node scripts/publicar-servidor.js
+
+      - name: Salvar estado da fila
+        run: |
+          git config user.name "Campos Figueira Bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add controle/estado-publicacao.json || true
+          git commit -m "estado: publicação automática [skip ci]" || echo "nada a commitar"
+          git push origin HEAD:${{ github.ref_name }} || true
