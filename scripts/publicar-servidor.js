@@ -220,13 +220,30 @@ async function main() {
   catch (e) { registro.ig_story = "❌ " + e.message; }
   console.log("  IG Story:", registro.ig_story);
 
-  // Avançar a fila (sempre avança para não travar; erros ficam registrados)
-  estado.publicados.push(registro);
-  estado.indice += 1;
+  // Avançar a fila com segurança:
+  // - se ALGUM canal publicou → avança (não republica = sem duplicar)
+  // - se TUDO falhou → repete na próxima execução, até 3 tentativas (não trava a fila)
+  const algumOk = [registro.fb_feed, registro.fb_story, registro.ig_feed, registro.ig_story]
+    .some((s) => s.startsWith("✅"));
+  estado.tentativas = estado.tentativas || 0;
+
+  if (algumOk || estado.tentativas >= 2) {
+    if (!algumOk) {
+      registro.observacao = `pulado após ${estado.tentativas + 1} tentativas sem sucesso`;
+      console.log(`\n⚠️  Tudo falhou ${estado.tentativas + 1}x — pulando para não travar a fila. SUPERVISÃO: revisar código ${codigo}.`);
+    }
+    estado.publicados.push(registro);
+    estado.indice += 1;
+    estado.tentativas = 0;
+  } else {
+    estado.tentativas += 1;
+    estado.ultimaFalha = registro;
+    console.log(`\n⚠️  Nenhum canal publicou. Tentativa ${estado.tentativas}/3 — vai repetir o código ${codigo} na próxima execução.`);
+  }
 
   if (!fs.existsSync(path.dirname(ESTADO))) fs.mkdirSync(path.dirname(ESTADO), { recursive: true });
   fs.writeFileSync(ESTADO, JSON.stringify(estado, null, 2), "utf-8");
-  console.log(`\nEstado salvo. Próximo índice: ${estado.indice}/${manifest.ordem.length}`);
+  console.log(`Estado salvo. Próximo índice: ${estado.indice}/${manifest.ordem.length}`);
 }
 
 main().catch((e) => { console.error("❌ Erro:", e.message); process.exit(1); });
