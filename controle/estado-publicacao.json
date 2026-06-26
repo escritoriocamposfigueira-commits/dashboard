@@ -1,4 +1,14 @@
 {
-  "indice": 0,
-  "publicados": []
+  "indice": 1,
+  "publicados": [
+    {
+      "codigo": "429",
+      "data": "2026-06-26T20:15:10.847Z",
+      "fb_feed": "✅ 512040582222121_1609563707845471",
+      "fb_story": "✅ 1675082430422688",
+      "ig_feed": "❌ write ECONNRESET",
+      "ig_story": "✅ 18113793814802852"
+    }
+  ],
+  "tentativas": 0
 }
