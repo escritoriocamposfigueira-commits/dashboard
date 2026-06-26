@@ -42,3 +42,8 @@ next-env.d.ts
 
 # claude code worktrees (temporários, gerados por agentes)
 .claude/worktrees/
+
+# Controle interno (não versionar dados sensíveis de publicações)
+controle/*.csv
+controle/*.json
+logs/

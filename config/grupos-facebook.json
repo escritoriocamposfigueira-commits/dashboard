@@ -1,0 +1,44 @@
+{
+  "versao": "1.0",
+  "atualizado": "2026-06-26",
+  "grupos": [
+    {
+      "id": "618454204921867",
+      "nome": "Venda e Locação Mogi das Cruzes",
+      "link": "https://www.facebook.com/groups/618454204921867",
+      "regras": "Apenas imóveis de Mogi das Cruzes e região. Permitido venda e locação.",
+      "exige_preco": true,
+      "frequencia_minima_dias": 7,
+      "publicacao_automatica": true,
+      "status": "autorizado",
+      "ultima_publicacao": null,
+      "observacoes": "ID numérico confirmado"
+    },
+    {
+      "id": "vendalocacaomogidascruzes",
+      "nome": "Venda e Locação MDC (vanity)",
+      "link": "https://www.facebook.com/groups/vendalocacaomogidascruzes",
+      "regras": "Imóveis da região de Mogi das Cruzes.",
+      "exige_preco": true,
+      "frequencia_minima_dias": 7,
+      "publicacao_automatica": true,
+      "status": "pendente_id_numerico",
+      "ultima_publicacao": null,
+      "observacoes": "Vanity name — pode precisar ser resolvido para ID numérico via Graph API"
+    },
+    {
+      "id": "negociosmogidascruzes",
+      "nome": "Negócios MDC (vanity)",
+      "link": "https://www.facebook.com/groups/negociosmogidascruzes",
+      "regras": "Negócios em geral. Imóveis permitidos.",
+      "exige_preco": false,
+      "frequencia_minima_dias": 7,
+      "publicacao_automatica": true,
+      "status": "pendente_id_numerico",
+      "ultima_publicacao": null,
+      "observacoes": "Vanity name — pode precisar ser resolvido para ID numérico via Graph API"
+    }
+  ],
+  "fila_manual": [],
+  "nota": "Grupos com status pendente_id_numerico precisam ter o ID numérico confirmado antes da publicação automática. Use /api/meta/resolver-grupo para resolver."
+}
