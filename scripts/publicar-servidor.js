@@ -16,6 +16,8 @@
 const https = require("https");
 const fs = require("fs");
 const path = require("path");
+const os = require("os");
+const { execFileSync } = require("child_process");
 
 const BASE_HOST = "graph.facebook.com";
 const BASE_PATH = "/v22.0";
@@ -52,6 +54,57 @@ function apiPost(endpoint, body) {
 }
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
+// ── Baixar arquivo ────────────────────────────────────────────────────────────
+function baixar(url, destino) {
+  return new Promise((resolve, reject) => {
+    const f = fs.createWriteStream(destino);
+    https.get(url, (res) => {
+      if (res.statusCode >= 300 && res.headers.location) { f.close(); return baixar(res.headers.location, destino).then(resolve, reject); }
+      res.pipe(f);
+      f.on("finish", () => f.close(() => resolve(destino)));
+    }).on("error", (e) => { f.close(); reject(e); });
+  });
+}
+
+// ── Gerar versão quadrada 1080x1080 (fundo borrado) p/ Feed do Instagram ───────
+function gerarQuadrada(entrada, saida) {
+  const argsConv = [
+    entrada,
+    "(", "-clone", "0", "-resize", "1080x1080^", "-gravity", "center", "-extent", "1080x1080", "-blur", "0x24", ")",
+    "(", "-clone", "0", "-resize", "1080x1080", ")",
+    "-delete", "0", "-gravity", "center", "-composite", "-quality", "90", saida,
+  ];
+  for (const bin of ["convert", "magick"]) {
+    try { execFileSync(bin, bin === "magick" ? ["convert", ...argsConv] : argsConv, { stdio: "ignore" }); return saida; }
+    catch { /* tenta o próximo */ }
+  }
+  throw new Error("ImageMagick (convert/magick) indisponível");
+}
+
+// ── Upload de arquivo para catbox (URL pública) ───────────────────────────────
+function subirCatbox(arquivoPath) {
+  return new Promise((resolve, reject) => {
+    const boundary = "----CF" + Date.now() + Math.random().toString(16).slice(2);
+    const fileBuf = fs.readFileSync(arquivoPath);
+    const partes = [
+      Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="reqtype"\r\n\r\nfileupload\r\n`),
+      Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="fileToUpload"; filename="${path.basename(arquivoPath)}"\r\nContent-Type: image/jpeg\r\n\r\n`),
+      fileBuf,
+      Buffer.from(`\r\n--${boundary}--\r\n`),
+    ];
+    const body = Buffer.concat(partes);
+    const req = https.request({
+      hostname: "catbox.moe", path: "/user/api.php", method: "POST",
+      headers: { "Content-Type": `multipart/form-data; boundary=${boundary}`, "Content-Length": body.length },
+    }, (res) => {
+      let raw = ""; res.on("data", (c) => (raw += c));
+      res.on("end", () => (raw.startsWith("https://") ? resolve(raw.trim()) : reject(new Error(raw.slice(0, 80)))));
+    });
+    req.on("error", reject);
+    req.write(body); req.end();
+  });
+}
+
 // ── Facebook Feed (foto + copy, publica já) ───────────────────────────────────
 async function publicarFeedFacebook(token, url, caption) {
   const r = await apiPost(`${PAGE_ID}/photos`, { url, caption, access_token: token });
@@ -66,6 +119,29 @@ async function publicarStoryFacebook(token, url) {
   const story = await apiPost(`${PAGE_ID}/photo_stories`, { photo_id: foto.id, access_token: token });
   if (story.error) throw new Error("FB Story (publish): " + story.error.message);
   return story.post_id || story.id || foto.id;
+}
+
+// ── Instagram Feed (precisa de imagem quadrada → gera a partir da 9:16) ────────
+async function publicarFeedInstagram(token, url9x16, caption) {
+  const tmp = os.tmpdir();
+  const orig = path.join(tmp, "cf_orig_" + Date.now() + ".jpg");
+  const quad = path.join(tmp, "cf_quad_" + Date.now() + ".jpg");
+  await baixar(url9x16, orig);
+  gerarQuadrada(orig, quad);
+  const urlQuad = await subirCatbox(quad);
+
+  const cont = await apiPost(`${IG_USER_ID}/media`, { image_url: urlQuad, caption, access_token: token });
+  if (cont.error) throw new Error("IG Feed (container): " + cont.error.message);
+  for (let i = 0; i < 12; i++) {
+    await sleep(2500);
+    const st = await apiGet(`${cont.id}?fields=status_code&access_token=${encodeURIComponent(token)}`);
+    if (st.status_code === "FINISHED") break;
+    if (st.status_code === "ERROR") throw new Error("IG Feed: container deu ERROR");
+  }
+  const pub = await apiPost(`${IG_USER_ID}/media_publish`, { creation_id: cont.id, access_token: token });
+  if (pub.error) throw new Error("IG Feed (publish): " + pub.error.message);
+  try { fs.unlinkSync(orig); fs.unlinkSync(quad); } catch {}
+  return pub.id;
 }
 
 // ── Instagram Story (container → poll → publish) ──────────────────────────────
@@ -126,7 +202,7 @@ async function main() {
   const caption = mapaCap[codigo] || `Imóvel ${codigo} — Escritório Campos Figueira`;
   console.log(`\n▶ Publicando #${estado.indice + 1}/${manifest.ordem.length} — código ${codigo}`);
 
-  const registro = { codigo, data: new Date().toISOString(), fb_feed: "—", fb_story: "—", ig_story: "—" };
+  const registro = { codigo, data: new Date().toISOString(), fb_feed: "—", fb_story: "—", ig_feed: "—", ig_story: "—" };
 
   try { registro.fb_feed = "✅ " + await publicarFeedFacebook(token, url, caption); }
   catch (e) { registro.fb_feed = "❌ " + e.message; }
@@ -135,6 +211,10 @@ async function main() {
   try { registro.fb_story = "✅ " + await publicarStoryFacebook(token, url); }
   catch (e) { registro.fb_story = "❌ " + e.message; }
   console.log("  FB Story:", registro.fb_story);
+
+  try { registro.ig_feed = "✅ " + await publicarFeedInstagram(token, url, caption); }
+  catch (e) { registro.ig_feed = "❌ " + e.message; }
+  console.log("  IG Feed :", registro.ig_feed);
 
   try { registro.ig_story = "✅ " + await publicarStoryInstagram(token, url); }
   catch (e) { registro.ig_story = "❌ " + e.message; }

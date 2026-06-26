@@ -73,37 +73,59 @@ async function main() {
   const temCopy = {};
   captions.forEach((c) => { temCopy[normalizar(c.codigo_imovel)] = c.codigo_imovel; });
 
-  const arquivos = fs.readdirSync(PASTA).filter((f) => /\.(png|jpe?g)$/i.test(f)).sort();
-  console.log(`${arquivos.length} imagens na pasta. Subindo para o catbox...\n`);
+  // Carregar manifesto existente — modo INCREMENTAL (não bagunça a fila)
+  let manifest = { ordem: [], urls: {} };
+  if (fs.existsSync(SAIDA)) {
+    manifest = JSON.parse(fs.readFileSync(SAIDA, "utf-8"));
+    manifest.ordem = manifest.ordem || [];
+    manifest.urls = manifest.urls || {};
+    console.log(`Manifesto existente: ${manifest.ordem.length} imóveis já hospedados (serão mantidos na mesma ordem).\n`);
+  }
 
-  const ordem = [];
-  const urls = {};
-  let ok = 0, semCopy = 0;
+  const arquivos = fs.readdirSync(PASTA).filter((f) => /\.(png|jpe?g)$/i.test(f)).sort();
+  console.log(`${arquivos.length} imagens na pasta. Subindo apenas as novas...\n`);
+
+  let novos = 0, semCopy = 0, jaTinha = 0;
 
   for (const arq of arquivos) {
     const cod = extrairCodigo(arq);
     const codCanonico = temCopy[normalizar(cod)];
-    if (!codCanonico) { console.log(`  ⚠️  ${arq} — sem copy, pulado`); semCopy++; continue; }
+    if (!codCanonico) { console.log(`  ⚠️  ${arq} — sem copy ainda, pulado`); semCopy++; continue; }
+    if (manifest.urls[codCanonico]) { jaTinha++; continue; } // já hospedado, mantém
     try {
       const url = await subirCatbox(path.join(PASTA, arq));
-      urls[codCanonico] = url;
-      ordem.push(codCanonico);
-      ok++;
-      console.log(`  ✅ ${codCanonico.padEnd(22)} ${url}`);
+      manifest.urls[codCanonico] = url;
+      manifest.ordem.push(codCanonico); // novos vão para o FIM da fila
+      novos++;
+      console.log(`  ✅ NOVO ${codCanonico.padEnd(20)} ${url}`);
     } catch (e) {
       console.log(`  ❌ ${arq} — ${e.message}`);
     }
     await new Promise((r) => setTimeout(r, 300));
   }
 
-  fs.writeFileSync(SAIDA, JSON.stringify({ gerado_em: new Date().toISOString(), ordem, urls }, null, 2), "utf-8");
+  manifest.gerado_em = new Date().toISOString();
+  fs.writeFileSync(SAIDA, JSON.stringify(manifest, null, 2), "utf-8");
 
-  console.log(`\n✅ ${ok} imagens hospedadas. Manifesto: src/content/imagens-urls.json`);
-  if (semCopy) console.log(`⚠️  ${semCopy} sem copy (não entraram).`);
-  console.log("\nAgora suba o manifesto para o GitHub:");
-  console.log("   git add src/content/imagens-urls.json");
-  console.log('   git commit -m "manifesto de imagens"');
-  console.log("   git push origin claude/campos-figueira-growth-qmjsux\n");
+  console.log(`\n✅ ${novos} imagens NOVAS hospedadas · ${jaTinha} já existiam · ${manifest.ordem.length} no total`);
+  if (semCopy) console.log(`⚠️  ${semCopy} imagens sem copy (me peça a copy delas).`);
+
+  // Subir o manifesto para o GitHub automaticamente
+  console.log("\nEnviando manifesto para o GitHub...");
+  try {
+    const { execSync } = require("child_process");
+    const op = { cwd: __dirname, stdio: "inherit" };
+    execSync("git add src/content/imagens-urls.json", op);
+    try { execSync('git commit -m "manifesto de imagens (servidor 24h)"', op); }
+    catch { console.log("(nada novo para commitar)"); }
+    execSync("git push origin claude/campos-figueira-growth-qmjsux", op);
+    console.log("\n🎉 Manifesto enviado! O servidor 24h já vai usar essas imagens.\n");
+  } catch (e) {
+    console.log("\n⚠️  Não consegui enviar automático. Rode na mão:");
+    console.log("   git add src/content/imagens-urls.json");
+    console.log('   git commit -m "manifesto de imagens"');
+    console.log("   git push origin claude/campos-figueira-growth-qmjsux\n");
+  }
 }
 
 main().catch((e) => { console.error("❌ Erro:", e.message); process.exit(1); });

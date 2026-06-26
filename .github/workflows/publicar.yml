@@ -27,7 +27,10 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Publicar próximo imóvel (FB Feed + FB Story + IG Story)
+      - name: Garantir ImageMagick (gera a versão quadrada do Instagram Feed)
+        run: convert -version || sudo apt-get update && sudo apt-get install -y imagemagick
+
+      - name: Publicar próximo imóvel (FB Feed + FB Story + IG Feed + IG Story)
         env:
           META_PAGE_TOKEN: ${{ secrets.META_PAGE_TOKEN }}
         run: node scripts/publicar-servidor.js
