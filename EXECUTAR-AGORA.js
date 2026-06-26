@@ -120,67 +120,52 @@ async function main() {
     process.exit(1);
   }
 
+  // ── Utilitário GET ───────────────────────────────────────────────────────────
+  function apiGet(endpoint, tk) {
+    return new Promise((resolve) => {
+      const url = `${BASE}/${endpoint}&access_token=${encodeURIComponent(tk)}`;
+      https.get(url, (res) => {
+        let raw = "";
+        res.on("data", (c) => (raw += c));
+        res.on("end", () => { try { resolve(JSON.parse(raw)); } catch { resolve({ error: { message: raw } }); } });
+      }).on("error", (e) => resolve({ error: { message: e.message } }));
+    });
+  }
+
   // Verificar token
-  console.log("1. Verificando token...");
-  const me = await new Promise((resolve) => {
-    https.get(`${BASE}/me?fields=id,name,category&access_token=${encodeURIComponent(token)}`, (res) => {
-      let raw = "";
-      res.on("data", (c) => (raw += c));
-      res.on("end", () => resolve(JSON.parse(raw)));
-    }).on("error", (e) => resolve({ error: { message: e.message } }));
-  });
+  console.log("1. Verificando token e obtendo token da Página...");
+  const me = await apiGet("me?fields=id,name", token);
 
   if (me.error) {
     console.error(`❌ Token inválido ou expirado: ${me.error.message}`);
-    console.error("\n   Gere um novo token em:");
-    console.error("   developers.facebook.com/tools/explorer");
-    console.error("   Depois rode: node trocar-token.js APP_ID APP_SECRET TOKEN_NOVO");
+    console.error("\n   Gere um novo token em: developers.facebook.com/tools/explorer");
     process.exit(1);
   }
-  console.log(`   ✅ Token válido — conta: ${me.name} (ID: ${me.id})`);
+  console.log(`   Token reconhecido: ${me.name} (ID: ${me.id})`);
 
-  // Auto-detectar Page ID a partir do token
-  if (me.category) {
-    // Token de Página: /me retorna a própria página
-    if (me.id !== PAGE_ID) {
-      console.log(`   ⚠️  PAGE_ID configurado (${PAGE_ID}) difere do ID real da página (${me.id})`);
-      console.log(`   🔧 Corrigindo automaticamente → usando ID: ${me.id}`);
-      PAGE_ID = me.id;
-    } else {
-      console.log(`   📌 Página confirmada: ${me.name}`);
-    }
+  // Buscar token próprio da Página via /me/accounts
+  // Isso resolve tanto token de Usuário quanto token de Página sem pages_manage_posts
+  let activeToken = token;
+  const accounts = await apiGet("me/accounts?fields=id,name,access_token", token);
+
+  if (accounts.data && accounts.data.length > 0) {
+    console.log("   Páginas gerenciadas encontradas:");
+    accounts.data.forEach((p) => console.log(`     • ${p.name} (ID: ${p.id})`));
+
+    const ecf = accounts.data.find((p) =>
+      p.name.toLowerCase().includes("campos") ||
+      p.name.toLowerCase().includes("figueira") ||
+      p.name.toLowerCase().includes("escritório") ||
+      p.name.toLowerCase().includes("escritorio")
+    ) || accounts.data[0];
+
+    PAGE_ID = ecf.id;
+    activeToken = ecf.access_token;
+    console.log(`   ✅ Usando página: ${ecf.name} (ID: ${ecf.id})`);
   } else {
-    // Token de Usuário: buscar páginas gerenciadas
-    console.log("   🔍 Token de usuário detectado — buscando páginas gerenciadas...");
-    const accounts = await new Promise((resolve) => {
-      https.get(`${BASE}/me/accounts?access_token=${encodeURIComponent(token)}`, (res) => {
-        let raw = "";
-        res.on("data", (c) => (raw += c));
-        res.on("end", () => { try { resolve(JSON.parse(raw)); } catch { resolve({ data: [] }); } });
-      }).on("error", () => resolve({ data: [] }));
-    });
-
-    if (accounts.data && accounts.data.length > 0) {
-      console.log("   Páginas encontradas:");
-      accounts.data.forEach((p) => console.log(`     • ${p.name} (ID: ${p.id})`));
-      const ecf = accounts.data.find((p) =>
-        p.name.toLowerCase().includes("campos") ||
-        p.name.toLowerCase().includes("figueira") ||
-        p.name.toLowerCase().includes("escritório") ||
-        p.name.toLowerCase().includes("escritorio")
-      );
-      if (ecf) {
-        console.log(`   ✅ Página ECF encontrada: ${ecf.name} (ID: ${ecf.id})`);
-        PAGE_ID = ecf.id;
-      } else {
-        console.error("   ❌ Página Escritório Campos Figueira não encontrada nas páginas gerenciadas.");
-        console.error("      Gere o token selecionando a página no Graph API Explorer.");
-        process.exit(1);
-      }
-    } else {
-      console.error("   ❌ Nenhuma página encontrada. Verifique as permissões do token (pages_manage_posts).");
-      process.exit(1);
-    }
+    // Token já é da Página — usar direto
+    if (me.id) PAGE_ID = me.id;
+    console.log(`   ✅ Token de Página — ID: ${PAGE_ID}`);
   }
 
   // Carregar posts
@@ -206,7 +191,7 @@ async function main() {
 
     // Facebook
     try {
-      const fbId = await agendarFacebook(token, post.caption, dataHora);
+      const fbId = await agendarFacebook(activeToken, post.caption, dataHora);
       result.fb = `✅ ${fbId}`;
       fbOk++;
     } catch (e) {
