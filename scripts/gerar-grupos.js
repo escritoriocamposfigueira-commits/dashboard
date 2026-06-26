@@ -18,9 +18,13 @@ const MANIFEST = path.join(RAIZ, "src/content/imagens-urls.json");
 const SAIDA = path.join(RAIZ, "GRUPOS-COMPARTILHAR.html");
 
 const GRUPOS = [
-  { nome: "Venda e Locação MDC", url: "https://www.facebook.com/groups/618454204921867" },
   { nome: "Venda Locação Mogi das Cruzes", url: "https://www.facebook.com/groups/vendalocacaomogidascruzes" },
+  { nome: "Venda e Locação MDC", url: "https://www.facebook.com/groups/618454204921867" },
   { nome: "Negócios Mogi das Cruzes", url: "https://www.facebook.com/groups/negociosmogidascruzes" },
+  { nome: "Grupo Imóveis MDC (3)", url: "https://www.facebook.com/groups/362268479543104" },
+  { nome: "Grupo Imóveis MDC (4)", url: "https://www.facebook.com/groups/344800892555852" },
+  { nome: "Grupo Imóveis MDC (5)", url: "https://www.facebook.com/groups/1237190299629737" },
+  { nome: "Grupo Imóveis MDC (7)", url: "https://www.facebook.com/groups/505494366242207" },
 ];
 
 function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
