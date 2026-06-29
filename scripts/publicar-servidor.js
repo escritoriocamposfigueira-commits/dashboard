@@ -68,9 +68,9 @@ async function publicarStoryFacebook(token, url) {
   return story.post_id || story.id || foto.id;
 }
 
-// ── Instagram Feed (usa a versão quadrada pronta, hospedada no GitHub) ─────────
-async function publicarFeedInstagram(token, urlQuadrada, caption) {
-  const cont = await apiPost(`${IG_USER_ID}/media`, { image_url: urlQuadrada, caption, access_token: token });
+// ── Instagram Feed (usa a imagem 4:5, hospedada no GitHub) ────────────────────
+async function publicarFeedInstagram(token, urlFeed, caption) {
+  const cont = await apiPost(`${IG_USER_ID}/media`, { image_url: urlFeed, caption, access_token: token });
   if (cont.error) throw new Error("IG Feed (container): " + cont.error.message);
   for (let i = 0; i < 12; i++) {
     await sleep(2500);
@@ -137,28 +137,29 @@ async function main() {
   }
 
   const codigo = manifest.ordem[estado.indice];
-  const url = manifest.urls[codigo];
-  const urlQuad = (manifest.urls_quadrada && manifest.urls_quadrada[codigo]) || null;
+  // Story = imagem 9:16 (manifest.urls) · Feed = imagem 4:5 (manifest.urls_feed)
+  const urlStory = manifest.urls[codigo];
+  const urlFeed = (manifest.urls_feed && manifest.urls_feed[codigo])
+    || (manifest.urls_quadrada && manifest.urls_quadrada[codigo])
+    || urlStory; // fallback se ainda não houver 4:5
   const caption = mapaCap[codigo] || `Imóvel ${codigo} — Escritório Campos Figueira`;
   console.log(`\n▶ Publicando #${estado.indice + 1}/${manifest.ordem.length} — código ${codigo}`);
 
   const registro = { codigo, data: new Date().toISOString(), fb_feed: "—", fb_story: "—", ig_feed: "—", ig_story: "—" };
 
-  try { registro.fb_feed = "✅ " + await publicarFeedFacebook(token, url, caption); }
+  try { registro.fb_feed = "✅ " + await publicarFeedFacebook(token, urlFeed, caption); }
   catch (e) { registro.fb_feed = "❌ " + e.message; }
   console.log("  FB Feed :", registro.fb_feed);
 
-  try { registro.fb_story = "✅ " + await publicarStoryFacebook(token, url); }
+  try { registro.fb_story = "✅ " + await publicarStoryFacebook(token, urlStory); }
   catch (e) { registro.fb_story = "❌ " + e.message; }
   console.log("  FB Story:", registro.fb_story);
 
-  try {
-    if (!urlQuad) throw new Error("sem versão quadrada no manifesto (rode a geração das quadradas)");
-    registro.ig_feed = "✅ " + await publicarFeedInstagram(token, urlQuad, caption);
-  } catch (e) { registro.ig_feed = "❌ " + e.message; }
+  try { registro.ig_feed = "✅ " + await publicarFeedInstagram(token, urlFeed, caption); }
+  catch (e) { registro.ig_feed = "❌ " + e.message; }
   console.log("  IG Feed :", registro.ig_feed);
 
-  try { registro.ig_story = "✅ " + await publicarStoryInstagram(token, url); }
+  try { registro.ig_story = "✅ " + await publicarStoryInstagram(token, urlStory); }
   catch (e) { registro.ig_story = "❌ " + e.message; }
   console.log("  IG Story:", registro.ig_story);
 
