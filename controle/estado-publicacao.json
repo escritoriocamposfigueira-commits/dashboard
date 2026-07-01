@@ -98,10 +98,10 @@
       "ig_story": "✅ 17892868026372695"
     }
   ],
-  "tentativas": 1,
+  "tentativas": 2,
   "ultimaFalha": {
     "codigo": "526",
-    "data": "2026-07-01T14:35:12.717Z",
+    "data": "2026-07-01T22:20:38.270Z",
     "fb_feed": "❌ FB Feed: Error validating access token: The session has been invalidated because the user changed their password or Facebook has changed the session for security reasons.",
     "fb_story": "❌ FB Story (foto): Error validating access token: The session has been invalidated because the user changed their password or Facebook has changed the session for security reasons.",
     "ig_feed": "❌ IG Feed (container): Error validating access token: The session has been invalidated because the user changed their password or Facebook has changed the session for security reasons.",
