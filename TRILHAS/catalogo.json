@@ -1,0 +1,65 @@
+{
+  "gerado_em": "2026-07-02T15:35:42.715Z",
+  "trilhas": [
+    {
+      "nome": "sonho-01-esperança.mp3",
+      "emocao": "sonho",
+      "descricao": "Suave, piano, esperança — ideal para imóveis familiares",
+      "url": "https://cdn.pixabay.com/download/audio/2022/11/22/audio_febc508520.mp3"
+    },
+    {
+      "nome": "sonho-02-novo-amanhecer.mp3",
+      "emocao": "sonho",
+      "descricao": "Acústico, esperança, crescente — mudança de vida",
+      "url": "https://cdn.pixabay.com/download/audio/2021/08/04/audio_0625f072e0.mp3"
+    },
+    {
+      "nome": "sonho-03-harmonia.mp3",
+      "emocao": "sonho",
+      "descricao": "Ambient suave — imóvel dos sonhos",
+      "url": "https://cdn.pixabay.com/download/audio/2022/03/10/audio_1963e58ba2.mp3"
+    },
+    {
+      "nome": "urgencia-01-agora.mp3",
+      "emocao": "urgencia",
+      "descricao": "Ritmo marcado, urgente — oportunidade única",
+      "url": "https://cdn.pixabay.com/download/audio/2022/08/02/audio_884fe92c21.mp3"
+    },
+    {
+      "nome": "urgencia-02-ultima-chance.mp3",
+      "emocao": "urgencia",
+      "descricao": "Dramático, crescente — última unidade disponível",
+      "url": "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3"
+    },
+    {
+      "nome": "conquista-01-patrimonio.mp3",
+      "emocao": "conquista",
+      "descricao": "Épico, strings — imóvel próprio conquistado",
+      "url": "https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3"
+    },
+    {
+      "nome": "conquista-02-novo-capitulo.mp3",
+      "emocao": "conquista",
+      "descricao": "Motivacional — novo capítulo da vida",
+      "url": "https://cdn.pixabay.com/download/audio/2021/11/25/audio_cb31e56dd5.mp3"
+    },
+    {
+      "nome": "confianca-01-escritorio.mp3",
+      "emocao": "confianca",
+      "descricao": "Corporativo suave — Escritório Campos Figueira",
+      "url": "https://cdn.pixabay.com/download/audio/2022/10/25/audio_4b79fc70f1.mp3"
+    },
+    {
+      "nome": "confianca-02-segurança.mp3",
+      "emocao": "confianca",
+      "descricao": "Estável, profissional — transmite confiança",
+      "url": "https://cdn.pixabay.com/download/audio/2022/08/03/audio_2dde668d05.mp3"
+    },
+    {
+      "nome": "familiar-01-lar-doce-lar.mp3",
+      "emocao": "familiar",
+      "descricao": "Acolhedor, alegre — família no novo lar",
+      "url": "https://cdn.pixabay.com/download/audio/2022/02/07/audio_d1718ab41a.mp3"
+    }
+  ]
+}
