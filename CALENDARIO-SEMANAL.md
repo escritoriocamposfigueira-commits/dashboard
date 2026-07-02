@@ -32,7 +32,7 @@ equipado, moderno e a 5 min do Mogi Shopping.
 
 ⚡ Imóveis assim alugam em DIAS, não semanas.
 
-📲 Chama AGORA no WhatsApp e agende sua visita 👉 (11) 9XXXX-XXXX
+📲 Chama AGORA no WhatsApp e agende sua visita 👉 (11) 2378-5643
 ```
 
 ### Venda
@@ -44,7 +44,7 @@ Realize agora o sonho da casa própria com quem cuida de TUDO por você.
 
 ✅ Documentação segura ✅ Negociação transparente ✅ Do jeito que você sempre quis
 
-📲 Fala com a gente no WhatsApp antes que essa oportunidade suma 👉 (11) 9XXXX-XXXX
+📲 Fala com a gente no WhatsApp antes que essa oportunidade suma 👉 (11) 2378-5643
 ```
 
 ### Captação de proprietários (locação/venda)
@@ -57,7 +57,7 @@ e você só recebe o aluguel. Sem dor de cabeça.
 
 🏆 Seu imóvel alugado com segurança, estratégia e agilidade.
 
-📲 Manda um "QUERO ALUGAR MEU IMÓVEL" no WhatsApp 👉 (11) 9XXXX-XXXX
+📲 Manda um "QUERO ALUGAR MEU IMÓVEL" no WhatsApp 👉 (11) 2378-5643
 ```
 
 ### Engenharia Civil
@@ -68,7 +68,7 @@ Cada dia de atraso é dinheiro jogado fora — e o sonho adiado.
 Projeto, execução, laudo e regularização com engenheiro de verdade,
 prazo em contrato e obra andando.
 
-📲 Chama no WhatsApp e destrava sua obra HOJE 👉 (11) 9XXXX-XXXX
+📲 Chama no WhatsApp e destrava sua obra HOJE 👉 (11) 2378-5643
 ```
 
 ### Advocacia
@@ -79,7 +79,7 @@ Contrato mal feito, imóvel irregular, inquilino que não paga...
 Quanto mais você espera, mais caro fica.
 Resolva com quem entende de imóvel E de lei, no mesmo lugar.
 
-📲 Fale AGORA com nossa assessoria no WhatsApp 👉 (11) 9XXXX-XXXX
+📲 Fale AGORA com nossa assessoria no WhatsApp 👉 (11) 2378-5643
 ```
 
 ## ✅ Checklist antes de publicar

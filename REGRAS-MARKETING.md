@@ -22,6 +22,11 @@
 
 **Regra:** NUNCA publicar imagem com proporção errada para o canal. Cada arte é exportada nas duas versões (4:5 feed + 9:16 story).
 
+## 2b. Estratégia: 100% ORGÂNICO
+
+- **Divulgação orgânica, SEM investimento em Ads.** Nenhuma campanha paga deve ser criada sem pedido expresso do proprietário.
+- **WhatsApp oficial para todos os CTAs: (11) 2378-5643** (o mesmo da página do Facebook).
+
 ## 3. Regras de copy (texto dos anúncios)
 
 - **Direto e reto.** Sem enrolação, sem clichê corporativo.
@@ -89,18 +94,21 @@ Do primeiro contato à entrega das chaves — com segurança, estratégia e agil
   3. Tokens da Meta expiram naturalmente (~60 dias) — reconectar preventivamente 1x/mês.
   4. Qualquer dia sem post = checar conexão PRIMEIRO.
 
-## 8. Capacidades reais da automação (via API conectada)
+## 8. Capacidades reais da automação (verificado ao vivo em 02/07/2026)
 
-| Ação | Disponível? |
+Resposta literal da API (`list_actions`) por conector:
+
+| Conector | Ações de publicação disponíveis |
 |---|---|
-| Criar/pausar/ativar campanhas, conjuntos e anúncios Meta Ads | ✅ |
-| Definir orçamentos (diário/vitalício) | ✅ |
-| Impulsionar post (boost) | ✅ |
-| Publicar post de IMAGEM no feed do Instagram | ✅ |
-| Ler métricas de FB, IG, TikTok, YouTube | ✅ |
-| Publicar STORIES (FB/IG) via API | ❌ Meta não permite por API de terceiros → agendar no Meta Business Suite |
-| Publicar no TikTok / YouTube via esta API | ❌ somente leitura → agendar no TikTok Studio / YouTube Studio |
-| Editar bio dos perfis via API | ❌ Meta não permite → aplicar manualmente (textos prontos acima) |
+| `instagram` | `create_image_post` — post de imagem no FEED. A própria API declara: *"Carousels, video/Reels and stories are not supported"* (proporção aceita: 4:5 a 1.91:1, JPEG ≤ 8 MB, URL pública) |
+| `facebook_organic` (página) | *(vazio — nenhuma ação de publicação)* |
+| `tiktok_organic` | *(vazio — somente leitura)* |
+| `youtube` | *(vazio — somente leitura)* |
+| `facebook` (Meta Ads) | campanhas/anúncios pagos + boost — NÃO USAR (regra 2b: orgânico) |
+
+→ **Stories, TikTok e YouTube:** publicar/agendar pelo Meta Business Suite (Planner), TikTok Studio e YouTube Studio. O material (arte + copy) sai pronto daqui.
+→ **Feed do Instagram:** publicação automática via API, com aprovação prévia do proprietário.
+→ Se um agendamento automático de stories existia antes, ele morava no Meta Business Suite (Planner) ou em outra ferramenta conectada à página — conferir lá a fila de agendados (a troca de senha pode ter derrubado a ferramenta que alimentava a fila).
 
 ## 9. Metas
 
