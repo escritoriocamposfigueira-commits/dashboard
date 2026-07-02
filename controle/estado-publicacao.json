@@ -1,5 +1,5 @@
 {
-  "indice": 12,
+  "indice": 13,
   "publicados": [
     {
       "codigo": "429",
@@ -96,9 +96,18 @@
       "fb_story": "✅ 1220352247227268",
       "ig_feed": "✅ 17962866723129177",
       "ig_story": "✅ 17892868026372695"
+    },
+    {
+      "codigo": "526",
+      "data": "2026-07-02T14:00:10.643Z",
+      "fb_feed": "❌ FB Feed: Error validating access token: The session has been invalidated because the user changed their password or Facebook has changed the session for security reasons.",
+      "fb_story": "❌ FB Story (foto): Error validating access token: The session has been invalidated because the user changed their password or Facebook has changed the session for security reasons.",
+      "ig_feed": "❌ IG Feed (container): Error validating access token: The session has been invalidated because the user changed their password or Facebook has changed the session for security reasons.",
+      "ig_story": "❌ IG Story (container): Error validating access token: The session has been invalidated because the user changed their password or Facebook has changed the session for security reasons.",
+      "observacao": "pulado após 3 tentativas sem sucesso"
     }
   ],
-  "tentativas": 2,
+  "tentativas": 0,
   "ultimaFalha": {
     "codigo": "526",
     "data": "2026-07-01T22:20:38.270Z",
