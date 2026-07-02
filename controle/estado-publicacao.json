@@ -98,14 +98,6 @@
       "ig_story": "✅ 17892868026372695"
     }
   ],
-  "tentativas": 2,
-  "observacao": "CF-526 voltou para a fila — foi pulado por token inválido em 30/06. Novo token ativo em 02/07/2026.",
-  "ultimaFalha": {
-    "codigo": "526",
-    "data": "2026-07-02T19:16:17.489Z",
-    "fb_feed": "❌ FB Feed: Error validating access token: Session has expired on Thursday, 02-Jul-26 10:00:00 PDT. The current time is Thursday, 02-Jul-26 12:16:17 PDT.",
-    "fb_story": "❌ Error validating access token: Session has expired on Thursday, 02-Jul-26 10:00:00 PDT. The current time is Thursday, 02-Jul-26 12:16:17 PDT.",
-    "ig_feed": "❌ IG Feed container: Error validating access token: Session has expired on Thursday, 02-Jul-26 10:00:00 PDT. The current time is Thursday, 02-Jul-26 12:16:17 PDT.",
-    "ig_story": "❌ IG Story img container: Error validating access token: Session has expired on Thursday, 02-Jul-26 10:00:00 PDT. The current time is Thursday, 02-Jul-26 12:16:17 PDT."
-  }
+  "tentativas": 0,
+  "observacao": "CF-526 voltou para a fila — foi pulado por token inválido em 30/06. Novo token ativo em 02/07/2026."
 }
