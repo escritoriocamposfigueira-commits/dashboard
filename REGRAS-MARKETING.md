@@ -35,6 +35,13 @@
 - Estilo dos melhores especialistas em marketing direto (headline forte → dor/sonho → solução → CTA).
 - **CTA principal SEMPRE: chamada no WhatsApp.** O WhatsApp deve ser o elemento mais destacado do anúncio.
 
+## 3b. Stories com música (regra do proprietário)
+
+- Todo story deve, sempre que possível, sair em **vídeo com trilha sonora emocional** — música que encante e mexa com a alma do cliente (piano/cordas inspiradoras para sonho; batida leve e moderna para urgência).
+- **Formato:** vídeo 9:16 gerado a partir da arte (movimento suave de zoom/pan) **com a trilha embutida no arquivo**.
+- **Direitos autorais (obrigatório):** usar apenas trilhas **royalty-free licenciadas para uso comercial** (ex.: biblioteca do CapCut comercial, Pixabay Music, YouTube Audio Library). Música famosa/comercial só quando adicionada **manualmente no app** pela figurinha de música do Instagram — nunca embutida no arquivo, pois página comercial toma bloqueio/mute por copyright.
+- Manter uma pasta `TRILHAS` com 10+ músicas aprovadas, variadas por emoção (sonho, urgência, conquista, confiança).
+
 ## 4. Regras de frequência
 
 - **Imóveis de LOCAÇÃO (prioridade máxima — é o que mais sai):**
