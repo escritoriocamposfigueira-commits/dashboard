@@ -1,119 +1,19 @@
 {
-  "indice": 13,
+  "indice": 12,
   "publicados": [
-    {
-      "codigo": "429",
-      "data": "2026-06-26T20:15:10.847Z",
-      "fb_feed": "✅ 512040582222121_1609563707845471",
-      "fb_story": "✅ 1675082430422688",
-      "ig_feed": "❌ write ECONNRESET",
-      "ig_story": "✅ 18113793814802852"
-    },
-    {
-      "codigo": "458",
-      "data": "2026-06-26T20:54:27.002Z",
-      "fb_feed": "✅ 512040582222121_1609585811176594",
-      "fb_story": "✅ 1514349753557251",
-      "ig_feed": "✅ 17967555960104350",
-      "ig_story": "✅ 18088204079103874"
-    },
-    {
-      "codigo": "476",
-      "data": "2026-06-26T22:17:14.380Z",
-      "fb_feed": "✅ 512040582222121_1609628934505615",
-      "fb_story": "✅ 1024028996843504",
-      "ig_feed": "✅ 18086381345454923",
-      "ig_story": "✅ 17880518721670298"
-    },
-    {
-      "codigo": "485",
-      "data": "2026-06-27T13:42:34.979Z",
-      "fb_feed": "✅ 512040582222121_1610239744444534",
-      "fb_story": "✅ 4334536570143584",
-      "ig_feed": "✅ 18087950642107897",
-      "ig_story": "✅ 17891511360559535"
-    },
-    {
-      "codigo": "493",
-      "data": "2026-06-27T22:06:17.496Z",
-      "fb_feed": "✅ 512040582222121_1610574817744360",
-      "fb_story": "✅ 1893917504623699",
-      "ig_feed": "✅ 17980453335032177",
-      "ig_story": "✅ 18598671358039140"
-    },
-    {
-      "codigo": "502",
-      "data": "2026-06-28T13:45:38.221Z",
-      "fb_feed": "✅ 512040582222121_1611183157683526",
-      "fb_story": "✅ 1584332833120941",
-      "ig_feed": "✅ 17928165885350712",
-      "ig_story": "✅ 18225732505321877"
-    },
-    {
-      "codigo": "509",
-      "data": "2026-06-28T22:04:49.445Z",
-      "fb_feed": "✅ 512040582222121_1611530490982126",
-      "fb_story": "✅ 1575440207343511",
-      "ig_feed": "✅ 18272206138288191",
-      "ig_story": "✅ 18086632166642941"
-    },
-    {
-      "codigo": "513",
-      "data": "2026-06-29T15:46:20.481Z",
-      "fb_feed": "✅ 512040582222121_1612232590911916",
-      "fb_story": "✅ 1514693510135621",
-      "ig_feed": "✅ 17934519021295411",
-      "ig_story": "✅ 18223148110321141"
-    },
-    {
-      "codigo": "515",
-      "data": "2026-06-29T21:49:24.449Z",
-      "fb_feed": "✅ 512040582222121_1612498707551971",
-      "fb_story": "✅ 1704607914017238",
-      "ig_feed": "✅ 18103304912118153",
-      "ig_story": "✅ 17980579248022551"
-    },
-    {
-      "codigo": "516",
-      "data": "2026-06-29T22:11:55.288Z",
-      "fb_feed": "✅ 512040582222121_1612512344217274",
-      "fb_story": "✅ 1746598553160369",
-      "ig_feed": "✅ 18055673333758705",
-      "ig_story": "✅ 18232555822312989"
-    },
-    {
-      "codigo": "518",
-      "data": "2026-06-30T14:18:27.216Z",
-      "fb_feed": "✅ 512040582222121_1613153727486469",
-      "fb_story": "✅ 861715509917833",
-      "ig_feed": "✅ 18094977953251472",
-      "ig_story": "✅ 18182037778395732"
-    },
-    {
-      "codigo": "520",
-      "data": "2026-06-30T22:17:43.894Z",
-      "fb_feed": "✅ 512040582222121_1613499050785270",
-      "fb_story": "✅ 1220352247227268",
-      "ig_feed": "✅ 17962866723129177",
-      "ig_story": "✅ 17892868026372695"
-    },
-    {
-      "codigo": "526",
-      "data": "2026-07-02T14:00:10.643Z",
-      "fb_feed": "❌ FB Feed: Error validating access token: The session has been invalidated because the user changed their password or Facebook has changed the session for security reasons.",
-      "fb_story": "❌ FB Story (foto): Error validating access token: The session has been invalidated because the user changed their password or Facebook has changed the session for security reasons.",
-      "ig_feed": "❌ IG Feed (container): Error validating access token: The session has been invalidated because the user changed their password or Facebook has changed the session for security reasons.",
-      "ig_story": "❌ IG Story (container): Error validating access token: The session has been invalidated because the user changed their password or Facebook has changed the session for security reasons.",
-      "observacao": "pulado após 3 tentativas sem sucesso"
-    }
+    {"codigo":"429","data":"2026-06-26T20:15:10.847Z","fb_feed":"✅ 512040582222121_1609563707845471","fb_story":"✅ 1675082430422688","ig_feed":"❌ write ECONNRESET","ig_story":"✅ 18113793814802852"},
+    {"codigo":"458","data":"2026-06-26T20:54:27.002Z","fb_feed":"✅ 512040582222121_1609585811176594","fb_story":"✅ 1514349753557251","ig_feed":"✅ 17967555960104350","ig_story":"✅ 18088204079103874"},
+    {"codigo":"476","data":"2026-06-26T22:17:14.380Z","fb_feed":"✅ 512040582222121_1609628934505615","fb_story":"✅ 1024028996843504","ig_feed":"✅ 18086381345454923","ig_story":"✅ 17880518721670298"},
+    {"codigo":"485","data":"2026-06-27T13:42:34.979Z","fb_feed":"✅ 512040582222121_1610239744444534","fb_story":"✅ 4334536570143584","ig_feed":"✅ 18087950642107897","ig_story":"✅ 17891511360559535"},
+    {"codigo":"493","data":"2026-06-27T22:06:17.446Z","fb_feed":"✅ 512040582222121_1610574817744360","fb_story":"✅ 1893917504623699","ig_feed":"✅ 17980453335032177","ig_story":"✅ 18598671358039140"},
+    {"codigo":"502","data":"2026-06-28T13:45:38.221Z","fb_feed":"✅ 512040582222121_1611183157683526","fb_story":"✅ 1584332833120941","ig_feed":"✅ 17928165885350712","ig_story":"✅ 18225732505321877"},
+    {"codigo":"509","data":"2026-06-28T22:04:49.445Z","fb_feed":"✅ 512040582222121_1611530490982126","fb_story":"✅ 1575440207343511","ig_feed":"✅ 18272206138288191","ig_story":"✅ 18086632166642941"},
+    {"codigo":"513","data":"2026-06-29T15:46:20.381Z","fb_feed":"✅ 512040582222121_1612232590911916","fb_story":"✅ 1514693510135621","ig_feed":"✅ 17934519021295411","ig_story":"✅ 18223148110321141"},
+    {"codigo":"515","data":"2026-06-29T21:49:24.449Z","fb_feed":"✅ 512040582222121_1612498707551971","fb_story":"✅ 1704607914017238","ig_feed":"✅ 18103304912118153","ig_story":"✅ 17980579248022551"},
+    {"codigo":"516","data":"2026-06-29T22:11:55.288Z","fb_feed":"✅ 512040582222121_1612512344217274","fb_story":"✅ 1746598553160369","ig_feed":"✅ 18055673333758705","ig_story":"✅ 18232555822312989"},
+    {"codigo":"518","data":"2026-06-30T14:18:27.216Z","fb_feed":"✅ 512040582222121_1613153727486469","fb_story":"✅ 861715509917833","ig_feed":"✅ 18094977953251472","ig_story":"✅ 18182037778395732"},
+    {"codigo":"520","data":"2026-06-30T22:17:43.894Z","fb_feed":"✅ 512040582222121_1613499050785270","fb_story":"✅ 1220352247227268","ig_feed":"✅ 17962866723129177","ig_story":"✅ 17892868026372695"}
   ],
   "tentativas": 0,
-  "ultimaFalha": {
-    "codigo": "526",
-    "data": "2026-07-01T22:20:38.270Z",
-    "fb_feed": "❌ FB Feed: Error validating access token: The session has been invalidated because the user changed their password or Facebook has changed the session for security reasons.",
-    "fb_story": "❌ FB Story (foto): Error validating access token: The session has been invalidated because the user changed their password or Facebook has changed the session for security reasons.",
-    "ig_feed": "❌ IG Feed (container): Error validating access token: The session has been invalidated because the user changed their password or Facebook has changed the session for security reasons.",
-    "ig_story": "❌ IG Story (container): Error validating access token: The session has been invalidated because the user changed their password or Facebook has changed the session for security reasons."
-  }
+  "observacao": "CF-526 voltou para a fila — foi pulado por token inválido em 30/06. Novo token ativo em 02/07/2026."
 }
