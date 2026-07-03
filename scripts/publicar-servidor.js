@@ -393,6 +393,51 @@ function enviarAlerta(titulo, mensagem, prioridade = 3) {
 // MAIN
 // ════════════════════════════════════════════════════════════════════════════
 
+// ════════════════════════════════════════════════════════════════════════════
+// ROTAÇÃO — 6 locações 1x/semana (seg–sex) misturadas com vendas
+// ════════════════════════════════════════════════════════════════════════════
+const LOCACAO_CODES = new Set(["584", "607", "609", "609B", "CASA INDAIA BERTIOGA", "CASA JARDIM ARMENIA"]);
+
+function semanaISO(d) {
+  const dt = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
+  const dia = (dt.getUTCDay() + 6) % 7;
+  dt.setUTCDate(dt.getUTCDate() - dia + 3);
+  const primeiraQui = new Date(Date.UTC(dt.getUTCFullYear(), 0, 4));
+  const semana = 1 + Math.round(((dt - primeiraQui) / 86400000 - 3 + ((primeiraQui.getUTCDay() + 6) % 7)) / 7);
+  return `${dt.getUTCFullYear()}-W${String(semana).padStart(2, "0")}`;
+}
+
+// PURO: lê o estado e devolve o próximo código, sem alterar nada.
+function escolherProximo(manifest, estado) {
+  const ordem = manifest.ordem.map(String);
+  const locacoes = ordem.filter((c) => LOCACAO_CODES.has(c));
+  const vendas = ordem.filter((c) => !LOCACAO_CODES.has(c));
+  if (locacoes.length === 0 || vendas.length === 0) {
+    const i = (estado.indice || 0) % ordem.length;
+    return { codigo: ordem[i], tipo: "seq", vendaIdx: null };
+  }
+  const brt = new Date(Date.now() - 3 * 3600 * 1000);
+  const semana = semanaISO(brt);
+  const pubSemana = (estado.publicados || [])
+    .filter((p) => { try { return semanaISO(new Date(new Date(p.data).getTime() - 3 * 3600 * 1000)) === semana; } catch { return false; } })
+    .map((p) => String(p.codigo));
+  const locPendentes = locacoes.filter((c) => !pubSemana.includes(c));
+  const dow = brt.getDay();
+  const hora = brt.getHours();
+  let slotsRestantes;
+  if (dow === 0 || dow === 6) {
+    slotsRestantes = 10;
+  } else {
+    const diasRest = 5 - dow;
+    const slotsHoje = hora < 15 ? 2 : 1;
+    slotsRestantes = diasRest * 2 + slotsHoje;
+  }
+  const forcarLoc = locPendentes.length > 0 && (locPendentes.length >= slotsRestantes || (pubSemana.length % 2 === 0));
+  if (forcarLoc) return { codigo: locPendentes[0], tipo: "locacao", vendaIdx: null };
+  const vi = (estado.indiceVenda || 0) % vendas.length;
+  return { codigo: vendas[vi], tipo: "venda", vendaIdx: vi };
+}
+
 async function main() {
   const token = process.env.META_PAGE_TOKEN;
   if (!token) { console.error("❌ META_PAGE_TOKEN não definido."); process.exit(1); }
@@ -406,15 +451,16 @@ async function main() {
   let estado = { indice: 0, publicados: [], tentativas: 0 };
   if (fs.existsSync(ESTADO)) estado = JSON.parse(fs.readFileSync(ESTADO, "utf-8"));
 
-  if (estado.indice >= manifest.ordem.length) {
-    console.log(`✅ Todos os ${manifest.ordem.length} imóveis publicados. Fila reiniciada!`);
-    estado.indice = 0;
-    estado.tentativas = 0;
-    fs.writeFileSync(ESTADO, JSON.stringify(estado, null, 2), "utf-8");
-    return;
+  let plano;
+  try {
+    plano = escolherProximo(manifest, estado);
+  } catch (e) {
+    console.log("  ⚠️  Rotação falhou, usando modo sequencial:", e.message);
+    const i = (estado.indice || 0) % manifest.ordem.length;
+    plano = { codigo: String(manifest.ordem[i]), tipo: "seq", vendaIdx: null };
   }
-
-  const codigo    = manifest.ordem[estado.indice];
+  const codigo    = plano.codigo;
+  console.log(`  Tipo: ${plano.tipo}`);
   const urlStory  = manifest.urls[codigo];
   const urlFeed   = manifest.urls_feed?.[codigo] || manifest.urls_quadrada?.[codigo] || urlStory;
   const caption   = mapaCap[codigo] || `CF-${codigo} — Escritório Campos Figueira\n\n📲 WhatsApp: (11) 2378-5643`;
@@ -507,7 +553,11 @@ async function main() {
       enviarAlerta(`✅ CF-${codigo} publicado`, `Publicado em: ${canaisOk}`);
     }
     estado.publicados.push(reg);
-    estado.indice += 1;
+    if (plano.tipo === "venda" && plano.vendaIdx !== null) {
+      const vendasTot = manifest.ordem.map(String).filter((c) => !LOCACAO_CODES.has(c)).length;
+      estado.indiceVenda = (plano.vendaIdx + 1) % vendasTot;
+    }
+    estado.indice = (estado.indice || 0) + 1;
     estado.tentativas = 0;
   } else {
     estado.tentativas += 1;
@@ -520,8 +570,9 @@ async function main() {
   fs.mkdirSync(path.dirname(ESTADO), { recursive: true });
   fs.writeFileSync(ESTADO, JSON.stringify(estado, null, 2), "utf-8");
 
-  const proximo = manifest.ordem[estado.indice] || "(fim da fila)";
-  console.log(`\n📊 Estado salvo. Próximo: CF-${proximo} (#${estado.indice + 1})`);
+  let proximo = "(próxima execução)";
+  try { proximo = escolherProximo(manifest, estado).codigo; } catch {}
+  console.log(`\n📊 Estado salvo. Próximo previsto: CF-${proximo}`);
 }
 
 main().catch((e) => {
