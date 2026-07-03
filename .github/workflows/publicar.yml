@@ -27,8 +27,13 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Verificar FFmpeg (pré-instalado no ubuntu-latest)
-        run: ffmpeg -version | head -1
+      - name: Garantir FFmpeg instalado
+        run: |
+          if ! command -v ffmpeg >/dev/null 2>&1; then
+            echo "FFmpeg ausente — instalando..."
+            sudo apt-get update -qq && sudo apt-get install -y ffmpeg
+          fi
+          which ffmpeg && ffmpeg -version | head -1
 
       - name: Configurar identidade git (para push do vídeo + estado)
         run: |

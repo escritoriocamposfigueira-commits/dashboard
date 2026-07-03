@@ -145,15 +145,23 @@ async function subirVideoGitHub(videoPath, nomeArquivo) {
 // ════════════════════════════════════════════════════════════════════════════
 
 function encontrarFFmpeg() {
+  // 1) Caminho real via which/where (mais confiável no servidor)
+  try {
+    const cmd = process.platform === "win32" ? "where ffmpeg" : "which ffmpeg";
+    const achado = execSync(cmd, { timeout: 5000 }).toString().split(/\r?\n/)[0].trim();
+    if (achado && fs.existsSync(achado)) return achado;
+  } catch {}
+  // 2) Candidatos conhecidos
   const candidatos = [
-    "ffmpeg",
     "/usr/bin/ffmpeg",
+    "/usr/local/bin/ffmpeg",
+    "ffmpeg",
     "C:\\Users\\Henrique\\ffmpeg\\bin\\ffmpeg.exe",
     path.join(process.env.USERPROFILE || "", "ffmpeg", "bin", "ffmpeg.exe"),
   ];
   for (const c of candidatos) {
     try {
-      if (spawnSync(c, ["-version"], { timeout: 4000 }).status === 0) return c;
+      if (spawnSync(c, ["-version"], { timeout: 8000 }).status === 0) return c;
     } catch {}
   }
   return null;
