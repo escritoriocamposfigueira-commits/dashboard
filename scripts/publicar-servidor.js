@@ -397,6 +397,8 @@ function enviarAlerta(titulo, mensagem, prioridade = 3) {
 // ROTAÇÃO — 6 locações 1x/semana (seg–sex) misturadas com vendas
 // ════════════════════════════════════════════════════════════════════════════
 const LOCACAO_CODES = new Set(["584", "607", "609", "609B", "CASA INDAIA BERTIOGA", "CASA JARDIM ARMENIA"]);
+let CAPTACAO = [];
+try { CAPTACAO = JSON.parse(fs.readFileSync(path.join(RAIZ, "src/content/captacao.json"), "utf-8")); } catch {}
 
 function semanaISO(d) {
   const dt = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
@@ -434,6 +436,12 @@ function escolherProximo(manifest, estado) {
   }
   const forcarLoc = locPendentes.length > 0 && (locPendentes.length >= slotsRestantes || (pubSemana.length % 2 === 0));
   if (forcarLoc) return { codigo: locPendentes[0], tipo: "locacao", vendaIdx: null };
+  // Slots não-locação: alterna venda e captação
+  const naoLoc = estado.contadorNaoLoc || 0;
+  if (CAPTACAO.length > 0 && naoLoc % 2 === 1) {
+    const ci = (estado.indiceCapt || 0) % CAPTACAO.length;
+    return { codigo: CAPTACAO[ci].id, tipo: "captacao", captIdx: ci };
+  }
   const vi = (estado.indiceVenda || 0) % vendas.length;
   return { codigo: vendas[vi], tipo: "venda", vendaIdx: vi };
 }
@@ -461,9 +469,17 @@ async function main() {
   }
   const codigo    = plano.codigo;
   console.log(`  Tipo: ${plano.tipo}`);
-  const urlStory  = manifest.urls[codigo];
-  const urlFeed   = manifest.urls_feed?.[codigo] || manifest.urls_quadrada?.[codigo] || urlStory;
-  const caption   = mapaCap[codigo] || `CF-${codigo} — Escritório Campos Figueira\n\n📲 WhatsApp: (11) 2378-5643`;
+  let urlStory, urlFeed, caption;
+  if (plano.tipo === "captacao") {
+    const art = CAPTACAO[plano.captIdx];
+    urlStory = art.url;
+    urlFeed = art.url;
+    caption = art.caption;
+  } else {
+    urlStory = manifest.urls[codigo];
+    urlFeed = manifest.urls_feed?.[codigo] || manifest.urls_quadrada?.[codigo] || urlStory;
+    caption = mapaCap[codigo] || `CF-${codigo} — Escritório Campos Figueira\n\n📲 WhatsApp: (11) 2378-5643`;
+  }
 
   console.log(`\n▶ Publicando #${estado.indice + 1}/${manifest.ordem.length} — CF-${codigo}`);
   console.log(`  Feed URL : ${urlFeed}`);
@@ -556,6 +572,12 @@ async function main() {
     if (plano.tipo === "venda" && plano.vendaIdx !== null) {
       const vendasTot = manifest.ordem.map(String).filter((c) => !LOCACAO_CODES.has(c)).length;
       estado.indiceVenda = (plano.vendaIdx + 1) % vendasTot;
+    }
+    if (plano.tipo === "captacao") {
+      estado.indiceCapt = (plano.captIdx + 1) % (CAPTACAO.length || 1);
+    }
+    if (plano.tipo !== "locacao") {
+      estado.contadorNaoLoc = (estado.contadorNaoLoc || 0) + 1;
     }
     estado.indice = (estado.indice || 0) + 1;
     estado.tentativas = 0;
