@@ -291,6 +291,36 @@ async function publicarFeedInstagram(token, urlFeed, caption) {
   return pub.id;
 }
 
+// IG Carrossel: arte premium (slide 1) + fotos reais do imóvel (slides 2..10)
+async function publicarCarrosselInstagram(token, urls, caption) {
+  const childIds = [];
+  for (const u of urls.slice(0, 10)) {
+    const c = await apiPost(`${IG_ID}/media`, { image_url: u, is_carousel_item: true, access_token: token });
+    if (c.error) { console.log("  [carrossel] foto ignorada:", (c.error.message || "").slice(0, 60)); continue; }
+    let ok = false;
+    for (let i = 0; i < 6; i++) { await sleep(1500); const st = await apiGet(`${c.id}?fields=status_code&access_token=${encodeURIComponent(token)}`); if (st.status_code === "FINISHED") { ok = true; break; } if (st.status_code === "ERROR") break; }
+    if (ok) childIds.push(c.id);
+  }
+  if (childIds.length < 2) throw new Error("carrossel: menos de 2 fotos válidas");
+  const cont = await apiPost(`${IG_ID}/media`, { media_type: "CAROUSEL", children: childIds.join(","), caption, access_token: token });
+  if (cont.error) throw new Error("IG Carrossel container: " + cont.error.message);
+  for (let i = 0; i < 20; i++) { await sleep(2500); const st = await apiGet(`${cont.id}?fields=status_code&access_token=${encodeURIComponent(token)}`); if (st.status_code === "FINISHED") break; if (st.status_code === "ERROR") throw new Error("IG Carrossel container ERROR"); }
+  const pub = await apiPost(`${IG_ID}/media_publish`, { creation_id: cont.id, access_token: token });
+  if (pub.error) throw new Error("IG Carrossel publish: " + pub.error.message);
+  return pub.id;
+}
+
+// Verifica se uma URL já está acessível (para o IG conseguir buscar o vídeo)
+function urlPronta(url) {
+  return new Promise((resolve) => {
+    https.get(url, (res) => { res.resume(); resolve(res.statusCode >= 200 && res.statusCode < 400); }).on("error", () => resolve(false));
+  });
+}
+async function aguardarUrl(url, tentativas = 10) {
+  for (let i = 0; i < tentativas; i++) { if (await urlPronta(url)) return true; await sleep(3000); }
+  return false;
+}
+
 // FB Story: upload binário via rupload.facebook.com (não precisa de URL pública)
 async function publicarVideoStoryFacebook(token, videoPath) {
   const fileSize = fs.statSync(videoPath).size;
@@ -399,6 +429,8 @@ function enviarAlerta(titulo, mensagem, prioridade = 3) {
 const LOCACAO_CODES = new Set(["584", "607", "609", "609B", "CASA INDAIA BERTIOGA", "CASA JARDIM ARMENIA"]);
 let CAPTACAO = [];
 try { CAPTACAO = JSON.parse(fs.readFileSync(path.join(RAIZ, "src/content/captacao.json"), "utf-8")); } catch {}
+let FOTOS = {};
+try { FOTOS = JSON.parse(fs.readFileSync(path.join(RAIZ, "src/content/fotos-imoveis.json"), "utf-8")); } catch {}
 
 function semanaISO(d) {
   const dt = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
@@ -498,16 +530,10 @@ async function main() {
 
       // Hospedar no GitHub para que o IG possa acessar a URL
       const ghUrl = await subirVideoGitHub(videoPath, nomeVideo);
-      if (ghUrl) {
-        await sleep(4000); // CDN propagation
-        videoUrl = ghUrl;
-        console.log(`  URL vídeo: ${videoUrl}`);
-      } else {
-        // Fallback: usar URL já existente no repo (se pré-gerado)
-        const preGerado = `https://raw.githubusercontent.com/${GH_REPO}/${GH_BRANCH}/public/videos/${nomeVideo}`;
-        videoUrl = preGerado;
-        console.log(`  URL vídeo (pré-gerado): ${videoUrl}`);
-      }
+      const alvo = ghUrl || `https://raw.githubusercontent.com/${GH_REPO}/${GH_BRANCH}/public/videos/${nomeVideo}`;
+      const pronta = await aguardarUrl(alvo, 12); // espera o CDN liberar o vídeo (até ~36s) p/ o IG conseguir buscar
+      videoUrl = alvo;
+      console.log(`  URL vídeo: ${videoUrl} ${pronta ? "(pronta ✅)" : "(sem confirmação)"}`);
     } catch (e) {
       console.log(`  ⚠️  Geração de vídeo falhou: ${e.message}. Usando imagem como fallback.`);
     }
@@ -538,8 +564,17 @@ async function main() {
   console.log("  FB Story:", reg.fb_story);
 
   try {
-    reg.ig_feed = "✅ " + await publicarFeedInstagram(token, urlFeed, caption);
-  } catch (e) { reg.ig_feed = "❌ " + e.message; }
+    const fotos = (plano.tipo !== "captacao" && FOTOS[String(codigo)]) ? FOTOS[String(codigo)] : [];
+    if (fotos.length >= 1) {
+      const slides = [urlFeed, ...fotos].slice(0, 10); // arte premium + fotos reais
+      reg.ig_feed = `✅ (carrossel ${slides.length}) ` + await publicarCarrosselInstagram(token, slides, caption);
+    } else {
+      reg.ig_feed = "✅ " + await publicarFeedInstagram(token, urlFeed, caption);
+    }
+  } catch (e) {
+    try { reg.ig_feed = "✅ " + await publicarFeedInstagram(token, urlFeed, caption); }
+    catch (e2) { reg.ig_feed = "❌ " + e2.message; }
+  }
   console.log("  IG Feed :", reg.ig_feed);
 
   try {
