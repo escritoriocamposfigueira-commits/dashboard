@@ -513,7 +513,10 @@ async function main() {
     caption = mapaCap[codigo] || `CF-${codigo} — Escritório Campos Figueira\n\n📲 WhatsApp: (11) 2378-5643`;
   }
 
-  console.log(`\n▶ Publicando #${estado.indice + 1}/${manifest.ordem.length} — CF-${codigo}`);
+  // LOOP INFINITO: nunca termina. Ao esgotar a lista, recomeça sozinho.
+  // A lista cresce automaticamente: basta adicionar o imóvel em imagens-urls.json
+  // (e a legenda em captions-imoveis.json) que ele entra no rodízio no mesmo instante.
+  console.log(`\n▶ Publicando post #${(estado.publicados?.length || 0) + 1} (rodízio infinito de ${manifest.ordem.length} imóveis) — CF-${codigo}`);
   console.log(`  Feed URL : ${urlFeed}`);
   console.log(`  Story URL: ${urlStory}`);
 
