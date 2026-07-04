@@ -1,5 +1,5 @@
 {
-  "indice": 19,
+  "indice": 20,
   "publicados": [
     {
       "codigo": "429",
@@ -152,9 +152,17 @@
       "fb_story": "✅ 1011323928571721",
       "ig_feed": "✅ 18082186811223764",
       "ig_story": "✅ 18102719239879841 (imagem)"
+    },
+    {
+      "codigo": "CASA JARDIM ARMENIA",
+      "data": "2026-07-04T19:18:52.325Z",
+      "fb_feed": "✅ 512040582222121_1617380497063792",
+      "fb_story": "✅ 2206902513388374",
+      "ig_feed": "✅ 18088569617108341",
+      "ig_story": "✅ 18270138871292453 (imagem)"
     }
   ],
-  "tentativas": 1,
+  "tentativas": 0,
   "observacao": "CF-526 voltou para a fila — foi pulado por token inválido em 30/06. Novo token ativo em 02/07/2026.",
   "ultimaFalha": {
     "codigo": "CASA JARDIM ARMENIA",
