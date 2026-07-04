@@ -478,9 +478,28 @@ function escolherProximo(manifest, estado) {
   return { codigo: vendas[vi], tipo: "venda", vendaIdx: vi };
 }
 
+// Deriva o Page Access Token a partir do token fornecido (funciona com token de
+// Usuário do Sistema, token de usuário OU token de página já pronto).
+async function resolverPageToken(tokenInicial) {
+  try {
+    const r = await apiGet(`me/accounts?fields=id,name,access_token&limit=100&access_token=${encodeURIComponent(tokenInicial)}`);
+    if (r && r.data && r.data.length) {
+      const pg = r.data.find((p) => String(p.id) === PAGE_ID) || r.data[0];
+      if (pg && pg.access_token) { console.log(`  🔑 Page token derivado via me/accounts (${pg.name}).`); return pg.access_token; }
+    }
+  } catch {}
+  try {
+    const r2 = await apiGet(`${PAGE_ID}?fields=access_token&access_token=${encodeURIComponent(tokenInicial)}`);
+    if (r2 && r2.access_token) { console.log("  🔑 Page token derivado via node da página."); return r2.access_token; }
+  } catch {}
+  console.log("  ⚠️  Não deu pra derivar page token — usando o token original.");
+  return tokenInicial;
+}
+
 async function main() {
-  const token = process.env.META_PAGE_TOKEN;
-  if (!token) { console.error("❌ META_PAGE_TOKEN não definido."); process.exit(1); }
+  const tokenInicial = process.env.META_PAGE_TOKEN;
+  if (!tokenInicial) { console.error("❌ META_PAGE_TOKEN não definido."); process.exit(1); }
+  const token = await resolverPageToken(tokenInicial);
 
   // ── Carregar dados ──────────────────────────────────────────────────────
   const manifest = JSON.parse(fs.readFileSync(MANIFEST, "utf-8"));
