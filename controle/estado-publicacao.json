@@ -1,5 +1,5 @@
 {
-  "indice": 20,
+  "indice": 21,
   "publicados": [
     {
       "codigo": "429",
@@ -160,6 +160,14 @@
       "fb_story": "✅ 2206902513388374",
       "ig_feed": "✅ 18088569617108341",
       "ig_story": "✅ 18270138871292453 (imagem)"
+    },
+    {
+      "codigo": "429",
+      "data": "2026-07-04T22:02:53.276Z",
+      "fb_feed": "✅ 512040582222121_1617474580387717",
+      "fb_story": "✅ 1514968760427666",
+      "ig_feed": "✅ (carrossel 10) 18415192516145730",
+      "ig_story": "✅ 18082580759652164"
     }
   ],
   "tentativas": 0,
@@ -171,5 +179,7 @@
     "fb_story": "❌ FB Story init: Error validating access token: The session has been invalidated because the user changed their password or Facebook has changed the session for security reasons.",
     "ig_feed": "❌ IG Feed container: Error validating access token: The session has been invalidated because the user changed their password or Facebook has changed the session for security reasons.",
     "ig_story": "❌ IG Story img container: Error validating access token: The session has been invalidated because the user changed their password or Facebook has changed the session for security reasons."
-  }
+  },
+  "indiceVenda": 1,
+  "contadorNaoLoc": 1
 }
