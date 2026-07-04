@@ -1,5 +1,5 @@
 {
-  "indice": 22,
+  "indice": 23,
   "publicados": [
     {
       "codigo": "429",
@@ -177,6 +177,14 @@
       "ig_feed": "❌ IG Feed container: (#10) Requires instagram_content_publish permission to manage the object",
       "ig_story": "❌ IG Story img container: (#10) Requires instagram_content_publish permission to manage the object",
       "observacao": "pulado após 3 tentativas"
+    },
+    {
+      "codigo": "458",
+      "data": "2026-07-04T23:13:02.066Z",
+      "fb_feed": "✅ 512040582222121_1617513357050506",
+      "fb_story": "✅ 2505956203181349",
+      "ig_feed": "✅ (carrossel 10) 17935839837314455",
+      "ig_story": "✅ 18067164959710372"
     }
   ],
   "tentativas": 0,
@@ -189,7 +197,7 @@
     "ig_feed": "❌ IG Feed container: (#10) Requires instagram_content_publish permission to manage the object",
     "ig_story": "❌ IG Story img container: (#10) Requires instagram_content_publish permission to manage the object"
   },
-  "indiceVenda": 1,
-  "contadorNaoLoc": 2,
+  "indiceVenda": 2,
+  "contadorNaoLoc": 3,
   "indiceCapt": 1
 }
