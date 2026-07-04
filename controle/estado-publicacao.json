@@ -170,11 +170,11 @@
       "ig_story": "✅ 18082580759652164"
     }
   ],
-  "tentativas": 1,
+  "tentativas": 2,
   "observacao": "CF-526 voltou para a fila — foi pulado por token inválido em 30/06. Novo token ativo em 02/07/2026.",
   "ultimaFalha": {
     "codigo": "CAPT-1",
-    "data": "2026-07-04T22:38:57.435Z",
+    "data": "2026-07-04T22:56:10.688Z",
     "fb_feed": "❌ FB Feed: (#200) The permission(s) publish_actions are not available. It has been deprecated. If you want to provide a way for your app users to share content to Facebook, we encourage you to use our Sharing products instead.",
     "fb_story": "❌ FB Story init: (#190) This method must be called with a Page Access Token",
     "ig_feed": "❌ IG Feed container: (#10) Requires instagram_content_publish permission to manage the object",
