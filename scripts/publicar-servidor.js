@@ -490,6 +490,115 @@ async function publicarStoryInstagramImagem(token, urlImagem) {
 }
 
 // ════════════════════════════════════════════════════════════════════════════
+// YOUTUBE SHORTS — opcional (só roda se as chaves existirem no Secret)
+// Precisa: YT_CLIENT_ID, YT_CLIENT_SECRET, YT_REFRESH_TOKEN (Google Cloud OAuth)
+// ════════════════════════════════════════════════════════════════════════════
+
+function temChavesYouTube() {
+  return !!(process.env.YT_CLIENT_ID && process.env.YT_CLIENT_SECRET && process.env.YT_REFRESH_TOKEN);
+}
+
+// Troca o refresh_token permanente por um access_token de curta duração
+async function youtubeAccessToken() {
+  const body = [
+    `client_id=${encodeURIComponent(process.env.YT_CLIENT_ID)}`,
+    `client_secret=${encodeURIComponent(process.env.YT_CLIENT_SECRET)}`,
+    `refresh_token=${encodeURIComponent(process.env.YT_REFRESH_TOKEN)}`,
+    `grant_type=refresh_token`,
+  ].join("&");
+  const buf = Buffer.from(body, "utf-8");
+  const r = await request({
+    hostname: "oauth2.googleapis.com",
+    path: "/token",
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded", "Content-Length": buf.length },
+  }, buf);
+  if (r.data && r.data.access_token) return r.data.access_token;
+  throw new Error("YouTube OAuth: " + JSON.stringify(r.data).slice(0, 140));
+}
+
+async function publicarYouTubeShort(videoPath, caption) {
+  const accessToken = await youtubeAccessToken();
+  const primeira = (caption || "").split("\n").find((l) => l.trim()) || "Escritório Campos Figueira";
+  const titulo = `${primeira.slice(0, 88).trim()} #Shorts`.slice(0, 100);
+  const descricao = `${caption}\n\n#Shorts #imoveis #mogidascruzes #camposfigueira`;
+  const meta = JSON.stringify({
+    snippet: { title: titulo, description: descricao, categoryId: "22" },
+    status: { privacyStatus: "public", selfDeclaredMadeForKids: false },
+  });
+
+  const boundary = "cfbound" + Date.now();
+  const video = fs.readFileSync(videoPath);
+  const head = Buffer.from(
+    `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${meta}\r\n` +
+    `--${boundary}\r\nContent-Type: video/mp4\r\n\r\n`, "utf-8");
+  const tail = Buffer.from(`\r\n--${boundary}--\r\n`, "utf-8");
+  const bodyBuf = Buffer.concat([head, video, tail]);
+
+  const r = await request({
+    hostname: "www.googleapis.com",
+    path: "/upload/youtube/v3/videos?uploadType=multipart&part=snippet,status",
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${accessToken}`,
+      "Content-Type": `multipart/related; boundary=${boundary}`,
+      "Content-Length": bodyBuf.length,
+    },
+  }, bodyBuf);
+  if (r.data && r.data.id) return r.data.id;
+  throw new Error("YouTube upload: " + JSON.stringify(r.data).slice(0, 160));
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// TIKTOK — opcional (só roda se a chave existir no Secret)
+// Precisa: TIKTOK_TOKEN (Content Posting API). TIKTOK_PRIVACY é opcional.
+// App sem auditoria da TikTok só permite privacidade "SELF_ONLY" (privado).
+// ════════════════════════════════════════════════════════════════════════════
+
+function temChaveTikTok() {
+  return !!process.env.TIKTOK_TOKEN;
+}
+
+async function publicarTikTok(videoPath, caption) {
+  const token = process.env.TIKTOK_TOKEN;
+  const privacidade = process.env.TIKTOK_PRIVACY || "PUBLIC_TO_EVERYONE";
+  const size = fs.statSync(videoPath).size;
+  const titulo = (caption || "").replace(/\s+/g, " ").slice(0, 150);
+
+  // 1) Iniciar upload por FILE_UPLOAD (não exige domínio verificado)
+  const initBody = Buffer.from(JSON.stringify({
+    post_info: { title: titulo, privacy_level: privacidade, disable_comment: false },
+    source_info: { source: "FILE_UPLOAD", video_size: size, chunk_size: size, total_chunk_count: 1 },
+  }), "utf-8");
+  const init = await request({
+    hostname: "open.tiktokapis.com",
+    path: "/v2/post/publish/video/init/",
+    method: "POST",
+    headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json; charset=UTF-8", "Content-Length": initBody.length },
+  }, initBody);
+  const d = init.data && init.data.data;
+  if (!d || !d.upload_url) throw new Error("TikTok init: " + JSON.stringify(init.data).slice(0, 160));
+
+  // 2) Enviar os bytes do vídeo para a URL de upload
+  const video = fs.readFileSync(videoPath);
+  const u = new URL(d.upload_url);
+  const up = await request({
+    hostname: u.hostname,
+    path: u.pathname + u.search,
+    method: "PUT",
+    headers: {
+      "Content-Type": "video/mp4",
+      "Content-Length": size,
+      "Content-Range": `bytes 0-${size - 1}/${size}`,
+    },
+  }, video);
+  if (up.status && up.status >= 400) throw new Error("TikTok upload bytes: HTTP " + up.status);
+
+  // 3) A TikTok processa e publica sozinha; devolvemos o publish_id
+  return d.publish_id || "enviado";
+}
+
+// ════════════════════════════════════════════════════════════════════════════
 // ALERTAS — ntfy.sh
 // ════════════════════════════════════════════════════════════════════════════
 
@@ -656,7 +765,7 @@ async function main() {
   }
 
   // ── Publicar ─────────────────────────────────────────────────────────────
-  const reg = { codigo, data: new Date().toISOString(), fb_feed: "—", fb_story: "—", fb_reel: "—", ig_feed: "—", ig_story: "—", ig_reel: "—" };
+  const reg = { codigo, data: new Date().toISOString(), fb_feed: "—", fb_story: "—", fb_reel: "—", ig_feed: "—", ig_story: "—", ig_reel: "—", youtube: "—", tiktok: "—" };
 
   try {
     reg.fb_feed = "✅ " + await comRetry(() => publicarFeedFacebook(token, urlFeed, caption), "FB Feed");
@@ -725,6 +834,26 @@ async function main() {
   } catch (e) { reg.ig_reel = "❌ " + e.message; }
   console.log("  IG Reel :", reg.ig_reel);
 
+  // YouTube Short (opcional — só quando há chaves + vídeo). Inativo até colar o Secret.
+  try {
+    if (temChavesYouTube() && videoPath) {
+      reg.youtube = "✅ " + await publicarYouTubeShort(videoPath, caption);
+    } else {
+      reg.youtube = temChavesYouTube() ? "— (sem vídeo)" : "— (sem chave YT)";
+    }
+  } catch (e) { reg.youtube = "❌ " + e.message; }
+  console.log("  YouTube :", reg.youtube);
+
+  // TikTok (opcional — só quando há chave + vídeo). Inativo até colar o Secret.
+  try {
+    if (temChaveTikTok() && videoPath) {
+      reg.tiktok = "✅ " + await publicarTikTok(videoPath, caption);
+    } else {
+      reg.tiktok = temChaveTikTok() ? "— (sem vídeo)" : "— (sem chave TikTok)";
+    }
+  } catch (e) { reg.tiktok = "❌ " + e.message; }
+  console.log("  TikTok  :", reg.tiktok);
+
   // ── Avançar fila ──────────────────────────────────────────────────────────
   const algumOk = Object.values(reg).some((v) => typeof v === "string" && v.startsWith("✅"));
   estado.tentativas = estado.tentativas || 0;
@@ -734,7 +863,7 @@ async function main() {
       reg.observacao = `pulado após ${estado.tentativas + 1} tentativas`;
       enviarAlerta(`❌ CF-${codigo} FALHOU`, `Todos os canais falharam (${estado.tentativas + 1}x). Verifique o token.`, 5);
     } else {
-      const canaisOk = ["fb_feed","fb_story","fb_reel","ig_feed","ig_story","ig_reel"].filter((k) => reg[k].startsWith("✅")).join(", ");
+      const canaisOk = ["fb_feed","fb_story","fb_reel","ig_feed","ig_story","ig_reel","youtube","tiktok"].filter((k) => reg[k].startsWith("✅")).join(", ");
       enviarAlerta(`✅ CF-${codigo} publicado`, `Publicado em: ${canaisOk}`);
     }
     estado.publicados.push(reg);
