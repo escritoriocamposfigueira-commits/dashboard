@@ -1,5 +1,5 @@
 {
-  "indice": 23,
+  "indice": 24,
   "publicados": [
     {
       "codigo": "429",
@@ -185,6 +185,14 @@
       "fb_story": "✅ 2505956203181349",
       "ig_feed": "✅ (carrossel 10) 17935839837314455",
       "ig_story": "✅ 18067164959710372"
+    },
+    {
+      "codigo": "CAPT-2",
+      "data": "2026-07-05T11:56:33.797Z",
+      "fb_feed": "❌ FB Feed: Please reduce the amount of data you're asking for, then retry your request",
+      "fb_story": "✅ 996502296481090",
+      "ig_feed": "✅ 18083789540234984",
+      "ig_story": "✅ 18007786247927810"
     }
   ],
   "tentativas": 0,
@@ -198,6 +206,6 @@
     "ig_story": "❌ IG Story img container: (#10) Requires instagram_content_publish permission to manage the object"
   },
   "indiceVenda": 2,
-  "contadorNaoLoc": 3,
-  "indiceCapt": 1
+  "contadorNaoLoc": 4,
+  "indiceCapt": 2
 }
