@@ -271,6 +271,30 @@ async function gerarVideoStory(ffmpeg, imagemUrl, nomeArquivo, emocao) {
 // META API — publicação
 // ════════════════════════════════════════════════════════════════════════════
 
+// Erros transitórios da Meta: vale a pena repetir (não são falha de token/permissão)
+function ehErroTransitorio(msg = "") {
+  return /reduce the amount of data|temporar|try again|rate limit|limit reached|please try|unknown error|timeout|timed out|#1\b|#2\b|#4\b|#17\b|#341\b|#368\b/i.test(msg);
+}
+
+// Repete uma publicação só quando o erro é transitório, com espera crescente.
+async function comRetry(fn, label, vezes = 3) {
+  let ultimoErro;
+  for (let i = 0; i < vezes; i++) {
+    try { return await fn(); }
+    catch (e) {
+      ultimoErro = e;
+      if (i < vezes - 1 && ehErroTransitorio(e.message)) {
+        const espera = 4000 * (i + 1);
+        console.log(`  ↻ ${label}: erro transitório ("${(e.message || "").slice(0, 60)}"). Retry ${i + 1}/${vezes - 1} em ${espera / 1000}s...`);
+        await sleep(espera);
+        continue;
+      }
+      throw e;
+    }
+  }
+  throw ultimoErro;
+}
+
 async function publicarFeedFacebook(token, urlFeed, caption) {
   const r = await apiPost(`${PAGE_ID}/photos`, { url: urlFeed, caption, access_token: token });
   if (r.error) throw new Error("FB Feed: " + r.error.message);
@@ -360,6 +384,57 @@ async function publicarVideoStoryFacebook(token, videoPath) {
     upload_phase: "finish", video_id: videoId, access_token: token,
   });
   if (finish.error) throw new Error("FB Story finish: " + finish.error.message);
+  return finish.post_id || finish.id || videoId;
+}
+
+// FB Reel: mesmo vídeo 9:16 vira Reel permanente no feed do Facebook (alcança quem não curte a página)
+async function publicarReelFacebook(token, videoPath, caption) {
+  const fileSize = fs.statSync(videoPath).size;
+
+  const init = await apiPost(`${PAGE_ID}/video_reels`, {
+    upload_phase: "start", access_token: token,
+  });
+  if (init.error) throw new Error("FB Reel init: " + init.error.message);
+  const videoId = init.video_id;
+
+  const videoData = fs.readFileSync(videoPath);
+  const upload = await new Promise((resolve) => {
+    const req = https.request({
+      hostname: "rupload.facebook.com",
+      path: `/video-upload/v22.0/${videoId}`,
+      method: "POST",
+      headers: {
+        "Authorization": `OAuth ${token}`,
+        "Content-Type": "video/mp4",
+        "Content-Length": fileSize,
+        "offset": "0",
+        "file_size": String(fileSize),
+      },
+    }, (res) => {
+      let raw = "";
+      res.on("data", (c) => (raw += c));
+      res.on("end", () => { try { resolve(JSON.parse(raw)); } catch { resolve({ ok: res.statusCode < 300 }); } });
+    });
+    req.on("error", (e) => resolve({ error: { message: e.message } }));
+    req.write(videoData);
+    req.end();
+  });
+  if (upload.error) throw new Error("FB Reel upload: " + upload.error.message);
+
+  // Aguardar o processamento do vídeo antes de publicar (Reel exige "ready")
+  for (let i = 0; i < 24; i++) {
+    await sleep(3000);
+    const st = await apiGet(`${videoId}?fields=status&access_token=${encodeURIComponent(token)}`);
+    const fase = (st.status && (st.status.video_status || st.status.processing_phase?.status)) || "";
+    if (/ready|complete|finished/i.test(fase)) break;
+    if (/error/i.test(fase)) throw new Error("FB Reel processamento ERROR");
+  }
+
+  const finish = await apiPost(`${PAGE_ID}/video_reels`, {
+    upload_phase: "finish", video_id: videoId, video_state: "PUBLISHED",
+    description: caption, access_token: token,
+  });
+  if (finish.error) throw new Error("FB Reel finish: " + finish.error.message);
   return finish.post_id || finish.id || videoId;
 }
 
@@ -581,10 +656,10 @@ async function main() {
   }
 
   // ── Publicar ─────────────────────────────────────────────────────────────
-  const reg = { codigo, data: new Date().toISOString(), fb_feed: "—", fb_story: "—", ig_feed: "—", ig_story: "—", ig_reel: "—" };
+  const reg = { codigo, data: new Date().toISOString(), fb_feed: "—", fb_story: "—", fb_reel: "—", ig_feed: "—", ig_story: "—", ig_reel: "—" };
 
   try {
-    reg.fb_feed = "✅ " + await publicarFeedFacebook(token, urlFeed, caption);
+    reg.fb_feed = "✅ " + await comRetry(() => publicarFeedFacebook(token, urlFeed, caption), "FB Feed");
   } catch (e) { reg.fb_feed = "❌ " + e.message; }
   console.log("  FB Feed :", reg.fb_feed);
 
@@ -601,6 +676,16 @@ async function main() {
     }
   } catch (e) { reg.fb_story = "❌ " + e.message; }
   console.log("  FB Story:", reg.fb_story);
+
+  // FB Reel (feed permanente + alcança quem não curte a página) — só quando há vídeo
+  try {
+    if (videoPath) {
+      reg.fb_reel = "✅ " + await publicarReelFacebook(token, videoPath, caption);
+    } else {
+      reg.fb_reel = "— (sem vídeo)";
+    }
+  } catch (e) { reg.fb_reel = "❌ " + e.message; }
+  console.log("  FB Reel :", reg.fb_reel);
 
   try {
     const fotos = (plano.tipo !== "captacao" && FOTOS[String(codigo)]) ? FOTOS[String(codigo)] : [];
@@ -649,7 +734,7 @@ async function main() {
       reg.observacao = `pulado após ${estado.tentativas + 1} tentativas`;
       enviarAlerta(`❌ CF-${codigo} FALHOU`, `Todos os canais falharam (${estado.tentativas + 1}x). Verifique o token.`, 5);
     } else {
-      const canaisOk = ["fb_feed","fb_story","ig_feed","ig_story"].filter((k) => reg[k].startsWith("✅")).join(", ");
+      const canaisOk = ["fb_feed","fb_story","fb_reel","ig_feed","ig_story","ig_reel"].filter((k) => reg[k].startsWith("✅")).join(", ");
       enviarAlerta(`✅ CF-${codigo} publicado`, `Publicado em: ${canaisOk}`);
     }
     estado.publicados.push(reg);
