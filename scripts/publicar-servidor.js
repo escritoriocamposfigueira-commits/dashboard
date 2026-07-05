@@ -364,6 +364,23 @@ async function publicarVideoStoryFacebook(token, videoPath) {
 }
 
 // IG Story: precisa de URL pública para video_url
+// IG Reel: mesmo vídeo 9:16, vai pro FEED (permanente) e alcança quem não segue
+async function publicarReelInstagram(token, videoUrl, caption) {
+  const cont = await apiPost(`${IG_ID}/media`, {
+    media_type: "REELS", video_url: videoUrl, caption, share_to_feed: true, access_token: token,
+  });
+  if (cont.error) throw new Error("IG Reel container: " + cont.error.message);
+  for (let i = 0; i < 40; i++) { // Reel processa mais devagar (até ~2min)
+    await sleep(3000);
+    const st = await apiGet(`${cont.id}?fields=status_code&access_token=${encodeURIComponent(token)}`);
+    if (st.status_code === "FINISHED") break;
+    if (st.status_code === "ERROR") throw new Error("IG Reel container ERROR");
+  }
+  const pub = await apiPost(`${IG_ID}/media_publish`, { creation_id: cont.id, access_token: token });
+  if (pub.error) throw new Error("IG Reel publish: " + pub.error.message);
+  return pub.id;
+}
+
 async function publicarVideoStoryInstagram(token, videoUrl) {
   const cont = await apiPost(`${IG_ID}/media`, {
     video_url: videoUrl, media_type: "STORIES", access_token: token,
@@ -564,7 +581,7 @@ async function main() {
   }
 
   // ── Publicar ─────────────────────────────────────────────────────────────
-  const reg = { codigo, data: new Date().toISOString(), fb_feed: "—", fb_story: "—", ig_feed: "—", ig_story: "—" };
+  const reg = { codigo, data: new Date().toISOString(), fb_feed: "—", fb_story: "—", ig_feed: "—", ig_story: "—", ig_reel: "—" };
 
   try {
     reg.fb_feed = "✅ " + await publicarFeedFacebook(token, urlFeed, caption);
@@ -612,6 +629,16 @@ async function main() {
     } catch (e2) { reg.ig_story = "❌ " + e2.message; }
   }
   console.log("  IG Story:", reg.ig_story);
+
+  // IG Reel (feed permanente + alcança quem não segue) — só quando há vídeo público
+  try {
+    if (videoPath && videoUrl !== urlStory) {
+      reg.ig_reel = "✅ " + await publicarReelInstagram(token, videoUrl, caption);
+    } else {
+      reg.ig_reel = "— (sem vídeo)";
+    }
+  } catch (e) { reg.ig_reel = "❌ " + e.message; }
+  console.log("  IG Reel :", reg.ig_reel);
 
   // ── Avançar fila ──────────────────────────────────────────────────────────
   const algumOk = Object.values(reg).some((v) => typeof v === "string" && v.startsWith("✅"));
