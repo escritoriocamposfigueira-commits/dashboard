@@ -587,7 +587,9 @@ async function tiktokAccessToken() {
 
 async function publicarTikTok(videoPath, caption) {
   const token = await tiktokAccessToken();
-  const privacidade = process.env.TIKTOK_PRIVACY || "PUBLIC_TO_EVERYONE";
+  // Default SELF_ONLY: app não-auditado só posta privado. Após a auditoria,
+  // definir o Secret TIKTOK_PRIVACY=PUBLIC_TO_EVERYONE para virar público.
+  const privacidade = process.env.TIKTOK_PRIVACY || "SELF_ONLY";
   const size = fs.statSync(videoPath).size;
   const titulo = (caption || "").replace(/\s+/g, " ").slice(0, 150);
 
