@@ -52,6 +52,10 @@ jobs:
           YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
           TIKTOK_TOKEN: ${{ secrets.TIKTOK_TOKEN }}
           TIKTOK_PRIVACY: ${{ secrets.TIKTOK_PRIVACY }}
+          # TikTok permanente (recomendado): renova o access_token sozinho a cada post.
+          TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}
+          TIKTOK_CLIENT_SECRET: ${{ secrets.TIKTOK_CLIENT_SECRET }}
+          TIKTOK_REFRESH_TOKEN: ${{ secrets.TIKTOK_REFRESH_TOKEN }}
         run: node scripts/publicar-servidor.js
 
       - name: Salvar estado da fila no repositório

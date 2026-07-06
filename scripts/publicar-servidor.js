@@ -551,16 +551,42 @@ async function publicarYouTubeShort(videoPath, caption) {
 
 // ════════════════════════════════════════════════════════════════════════════
 // TIKTOK — opcional (só roda se a chave existir no Secret)
-// Precisa: TIKTOK_TOKEN (Content Posting API). TIKTOK_PRIVACY é opcional.
+// Caminho PERMANENTE (recomendado): TIKTOK_CLIENT_KEY + TIKTOK_CLIENT_SECRET +
+//   TIKTOK_REFRESH_TOKEN → o robô troca por um access_token novo a cada post
+//   (access_token estático dura só ~24h; o refresh dura ~1 ano).
+// Caminho simples (dura ~24h): TIKTOK_TOKEN. TIKTOK_PRIVACY é opcional.
 // App sem auditoria da TikTok só permite privacidade "SELF_ONLY" (privado).
 // ════════════════════════════════════════════════════════════════════════════
 
 function temChaveTikTok() {
-  return !!process.env.TIKTOK_TOKEN;
+  return !!(process.env.TIKTOK_TOKEN ||
+    (process.env.TIKTOK_CLIENT_KEY && process.env.TIKTOK_CLIENT_SECRET && process.env.TIKTOK_REFRESH_TOKEN));
+}
+
+// Prefere o refresh_token (permanente); cai pro token estático se for o único disponível.
+async function tiktokAccessToken() {
+  if (process.env.TIKTOK_CLIENT_KEY && process.env.TIKTOK_CLIENT_SECRET && process.env.TIKTOK_REFRESH_TOKEN) {
+    const body = [
+      `client_key=${encodeURIComponent(process.env.TIKTOK_CLIENT_KEY)}`,
+      `client_secret=${encodeURIComponent(process.env.TIKTOK_CLIENT_SECRET)}`,
+      `grant_type=refresh_token`,
+      `refresh_token=${encodeURIComponent(process.env.TIKTOK_REFRESH_TOKEN)}`,
+    ].join("&");
+    const buf = Buffer.from(body, "utf-8");
+    const r = await request({
+      hostname: "open.tiktokapis.com",
+      path: "/v2/oauth/token/",
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded", "Content-Length": buf.length },
+    }, buf);
+    if (r.data && r.data.access_token) return r.data.access_token;
+    throw new Error("TikTok OAuth: " + JSON.stringify(r.data).slice(0, 140));
+  }
+  return process.env.TIKTOK_TOKEN;
 }
 
 async function publicarTikTok(videoPath, caption) {
-  const token = process.env.TIKTOK_TOKEN;
+  const token = await tiktokAccessToken();
   const privacidade = process.env.TIKTOK_PRIVACY || "PUBLIC_TO_EVERYONE";
   const size = fs.statSync(videoPath).size;
   const titulo = (caption || "").replace(/\s+/g, " ").slice(0, 150);
