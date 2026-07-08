@@ -1,5 +1,5 @@
 {
-  "indice": 33,
+  "indice": 34,
   "publicados": [
     {
       "codigo": "429",
@@ -290,6 +290,18 @@
       "ig_reel": "✅ 17952934335196062",
       "youtube": "✅ z4e8KBC8lXM",
       "tiktok": "— (sem chave TikTok)"
+    },
+    {
+      "codigo": "502",
+      "data": "2026-07-08T14:06:06.225Z",
+      "fb_feed": "✅ 512040582222121_1621173403351168",
+      "fb_story": "✅ 1815202709252708",
+      "fb_reel": "✅ 1621173863351122",
+      "ig_feed": "✅ (carrossel 10) 18018768431697509",
+      "ig_story": "✅ 17996370626795458",
+      "ig_reel": "✅ 17934123558312563",
+      "youtube": "✅ 90cpyVQR7-w",
+      "tiktok": "— (sem chave TikTok)"
     }
   ],
   "tentativas": 0,
@@ -302,7 +314,7 @@
     "ig_feed": "❌ IG Feed container: (#10) Requires instagram_content_publish permission to manage the object",
     "ig_story": "❌ IG Story img container: (#10) Requires instagram_content_publish permission to manage the object"
   },
-  "indiceVenda": 5,
-  "contadorNaoLoc": 10,
+  "indiceVenda": 6,
+  "contadorNaoLoc": 11,
   "indiceCapt": 1
 }
