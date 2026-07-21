@@ -1,5 +1,5 @@
 {
-  "indice": 59,
+  "indice": 60,
   "publicados": [
     {
       "codigo": "429",
@@ -601,6 +601,18 @@
       "ig_story": "✅ 18100361996597169 (imagem)",
       "ig_reel": "✅ 18080225903481640",
       "youtube": "✅ e31jvE-LRQQ",
+      "tiktok": "— (sem chave TikTok)"
+    },
+    {
+      "codigo": "607",
+      "data": "2026-07-21T13:48:52.869Z",
+      "fb_feed": "✅ 512040582222121_1633192102149298",
+      "fb_story": "✅ 1051901480568811",
+      "fb_reel": "✅ 1633192712149237",
+      "ig_feed": "✅ (carrossel 5) 17887978239600286",
+      "ig_story": "✅ 17937750681325401",
+      "ig_reel": "✅ 18450490789139444",
+      "youtube": "✅ 95Ib7Uiw7mE",
       "tiktok": "— (sem chave TikTok)"
     }
   ],
