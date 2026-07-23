@@ -60,7 +60,21 @@ jobs:
 
       - name: Salvar estado da fila no repositório
         run: |
-          git add controle/estado-publicacao.json public/videos/ || true
+          git add controle/estado-publicacao.json public/videos/
           git diff --staged --quiet || git commit -m "estado: publicação automática [skip ci]"
-          git pull --rebase origin ${{ github.ref_name }} || true
-          git push origin HEAD:${{ github.ref_name }} || true
+          for tentativa in 1 2 3; do
+            echo "Sincronização do estado: tentativa ${tentativa}/3"
+            if ! git pull --rebase origin "${{ github.ref_name }}"; then
+              git rebase --abort 2>/dev/null || true
+              sleep $((tentativa * 5))
+              continue
+            fi
+            if git push origin "HEAD:${{ github.ref_name }}"; then
+              echo "Estado salvo com sucesso."
+              exit 0
+            fi
+            git rebase --abort 2>/dev/null || true
+            sleep $((tentativa * 5))
+          done
+          echo "::error::A publicação ocorreu, mas o estado não pôde ser salvo após 3 tentativas."
+          exit 1

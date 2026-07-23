@@ -907,6 +907,7 @@ async function main() {
     }
     estado.indice = (estado.indice || 0) + 1;
     estado.tentativas = 0;
+    delete estado.ultimaFalha;
   } else {
     estado.tentativas += 1;
     estado.ultimaFalha = reg;

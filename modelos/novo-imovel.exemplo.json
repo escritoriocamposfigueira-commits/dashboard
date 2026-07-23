@@ -1,0 +1,20 @@
+{
+  "codigo": "999",
+  "finalidade": "VENDA",
+  "tipo": "Casa térrea",
+  "bairro": "Vila Exemplo",
+  "cidade": "Mogi das Cruzes",
+  "valor": "R$ 450.000,00",
+  "chamada": "Conforto e praticidade para sua família",
+  "detalhes": [
+    "3 dormitórios",
+    "2 vagas",
+    "Área gourmet",
+    "Aceita financiamento"
+  ],
+  "fotos": [
+    "C:\\caminho\\foto-principal.jpg",
+    "C:\\caminho\\foto-2.jpg",
+    "C:\\caminho\\foto-3.jpg"
+  ]
+}
