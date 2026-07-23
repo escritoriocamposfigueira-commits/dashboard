@@ -1,5 +1,5 @@
 {
-  "indice": 65,
+  "indice": 66,
   "publicados": [
     {
       "codigo": "429",
@@ -674,18 +674,22 @@
       "ig_reel": "✅ 18110648222051272",
       "youtube": "✅ tEmIlQBbLsY",
       "tiktok": "— (sem chave TikTok)"
+    },
+    {
+      "codigo": "CASA INDAIA BERTIOGA",
+      "data": "2026-07-23T22:08:39.489Z",
+      "fb_feed": "✅ 512040582222121_1635438278591347",
+      "fb_story": "✅ 1551898443267342",
+      "fb_reel": "✅ 1635438608591314",
+      "ig_feed": "✅ 18135910777590154",
+      "ig_story": "✅ 18119129863864520 (imagem)",
+      "ig_reel": "— (sem vídeo)",
+      "youtube": "✅ P2dR4r-nL08",
+      "tiktok": "— (sem chave TikTok)"
     }
   ],
   "tentativas": 0,
   "observacao": "CF-526 voltou para a fila — foi pulado por token inválido em 30/06. Novo token ativo em 02/07/2026.",
-  "ultimaFalha": {
-    "codigo": "CAPT-1",
-    "data": "2026-07-04T22:56:10.688Z",
-    "fb_feed": "❌ FB Feed: (#200) The permission(s) publish_actions are not available. It has been deprecated. If you want to provide a way for your app users to share content to Facebook, we encourage you to use our Sharing products instead.",
-    "fb_story": "❌ FB Story init: (#190) This method must be called with a Page Access Token",
-    "ig_feed": "❌ IG Feed container: (#10) Requires instagram_content_publish permission to manage the object",
-    "ig_story": "❌ IG Story img container: (#10) Requires instagram_content_publish permission to manage the object"
-  },
   "indiceVenda": 15,
   "contadorNaoLoc": 29,
   "indiceCapt": 2
