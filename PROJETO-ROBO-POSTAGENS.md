@@ -78,4 +78,3 @@ atendimento a esse número.
 
 As próximas regras enviadas pelo proprietário devem ser registradas nesta seção,
 com data, objetivo, impacto na fila/canais e validação realizada.
-
