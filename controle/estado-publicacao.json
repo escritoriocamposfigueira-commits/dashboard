@@ -1,5 +1,5 @@
 {
-  "indice": 70,
+  "indice": 71,
   "publicados": [
     {
       "codigo": "429",
@@ -734,11 +734,23 @@
       "ig_reel": "✅ 18126828022670384",
       "youtube": "✅ bKbMrOPoWe4",
       "tiktok": "— (sem chave TikTok)"
+    },
+    {
+      "codigo": "535",
+      "data": "2026-07-26T13:21:11.679Z",
+      "fb_feed": "✅ 512040582222121_1637880221680486",
+      "fb_story": "✅ 1551342343386615",
+      "fb_reel": "✅ 1637880565013785",
+      "ig_feed": "✅ (carrossel 10) 18056000699563321",
+      "ig_story": "✅ 18012534005869462",
+      "ig_reel": "✅ 18381415102165085",
+      "youtube": "✅ 1cmSTT-3VIw",
+      "tiktok": "— (sem chave TikTok)"
     }
   ],
   "tentativas": 0,
   "observacao": "CF-526 voltou para a fila — foi pulado por token inválido em 30/06. Novo token ativo em 02/07/2026.",
-  "indiceVenda": 16,
-  "contadorNaoLoc": 32,
+  "indiceVenda": 17,
+  "contadorNaoLoc": 33,
   "indiceCapt": 0
 }
