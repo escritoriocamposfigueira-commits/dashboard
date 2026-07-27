@@ -1,11 +1,15 @@
 name: Publicar imóveis (servidor 24h)
 
 # Servidor 24h grátis do GitHub. Publica sozinho com o PC desligado.
-# 2 imóveis por dia: 09:00 e 18:00 (horário de Brasília = UTC-3).
+# Grade semanal em horário de Brasília (UTC-3):
+# venda diária, locação diária, 1 locação extra, 2 captações e recuperação.
 on:
   schedule:
-    - cron: "0 12 * * *"   # 09:00 BRT
-    - cron: "0 21 * * *"   # 18:00 BRT
+    - cron: "0 12 * * *"      # Venda — 09:00 BRT
+    - cron: "0 18 * * *"      # Locação — 15:00 BRT
+    - cron: "0 21 * * 1"      # Locação extra — segunda, 18:00 BRT
+    - cron: "10 21 * * 3,6"   # Captação — quarta e sábado, 18:10 BRT
+    - cron: "30 22 * * 0"     # Recuperação de locação — domingo, 19:30 BRT
   workflow_dispatch: {}     # botão "Run workflow" para disparo manual
 
 permissions:
@@ -46,6 +50,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_REF_NAME: ${{ github.ref_name }}
+          GITHUB_SCHEDULE: ${{ github.event.schedule }}
           # Opcionais: robô só posta no YouTube/TikTok quando estes Secrets existirem.
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}

@@ -16,7 +16,7 @@ operação e conteúdo sem perder o histórico das decisões.
 
 ## Estado atual
 
-- Execução automática pelo GitHub Actions às 09h e 18h, horário de Brasília.
+- Execução automática pelo GitHub Actions: venda diária às 09h, locação diária às 15h, locação extra na segunda, captação quarta e sábado e recuperação de locação pendente no domingo.
 - Facebook: feed, story em vídeo e reel.
 - Instagram: feed/carrossel, story em vídeo e reel.
 - Captação incluída na rotação.

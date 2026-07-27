@@ -1,8 +1,8 @@
 /**
  * publicar-servidor.js — Escritório Campos Figueira
  *
- * Roda no GitHub Actions (ubuntu-latest) 2x/dia:
- *   09:00 BRT (cron 0 12 * * *) e 18:00 BRT (cron 0 21 * * *)
+ * Roda no GitHub Actions (ubuntu-latest) em uma grade semanal:
+ *   venda diária, locação diária, 1 locação extra, 2 captações e recuperação.
  *
  * Publica em 4 canais por imóvel:
  *   FB Feed  (imagem 4:5 + copy UTF-8)
@@ -653,7 +653,7 @@ function enviarAlerta(titulo, mensagem, prioridade = 3) {
 // ════════════════════════════════════════════════════════════════════════════
 
 // ════════════════════════════════════════════════════════════════════════════
-// ROTAÇÃO — 8 locações 1x/semana (seg–sex) misturadas com vendas
+// ROTAÇÃO — vendas diárias, todas as locações 1x/semana e 2 captações/semana
 // ════════════════════════════════════════════════════════════════════════════
 const LOCACAO_CODES = new Set(["584", "607", "609", "609B", "619", "620", "CASA INDAIA BERTIOGA", "CASA JARDIM ARMENIA"]);
 let CAPTACAO = [];
@@ -670,21 +670,50 @@ function semanaISO(d) {
   return `${dt.getUTCFullYear()}-W${String(semana).padStart(2, "0")}`;
 }
 
+function tipoAgendado() {
+  const tipoManual = String(process.env.PUBLICACAO_TIPO || "").toLowerCase();
+  if (["venda", "locacao", "captacao", "auto"].includes(tipoManual)) return tipoManual;
+
+  const agenda = String(process.env.GITHUB_SCHEDULE || "");
+  if (agenda === "0 12 * * *") return "venda";
+  if (agenda === "0 18 * * *" || agenda === "0 21 * * 1" || agenda === "30 22 * * 0") return "locacao";
+  if (agenda === "10 21 * * 3,6") return "captacao";
+  return "auto";
+}
+
 // PURO: lê o estado e devolve o próximo código, sem alterar nada.
-function escolherProximo(manifest, estado) {
+function escolherProximo(manifest, estado, tipoForcado = "auto") {
   const ordem = manifest.ordem.map(String);
   const locacoes = ordem.filter((c) => LOCACAO_CODES.has(c));
   const vendas = ordem.filter((c) => !LOCACAO_CODES.has(c));
-  if (locacoes.length === 0 || vendas.length === 0) {
-    const i = (estado.indice || 0) % ordem.length;
-    return { codigo: ordem[i], tipo: "seq", vendaIdx: null };
-  }
   const brt = new Date(Date.now() - 3 * 3600 * 1000);
   const semana = semanaISO(brt);
   const pubSemana = (estado.publicados || [])
     .filter((p) => { try { return semanaISO(new Date(new Date(p.data).getTime() - 3 * 3600 * 1000)) === semana; } catch { return false; } })
     .map((p) => String(p.codigo));
   const locPendentes = locacoes.filter((c) => !pubSemana.includes(c));
+
+  if (tipoForcado === "venda") {
+    if (vendas.length === 0) return { codigo: null, tipo: "noop", motivo: "nenhuma venda cadastrada" };
+    const vi = (estado.indiceVenda || 0) % vendas.length;
+    return { codigo: vendas[vi], tipo: "venda", vendaIdx: vi };
+  }
+  if (tipoForcado === "locacao") {
+    if (locPendentes.length === 0) {
+      return { codigo: null, tipo: "noop", motivo: `todas as ${locacoes.length} locações já foram publicadas na semana ${semana}` };
+    }
+    return { codigo: locPendentes[0], tipo: "locacao", vendaIdx: null };
+  }
+  if (tipoForcado === "captacao") {
+    if (CAPTACAO.length === 0) return { codigo: null, tipo: "noop", motivo: "nenhuma captação cadastrada" };
+    const ci = (estado.indiceCapt || 0) % CAPTACAO.length;
+    return { codigo: CAPTACAO[ci].id, tipo: "captacao", captIdx: ci };
+  }
+
+  if (locacoes.length === 0 || vendas.length === 0) {
+    const i = (estado.indice || 0) % ordem.length;
+    return { codigo: ordem[i], tipo: "seq", vendaIdx: null };
+  }
   const dow = brt.getDay();
   const hora = brt.getHours();
   let slotsRestantes;
@@ -740,12 +769,18 @@ async function main() {
   if (fs.existsSync(ESTADO)) estado = JSON.parse(fs.readFileSync(ESTADO, "utf-8"));
 
   let plano;
+  const tipoForcado = tipoAgendado();
   try {
-    plano = escolherProximo(manifest, estado);
+    plano = escolherProximo(manifest, estado, tipoForcado);
   } catch (e) {
     console.log("  ⚠️  Rotação falhou, usando modo sequencial:", e.message);
     const i = (estado.indice || 0) % manifest.ordem.length;
     plano = { codigo: String(manifest.ordem[i]), tipo: "seq", vendaIdx: null };
+  }
+  console.log(`  Regra agendada: ${tipoForcado}`);
+  if (plano.tipo === "noop") {
+    console.log(`  ✅ Nenhuma publicação necessária neste horário: ${plano.motivo}.`);
+    return;
   }
   const codigo    = plano.codigo;
   console.log(`  Tipo: ${plano.tipo}`);
@@ -920,12 +955,16 @@ async function main() {
   fs.writeFileSync(ESTADO, JSON.stringify(estado, null, 2), "utf-8");
 
   let proximo = "(próxima execução)";
-  try { proximo = escolherProximo(manifest, estado).codigo; } catch {}
+  try { proximo = escolherProximo(manifest, estado, "auto").codigo; } catch {}
   console.log(`\n📊 Estado salvo. Próximo previsto: CF-${proximo}`);
 }
 
-main().catch((e) => {
-  console.error("❌ Erro fatal:", e.message);
-  enviarAlerta("❌ ROBÔ PAROU", e.message, 5);
-  process.exit(1);
-});
+if (require.main === module) {
+  main().catch((e) => {
+    console.error("❌ Erro fatal:", e.message);
+    enviarAlerta("❌ ROBÔ PAROU", e.message, 5);
+    process.exit(1);
+  });
+}
+
+module.exports = { semanaISO, tipoAgendado, escolherProximo };

@@ -4,24 +4,24 @@
 
 ## ✅ PRONTO E RODANDO (automático, sem depender do PC)
 
-- **Robô automático** via GitHub Actions, 09h e 18h (BRT), todo dia. Branch: `claude/campos-figueira-growth-qmjsux`.
+- **Robô automático** via GitHub Actions: venda diária às 09h, locação diária às 15h, locação extra na segunda, captação quarta e sábado e recuperação de locação no domingo. Branch: `claude/campos-figueira-growth-qmjsux`.
 - **Token Meta PERMANENTE** ("Expira: Nunca") no Secret `META_PAGE_TOKEN`. Renovar ~out/2026 (ver `TROCA-DE-TOKEN.md`).
 - **4 canais por post:** Facebook Feed + Story, Instagram Feed + Story.
 - **Story em VÍDEO com música** (9:16, Ken Burns + trilha royalty-free). FB e IG. (Fix da URL do IG aplicado.)
 - **Feed 4:5** com a arte premium. No IG vira **CARROSSEL** (arte + fotos reais do imóvel, das 73 fichas com foto).
 - **Legendas:** link individual do imóvel (61) + WhatsApp com mensagem pronta (76). Número: (11) 2378-5643.
-- **Rotação INFINITA (sem data de fim):** 6 locações 1x/semana (seg–sex) + vendas + captação, misturadas. Ao esgotar, recomeça sozinho. Provado com 300 posts simulados.
+- **Rotação INFINITA (sem data de fim):** 1 venda por dia, todas as locações 1x/semana e 2 captações por semana. Ao esgotar cada lista, recomeça sozinho.
 - **A lista cresce sozinha:** adicionar imóvel em `src/content/imagens-urls.json` (+ legenda em `captions-imoveis.json`) → entra no rodízio na hora.
 - **Captação:** 4 artes na rotação (~2x/semana) com o link do grupo do WhatsApp.
 - **Alertas (ntfy):** código pronto (canal `escritorio-cf-alertas`).
 
-### 6 locações fixas (repetem 1x/semana)
-584, 607, 609, 609B, CASA INDAIA BERTIOGA, CASA JARDIM ARMENIA
+### 8 locações fixas (repetem 1x/semana)
+584, 607, 609, 609B, CASA INDAIA BERTIOGA, CASA JARDIM ARMENIA, 619, 620
 (definidas em `LOCACAO_CODES` no `scripts/publicar-servidor.js`)
 
 ### Arquivos-chave do robô
 - `scripts/publicar-servidor.js` — motor (rotação, vídeo, carrossel, captação, alertas)
-- `.github/workflows/publicar.yml` — agendador 9h/18h + FFmpeg
+- `.github/workflows/publicar.yml` — grade semanal de venda, locação e captação + FFmpeg
 - `src/content/imagens-urls.json` — lista/ordem dos imóveis (arte feed 4:5 + story 9:16)
 - `src/content/captions-imoveis.json` — legendas
 - `src/content/fotos-imoveis.json` — fotos reais p/ carrossel

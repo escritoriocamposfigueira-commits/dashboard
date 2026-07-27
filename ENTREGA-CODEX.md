@@ -34,7 +34,7 @@
 
 ## 1. VISÃO GERAL
 
-Robô que **publica sozinho 2x/dia (09h e 18h BRT), com o PC desligado**, nos perfis
+Robô que **publica sozinho em grade semanal (venda diária, locação diária e captação 2x/semana), com o PC desligado**, nos perfis
 do escritório. Roda no **GitHub Actions** (servidor grátis do GitHub). Cada execução
 pega o próximo imóvel da fila e publica em vários canais.
 

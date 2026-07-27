@@ -107,7 +107,7 @@ Se o robô ficou parado por mais de 1 dia, rode no PowerShell:
 node scripts/publicar-agora.js
 ```
 
-Isso publica o próximo imóvel imediatamente sem esperar o cron das 09h/18h.
+Isso publica o próximo item imediatamente sem esperar a grade automática semanal.
 
 ---
 
