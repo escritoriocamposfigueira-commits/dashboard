@@ -430,4 +430,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { gerarArte, montarLegenda, validarConfig };
+module.exports = { carregarFoto, gerarArte, montarLegenda, validarConfig };

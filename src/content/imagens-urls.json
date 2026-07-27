@@ -13,7 +13,6 @@
     "518",
     "520",
     "526",
-    "527",
     "528",
     "530",
     "535",
@@ -75,7 +74,16 @@
     "593",
     "521",
     "560",
-    "577"
+    "577",
+    "417",
+    "421",
+    "440",
+    "459",
+    "537",
+    "574",
+    "598",
+    "619",
+    "620"
   ],
   "urls": {
     "429": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios/CF%20-%20429.png",
@@ -92,7 +100,6 @@
     "520": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios/CF%20-%20520.png",
     "521": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios/CF-%20521.png",
     "526": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios/CF%20-%20526.png",
-    "527": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios/CF%20-%20527.png",
     "528": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios/CF%20-%20528.png",
     "530": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios/CF%20-%20530.png",
     "535": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios/CF%20-%20535.png",
@@ -153,7 +160,16 @@
     "CASA INDAIA BERTIOGA": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios/CF%20-%20CASA%20INDAIA%20BERTIOGA.png",
     "CASA JARDIM ARMENIA": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios/CF%20-%20CASA%20JARDIM%20ARMENIA.png",
     "CASA VILA JUNDIAI": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios/CF%20-%20CASA%20VILA%20JUNDIA%C3%8D.png",
-    "TARLITORAL": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios/CF%20-%20TARLITORAL.png"
+    "TARLITORAL": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios/CF%20-%20TARLITORAL.png",
+    "417": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios/CF%20-%20417.png",
+    "421": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios/CF%20-%20421.png",
+    "440": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios/CF%20-%20440.png",
+    "459": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios/CF%20-%20459.png",
+    "537": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios/CF%20-%20537.png",
+    "574": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios/CF%20-%20574.png",
+    "598": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios/CF%20-%20598.png",
+    "619": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios/CF%20-%20619.png",
+    "620": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios/CF%20-%20620.png"
   },
   "urls_feed": {
     "429": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios-feed/CF%20-%20429.png",
@@ -170,7 +186,6 @@
     "520": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios-feed/CF%20-%20520.png",
     "521": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios-feed/CF-%20521.png",
     "526": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios-feed/CF%20-%20526.png",
-    "527": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios-feed/CF%20-%20527.png",
     "528": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios-feed/CF%20-%20528.png",
     "530": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios-feed/CF%20-%20530.png",
     "535": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios-feed/CF%20-%20535.png",
@@ -231,7 +246,16 @@
     "CASA INDAIA BERTIOGA": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios-feed/CF%20-%20CASA%20INDAIA%20BERTIOGA.png",
     "CASA JARDIM ARMENIA": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios-feed/CF%20-%20CASA%20JARDIM%20ARMENIA.png",
     "CASA VILA JUNDIAI": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios-feed/CF%20-%20CASA%20VILA%20JUNDIA%C3%8D.png",
-    "TARLITORAL": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios-feed/CF%20-%20TARLITORAL.png"
+    "TARLITORAL": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios-feed/CF%20-%20TARLITORAL.png",
+    "417": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios-feed/CF%20-%20417.png",
+    "421": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios-feed/CF%20-%20421.png",
+    "440": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios-feed/CF%20-%20440.png",
+    "459": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios-feed/CF%20-%20459.png",
+    "537": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios-feed/CF%20-%20537.png",
+    "574": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios-feed/CF%20-%20574.png",
+    "598": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios-feed/CF%20-%20598.png",
+    "619": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios-feed/CF%20-%20619.png",
+    "620": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios-feed/CF%20-%20620.png"
   },
-  "gerado_em": "2026-06-29T21:29:21.376Z"
+  "gerado_em": "2026-07-27T09:37:21-03:00"
 }
