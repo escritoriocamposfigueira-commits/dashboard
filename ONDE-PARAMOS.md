@@ -4,9 +4,10 @@
 
 ## ✅ PRONTO E RODANDO (automático, sem depender do PC)
 
-- **Robô automático** via GitHub Actions: venda diária às 09h, locação diária às 15h, locação extra na segunda, captação quarta e sábado e recuperação de locação no domingo. Branch: `claude/campos-figueira-growth-qmjsux`.
+- **Robô automático** via GitHub Actions: venda diária às 09h, locação diária às 15h, locação extra na segunda, captação quarta e sábado e recuperação diária de canal de locação às 19h30. Branch: `claude/campos-figueira-growth-qmjsux`.
 - **Token Meta PERMANENTE** ("Expira: Nunca") no Secret `META_PAGE_TOKEN`. Renovar ~out/2026 (ver `TROCA-DE-TOKEN.md`).
 - **4 canais por post:** Facebook Feed + Story, Instagram Feed + Story.
+- **Confirmação das locações:** o robô exige sucesso nos 4 canais principais e tenta apenas os canais pendentes, até 3 vezes, sem duplicar os que já funcionaram; se ainda falhar, envia alerta e continua para não travar a semana.
 - **Story em VÍDEO com música** (9:16, Ken Burns + trilha royalty-free). FB e IG. (Fix da URL do IG aplicado.)
 - **Feed 4:5** com a arte premium. No IG vira **CARROSSEL** (arte + fotos reais do imóvel, das 73 fichas com foto).
 - **Legendas:** link individual do imóvel (61) + WhatsApp com mensagem pronta (76). Número: (11) 2378-5643.

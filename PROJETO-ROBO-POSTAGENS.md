@@ -16,7 +16,7 @@ operação e conteúdo sem perder o histórico das decisões.
 
 ## Estado atual
 
-- Execução automática pelo GitHub Actions: venda diária às 09h, locação diária às 15h, locação extra na segunda, captação quarta e sábado e recuperação de locação pendente no domingo.
+- Execução automática pelo GitHub Actions: venda diária às 09h, locação diária às 15h, locação extra na segunda, captação quarta e sábado e recuperação diária de canal de locação às 19h30.
 - Facebook: feed, story em vídeo e reel.
 - Instagram: feed/carrossel, story em vídeo e reel.
 - Captação incluída na rotação.

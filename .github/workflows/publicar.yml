@@ -2,14 +2,14 @@ name: Publicar imóveis (servidor 24h)
 
 # Servidor 24h grátis do GitHub. Publica sozinho com o PC desligado.
 # Grade semanal em horário de Brasília (UTC-3):
-# venda diária, locação diária, 1 locação extra, 2 captações e recuperação.
+# venda diária, locação diária, 1 locação extra, 2 captações e recuperação diária.
 on:
   schedule:
     - cron: "0 12 * * *"      # Venda — 09:00 BRT
     - cron: "0 18 * * *"      # Locação — 15:00 BRT
     - cron: "0 21 * * 1"      # Locação extra — segunda, 18:00 BRT
     - cron: "10 21 * * 3,6"   # Captação — quarta e sábado, 18:10 BRT
-    - cron: "30 22 * * 0"     # Recuperação de locação — domingo, 19:30 BRT
+    - cron: "30 22 * * *"     # Recuperação de canal da locação — 19:30 BRT
   workflow_dispatch: {}     # botão "Run workflow" para disparo manual
 
 permissions:

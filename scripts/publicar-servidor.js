@@ -672,12 +672,13 @@ function semanaISO(d) {
 
 function tipoAgendado() {
   const tipoManual = String(process.env.PUBLICACAO_TIPO || "").toLowerCase();
-  if (["venda", "locacao", "captacao", "auto"].includes(tipoManual)) return tipoManual;
+  if (["venda", "locacao", "captacao", "recuperar_locacao", "auto"].includes(tipoManual)) return tipoManual;
 
   const agenda = String(process.env.GITHUB_SCHEDULE || "");
   if (agenda === "0 12 * * *") return "venda";
-  if (agenda === "0 18 * * *" || agenda === "0 21 * * 1" || agenda === "30 22 * * 0") return "locacao";
+  if (agenda === "0 18 * * *" || agenda === "0 21 * * 1") return "locacao";
   if (agenda === "10 21 * * 3,6") return "captacao";
+  if (agenda === "30 22 * * *") return "recuperar_locacao";
   return "auto";
 }
 
@@ -693,6 +694,16 @@ function escolherProximo(manifest, estado, tipoForcado = "auto") {
     .map((p) => String(p.codigo));
   const locPendentes = locacoes.filter((c) => !pubSemana.includes(c));
 
+  if (tipoForcado === "recuperar_locacao") {
+    const retry = estado.retryLocacao;
+    if (retry && retry.semana === semana && retry.codigo) {
+      return { codigo: String(retry.codigo), tipo: "locacao", vendaIdx: null, recuperacao: true };
+    }
+    if (brt.getDay() === 0 && locPendentes.length > 0) {
+      return { codigo: locPendentes[0], tipo: "locacao", vendaIdx: null, recuperacao: true };
+    }
+    return { codigo: null, tipo: "noop", motivo: "nenhum canal de locação pendente para recuperar" };
+  }
   if (tipoForcado === "venda") {
     if (vendas.length === 0) return { codigo: null, tipo: "noop", motivo: "nenhuma venda cadastrada" };
     const vi = (estado.indiceVenda || 0) % vendas.length;
@@ -829,102 +840,142 @@ async function main() {
 
   // ── Publicar ─────────────────────────────────────────────────────────────
   const reg = { codigo, data: new Date().toISOString(), fb_feed: "—", fb_story: "—", fb_reel: "—", ig_feed: "—", ig_story: "—", ig_reel: "—", youtube: "—", tiktok: "—" };
+  const semanaAtual = semanaISO(new Date(Date.now() - 3 * 3600 * 1000));
+  const retryAnterior = plano.tipo === "locacao"
+    && estado.retryLocacao?.codigo === codigo
+    && estado.retryLocacao?.semana === semanaAtual
+      ? estado.retryLocacao.reg
+      : null;
+  const manterCanalConcluido = (canal) => {
+    const valor = retryAnterior?.[canal];
+    if (typeof valor === "string" && valor.startsWith("✅")) {
+      reg[canal] = valor;
+      console.log(`  ${canal}: já concluído na tentativa anterior; não será duplicado.`);
+      return true;
+    }
+    return false;
+  };
 
-  try {
-    reg.fb_feed = "✅ " + await comRetry(() => publicarFeedFacebook(token, urlFeed, caption), "FB Feed");
-  } catch (e) { reg.fb_feed = "❌ " + e.message; }
+  if (!manterCanalConcluido("fb_feed")) {
+    try {
+      reg.fb_feed = "✅ " + await comRetry(() => publicarFeedFacebook(token, urlFeed, caption), "FB Feed");
+    } catch (e) { reg.fb_feed = "❌ " + e.message; }
+  }
   console.log("  FB Feed :", reg.fb_feed);
 
-  try {
-    if (videoPath) {
-      reg.fb_story = "✅ " + await publicarVideoStoryFacebook(token, videoPath);
-    } else {
-      // Fallback imagem para FB story
-      const foto = await apiPost(`${PAGE_ID}/photos`, { url: urlStory, published: false, access_token: token });
-      if (foto.error) throw new Error(foto.error.message);
-      const s = await apiPost(`${PAGE_ID}/photo_stories`, { photo_id: foto.id, access_token: token });
-      if (s.error) throw new Error(s.error.message);
-      reg.fb_story = "✅ " + (s.post_id || s.id || foto.id) + " (imagem)";
-    }
-  } catch (e) { reg.fb_story = "❌ " + e.message; }
+  if (!manterCanalConcluido("fb_story")) {
+    try {
+      if (videoPath) {
+        reg.fb_story = "✅ " + await publicarVideoStoryFacebook(token, videoPath);
+      } else {
+        // Fallback imagem para FB story
+        const foto = await apiPost(`${PAGE_ID}/photos`, { url: urlStory, published: false, access_token: token });
+        if (foto.error) throw new Error(foto.error.message);
+        const s = await apiPost(`${PAGE_ID}/photo_stories`, { photo_id: foto.id, access_token: token });
+        if (s.error) throw new Error(s.error.message);
+        reg.fb_story = "✅ " + (s.post_id || s.id || foto.id) + " (imagem)";
+      }
+    } catch (e) { reg.fb_story = "❌ " + e.message; }
+  }
   console.log("  FB Story:", reg.fb_story);
 
   // FB Reel (feed permanente + alcança quem não curte a página) — só quando há vídeo
-  try {
-    if (videoPath) {
-      reg.fb_reel = "✅ " + await publicarReelFacebook(token, videoPath, caption);
-    } else {
-      reg.fb_reel = "— (sem vídeo)";
-    }
-  } catch (e) { reg.fb_reel = "❌ " + e.message; }
+  if (!manterCanalConcluido("fb_reel")) {
+    try {
+      if (videoPath) {
+        reg.fb_reel = "✅ " + await publicarReelFacebook(token, videoPath, caption);
+      } else {
+        reg.fb_reel = "— (sem vídeo)";
+      }
+    } catch (e) { reg.fb_reel = "❌ " + e.message; }
+  }
   console.log("  FB Reel :", reg.fb_reel);
 
-  try {
-    const fotos = (plano.tipo !== "captacao" && FOTOS[String(codigo)]) ? FOTOS[String(codigo)] : [];
-    if (fotos.length >= 1) {
-      const slides = [urlFeed, ...fotos].slice(0, 10); // arte premium + fotos reais
-      reg.ig_feed = `✅ (carrossel ${slides.length}) ` + await publicarCarrosselInstagram(token, slides, caption);
-    } else {
-      reg.ig_feed = "✅ " + await publicarFeedInstagram(token, urlFeed, caption);
+  if (!manterCanalConcluido("ig_feed")) {
+    try {
+      const fotos = (plano.tipo !== "captacao" && FOTOS[String(codigo)]) ? FOTOS[String(codigo)] : [];
+      if (fotos.length >= 1) {
+        const slides = [urlFeed, ...fotos].slice(0, 10); // arte premium + fotos reais
+        reg.ig_feed = `✅ (carrossel ${slides.length}) ` + await publicarCarrosselInstagram(token, slides, caption);
+      } else {
+        reg.ig_feed = "✅ " + await publicarFeedInstagram(token, urlFeed, caption);
+      }
+    } catch (e) {
+      try { reg.ig_feed = "✅ " + await publicarFeedInstagram(token, urlFeed, caption); }
+      catch (e2) { reg.ig_feed = "❌ " + e2.message; }
     }
-  } catch (e) {
-    try { reg.ig_feed = "✅ " + await publicarFeedInstagram(token, urlFeed, caption); }
-    catch (e2) { reg.ig_feed = "❌ " + e2.message; }
   }
   console.log("  IG Feed :", reg.ig_feed);
 
-  try {
-    if (videoPath && videoUrl !== urlStory) {
-      reg.ig_story = "✅ " + await publicarVideoStoryInstagram(token, videoUrl);
-    } else {
-      reg.ig_story = "✅ " + await publicarStoryInstagramImagem(token, urlStory);
-    }
-  } catch (e) {
-    // Tentar fallback para imagem
+  if (!manterCanalConcluido("ig_story")) {
     try {
-      reg.ig_story = "✅ " + await publicarStoryInstagramImagem(token, urlStory);
-    } catch (e2) { reg.ig_story = "❌ " + e2.message; }
+      if (videoPath && videoUrl !== urlStory) {
+        reg.ig_story = "✅ " + await publicarVideoStoryInstagram(token, videoUrl);
+      } else {
+        reg.ig_story = "✅ " + await publicarStoryInstagramImagem(token, urlStory);
+      }
+    } catch (e) {
+      // Tentar fallback para imagem
+      try {
+        reg.ig_story = "✅ " + await publicarStoryInstagramImagem(token, urlStory);
+      } catch (e2) { reg.ig_story = "❌ " + e2.message; }
+    }
   }
   console.log("  IG Story:", reg.ig_story);
 
   // IG Reel (feed permanente + alcança quem não segue) — só quando há vídeo público
-  try {
-    if (videoPath && videoUrl !== urlStory) {
-      reg.ig_reel = "✅ " + await publicarReelInstagram(token, videoUrl, caption);
-    } else {
-      reg.ig_reel = "— (sem vídeo)";
-    }
-  } catch (e) { reg.ig_reel = "❌ " + e.message; }
+  if (!manterCanalConcluido("ig_reel")) {
+    try {
+      if (videoPath && videoUrl !== urlStory) {
+        reg.ig_reel = "✅ " + await publicarReelInstagram(token, videoUrl, caption);
+      } else {
+        reg.ig_reel = "— (sem vídeo)";
+      }
+    } catch (e) { reg.ig_reel = "❌ " + e.message; }
+  }
   console.log("  IG Reel :", reg.ig_reel);
 
   // YouTube Short (opcional — só quando há chaves + vídeo). Inativo até colar o Secret.
-  try {
-    if (temChavesYouTube() && videoPath) {
-      reg.youtube = "✅ " + await publicarYouTubeShort(videoPath, caption);
-    } else {
-      reg.youtube = temChavesYouTube() ? "— (sem vídeo)" : "— (sem chave YT)";
-    }
-  } catch (e) { reg.youtube = "❌ " + e.message; }
+  if (!manterCanalConcluido("youtube")) {
+    try {
+      if (temChavesYouTube() && videoPath) {
+        reg.youtube = "✅ " + await publicarYouTubeShort(videoPath, caption);
+      } else {
+        reg.youtube = temChavesYouTube() ? "— (sem vídeo)" : "— (sem chave YT)";
+      }
+    } catch (e) { reg.youtube = "❌ " + e.message; }
+  }
   console.log("  YouTube :", reg.youtube);
 
   // TikTok (opcional — só quando há chave + vídeo). Inativo até colar o Secret.
-  try {
-    if (temChaveTikTok() && videoPath) {
-      reg.tiktok = "✅ " + await publicarTikTok(videoPath, caption);
-    } else {
-      reg.tiktok = temChaveTikTok() ? "— (sem vídeo)" : "— (sem chave TikTok)";
-    }
-  } catch (e) { reg.tiktok = "❌ " + e.message; }
+  if (!manterCanalConcluido("tiktok")) {
+    try {
+      if (temChaveTikTok() && videoPath) {
+        reg.tiktok = "✅ " + await publicarTikTok(videoPath, caption);
+      } else {
+        reg.tiktok = temChaveTikTok() ? "— (sem vídeo)" : "— (sem chave TikTok)";
+      }
+    } catch (e) { reg.tiktok = "❌ " + e.message; }
+  }
   console.log("  TikTok  :", reg.tiktok);
 
   // ── Avançar fila ──────────────────────────────────────────────────────────
   const algumOk = Object.values(reg).some((v) => typeof v === "string" && v.startsWith("✅"));
+  const canaisObrigatorios = ["fb_feed", "fb_story", "ig_feed", "ig_story"];
+  const locacaoCompleta = canaisObrigatorios.every((canal) => reg[canal].startsWith("✅"));
+  const publicacaoCompleta = plano.tipo === "locacao" ? locacaoCompleta : algumOk;
+  const tentativasLocacao = retryAnterior ? (estado.retryLocacao?.tentativas || 0) : 0;
+  const atingiuLimite = plano.tipo === "locacao" ? tentativasLocacao >= 2 : (estado.tentativas || 0) >= 2;
   estado.tentativas = estado.tentativas || 0;
 
-  if (algumOk || estado.tentativas >= 2) {
-    if (!algumOk) {
-      reg.observacao = `pulado após ${estado.tentativas + 1} tentativas`;
-      enviarAlerta(`❌ CF-${codigo} FALHOU`, `Todos os canais falharam (${estado.tentativas + 1}x). Verifique o token.`, 5);
+  if (publicacaoCompleta || atingiuLimite) {
+    if (!publicacaoCompleta) {
+      const totalTentativas = plano.tipo === "locacao" ? tentativasLocacao + 1 : estado.tentativas + 1;
+      const canaisPendentes = plano.tipo === "locacao"
+        ? canaisObrigatorios.filter((canal) => !reg[canal].startsWith("✅")).join(", ")
+        : "todos os canais";
+      reg.observacao = `pulado após ${totalTentativas} tentativas; pendentes: ${canaisPendentes}`;
+      enviarAlerta(`❌ CF-${codigo} FALHOU`, `Canais pendentes após ${totalTentativas} tentativas: ${canaisPendentes}.`, 5);
     } else {
       const canaisOk = ["fb_feed","fb_story","fb_reel","ig_feed","ig_story","ig_reel","youtube","tiktok"].filter((k) => reg[k].startsWith("✅")).join(", ");
       enviarAlerta(`✅ CF-${codigo} publicado`, `Publicado em: ${canaisOk}`);
@@ -943,11 +994,24 @@ async function main() {
     estado.indice = (estado.indice || 0) + 1;
     estado.tentativas = 0;
     delete estado.ultimaFalha;
+    if (plano.tipo === "locacao") delete estado.retryLocacao;
   } else {
-    estado.tentativas += 1;
-    estado.ultimaFalha = reg;
-    enviarAlerta(`⚠️ CF-${codigo} falhou (tentativa ${estado.tentativas}/3)`, JSON.stringify(reg).slice(0, 200), 4);
-    console.log(`\n⚠️  Nenhum canal publicou. Tentativa ${estado.tentativas}/3.`);
+    if (plano.tipo === "locacao") {
+      const canaisPendentes = canaisObrigatorios.filter((canal) => !reg[canal].startsWith("✅"));
+      estado.retryLocacao = {
+        codigo,
+        semana: semanaAtual,
+        tentativas: tentativasLocacao + 1,
+        reg,
+      };
+      enviarAlerta(`⚠️ CF-${codigo}: recuperar locação`, `Tentativa ${tentativasLocacao + 1}/3. Pendentes: ${canaisPendentes.join(", ")}`, 4);
+      console.log(`\n⚠️  Locação incompleta. Tentativa ${tentativasLocacao + 1}/3; pendentes: ${canaisPendentes.join(", ")}.`);
+    } else {
+      estado.tentativas += 1;
+      estado.ultimaFalha = reg;
+      enviarAlerta(`⚠️ CF-${codigo} falhou (tentativa ${estado.tentativas}/3)`, JSON.stringify(reg).slice(0, 200), 4);
+      console.log(`\n⚠️  Nenhum canal publicou. Tentativa ${estado.tentativas}/3.`);
+    }
   }
 
   // ── Salvar estado ─────────────────────────────────────────────────────────
