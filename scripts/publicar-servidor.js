@@ -653,18 +653,9 @@ function enviarAlerta(titulo, mensagem, prioridade = 3) {
 // ════════════════════════════════════════════════════════════════════════════
 
 // ════════════════════════════════════════════════════════════════════════════
-// ROTAÇÃO — locações ativas 1x/semana (seg–sex) misturadas com vendas
+// ROTAÇÃO — 6 locações 1x/semana (seg–sex) misturadas com vendas
 // ════════════════════════════════════════════════════════════════════════════
-const LOCACAO_CODES = new Set([
-  "584",
-  "607",
-  "609",
-  "609B",
-  "619",
-  "620",
-  "CASA INDAIA BERTIOGA",
-  "CASA JARDIM ARMENIA",
-]);
+const LOCACAO_CODES = new Set(["584", "607", "609", "609B", "CASA INDAIA BERTIOGA", "CASA JARDIM ARMENIA"]);
 let CAPTACAO = [];
 try { CAPTACAO = JSON.parse(fs.readFileSync(path.join(RAIZ, "src/content/captacao.json"), "utf-8")); } catch {}
 let FOTOS = {};
