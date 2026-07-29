@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "arte:imovel": "node scripts/gerar-artes-imovel.js"
+    "arte:imovel": "node scripts/gerar-artes-imovel.js",
+    "trilhas:gerar": "node scripts/gerar-trilhas-originais.js",
+    "test:trilhas": "node --test tests/trilhas.test.js"
   },
   "dependencies": {
     "date-fns": "^4.4.0",

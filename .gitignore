@@ -16,6 +16,7 @@
 # next.js
 /.next/
 /out/
+/.tmp-videos/
 
 # production
 /build
@@ -48,4 +49,5 @@ controle/*.csv
 controle/*.json
 # exceção: estado da fila do servidor 24h precisa ser versionado
 !controle/estado-publicacao.json
+!controle/estado-trilhas.json
 logs/

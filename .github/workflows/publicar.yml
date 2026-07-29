@@ -55,6 +55,8 @@ jobs:
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
           YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          # Pausado por decisão do escritório. Só será reativado após nova autorização.
+          TIKTOK_ENABLED: "false"
           TIKTOK_TOKEN: ${{ secrets.TIKTOK_TOKEN }}
           TIKTOK_PRIVACY: ${{ secrets.TIKTOK_PRIVACY }}
           # TikTok permanente (recomendado): renova o access_token sozinho a cada post.
@@ -65,7 +67,7 @@ jobs:
 
       - name: Salvar estado da fila no repositório
         run: |
-          git add controle/estado-publicacao.json public/videos/
+          git add controle/estado-publicacao.json controle/estado-trilhas.json public/videos/
           git diff --staged --quiet || git commit -m "estado: publicação automática [skip ci]"
           for tentativa in 1 2 3; do
             echo "Sincronização do estado: tentativa ${tentativa}/3"

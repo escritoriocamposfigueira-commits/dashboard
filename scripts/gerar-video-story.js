@@ -17,9 +17,9 @@
 const { execSync, spawnSync } = require("child_process");
 const fs = require("fs");
 const path = require("path");
+const { registrarUsoTrilha, selecionarTrilha } = require("./biblioteca-trilhas");
 
 const RAIZ = path.join(__dirname, "..");
-const TRILHAS_DIR = path.join(RAIZ, "TRILHAS");
 const MANIFEST = path.join(RAIZ, "src/content/imagens-urls.json");
 const VIDEOS_DIR = path.join(RAIZ, "public/videos");
 
@@ -38,23 +38,6 @@ function encontrarFFmpeg() {
     } catch {}
   }
   return null;
-}
-
-// Seleciona trilha com base na emoção
-function selecionarTrilha(emocao = "sonho") {
-  const catalogoPath = path.join(TRILHAS_DIR, "catalogo.json");
-  if (!fs.existsSync(catalogoPath)) return null;
-
-  const catalogo = JSON.parse(fs.readFileSync(catalogoPath, "utf-8"));
-  const trilhas = catalogo.trilhas.filter((t) => t.emocao === emocao);
-  if (trilhas.length === 0) {
-    const todas = catalogo.trilhas;
-    if (todas.length === 0) return null;
-    return path.join(TRILHAS_DIR, todas[0].nome);
-  }
-  // Rotação: escolhe com base no dia da semana para variar
-  const idx = new Date().getDay() % trilhas.length;
-  return path.join(TRILHAS_DIR, trilhas[idx].nome);
 }
 
 // Detecta emoção com base na copy do imóvel
@@ -111,17 +94,31 @@ async function gerarVideoStory(codigo, emocaoOverride) {
   console.log(`✅ Imagem baixada: ${imagemLocal}`);
 
   // Selecionar trilha
-  const trilhaPath = selecionarTrilha(emocao);
+  const dataPublicacao = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Sao_Paulo",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
+  const trilha = selecionarTrilha({
+    emocao,
+    codigo: `CF-${codigo}`,
+    chavePublicacao: `${dataPublicacao}|manual|CF-${codigo}`,
+  });
+  const trilhaPath = trilha?.caminho;
   const semMusicaFallback = !trilhaPath || !fs.existsSync(trilhaPath);
   if (semMusicaFallback) {
     console.warn(`⚠️  Trilha não encontrada para "${emocao}". Gerando vídeo sem música.`);
   } else {
-    console.log(`🎵 Trilha: ${path.basename(trilhaPath)} (${emocao})`);
+    console.log(`🎵 Trilha: ${trilha.id} · ${path.basename(trilhaPath)} (${emocao})`);
   }
 
   // Gerar vídeo
   fs.mkdirSync(VIDEOS_DIR, { recursive: true });
-  const videoSaida = path.join(VIDEOS_DIR, `CF-${codigo}-story.mp4`);
+  const videoSaida = path.join(
+    VIDEOS_DIR,
+    `CF-${codigo}-story-${dataPublicacao}-manual-${trilha?.id || "sem-musica"}.mp4`,
+  );
 
   const DURACAO = 12; // segundos
 
@@ -154,7 +151,7 @@ async function gerarVideoStory(codigo, emocaoOverride) {
       `-vf "${filtroVideo}"`,
       `-c:v libx264 -preset fast -crf 23`,
       `-c:a aac -b:a 128k -ar 44100`,
-      `-af "afade=t=out:st=${DURACAO - 2}:d=2,volume=0.7"`,
+      `-af "loudnorm=I=-23:TP=-4:LRA=5,afade=t=out:st=${DURACAO - 2}:d=2"`,
       `-shortest -movflags +faststart`,
       `-y "${videoSaida}"`,
     ].join(" ");
@@ -164,6 +161,7 @@ async function gerarVideoStory(codigo, emocaoOverride) {
   try {
     execSync(cmd, { stdio: "pipe", timeout: 120000 });
     const tamanho = Math.round(fs.statSync(videoSaida).size / 1024 / 1024 * 10) / 10;
+    if (trilha) registrarUsoTrilha(trilha, { codigo: `CF-${codigo}`, emocao });
     console.log(`✅ Vídeo gerado: ${videoSaida} (${tamanho}MB)`);
     return videoSaida;
   } catch (e) {

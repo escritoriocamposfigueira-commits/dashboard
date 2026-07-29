@@ -6,9 +6,9 @@
  *
  * Publica em 4 canais por imóvel:
  *   FB Feed  (imagem 4:5 + copy UTF-8)
- *   FB Story (VÍDEO 12s Ken Burns + música royalty-free)
+ *   FB Story (VÍDEO 12s Ken Burns + trilha instrumental original)
  *   IG Feed  (imagem 4:5 + copy UTF-8)
- *   IG Story (VÍDEO 12s Ken Burns + música royalty-free)
+ *   IG Story (VÍDEO 12s Ken Burns + trilha instrumental original)
  *
  * Variáveis de ambiente obrigatórias:
  *   META_PAGE_TOKEN  — Page Access Token permanente (GitHub Secret)
@@ -21,13 +21,16 @@ const http   = require("http");
 const fs     = require("fs");
 const path   = require("path");
 const { execSync, spawnSync } = require("child_process");
+const {
+  registrarUsoTrilha,
+  selecionarTrilha,
+} = require("./biblioteca-trilhas");
 
 // ── Paths ─────────────────────────────────────────────────────────────────────
 const RAIZ      = path.join(__dirname, "..");
 const MANIFEST  = path.join(RAIZ, "src/content/imagens-urls.json");
 const CAPTIONS  = path.join(RAIZ, "src/content/captions-imoveis.json");
 const ESTADO    = path.join(RAIZ, "controle/estado-publicacao.json");
-const TRILHAS   = path.join(RAIZ, "TRILHAS");
 const VIDEOS    = path.join(RAIZ, "public/videos");
 const TMP       = path.join(RAIZ, ".tmp-videos");
 
@@ -141,7 +144,7 @@ async function subirVideoGitHub(videoPath, nomeArquivo) {
 }
 
 // ════════════════════════════════════════════════════════════════════════════
-// FFMPEG — gerar vídeo 12s com Ken Burns + trilha royalty-free
+// FFMPEG — gerar vídeo 12s com Ken Burns + trilha instrumental original
 // ════════════════════════════════════════════════════════════════════════════
 
 function encontrarFFmpeg() {
@@ -176,16 +179,13 @@ function detectarEmocao(caption = "") {
   return "sonho";
 }
 
-function selecionarTrilha(emocao) {
-  const catalogoPath = path.join(TRILHAS, "catalogo.json");
-  if (!fs.existsSync(catalogoPath)) return null;
-  const { trilhas } = JSON.parse(fs.readFileSync(catalogoPath, "utf-8"));
-  const filtrado = trilhas.filter((t) => t.emocao === emocao);
-  const lista = filtrado.length > 0 ? filtrado : trilhas;
-  if (lista.length === 0) return null;
-  const idx = new Date().getDay() % lista.length;
-  const trilhaPath = path.join(TRILHAS, lista[idx].nome);
-  return fs.existsSync(trilhaPath) ? trilhaPath : null;
+function dataBrasiliaISO(data = new Date()) {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Sao_Paulo",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(data);
 }
 
 async function baixarImagem(url, destino) {
@@ -205,7 +205,7 @@ async function baixarImagem(url, destino) {
   });
 }
 
-async function gerarVideoStory(ffmpeg, imagemUrl, nomeArquivo, emocao) {
+async function gerarVideoStory(ffmpeg, imagemUrl, nomeArquivo, emocao, trilhaSelecionada) {
   fs.mkdirSync(TMP, { recursive: true });
   fs.mkdirSync(VIDEOS, { recursive: true });
 
@@ -221,7 +221,7 @@ async function gerarVideoStory(ffmpeg, imagemUrl, nomeArquivo, emocao) {
   console.log(`  [FFmpeg] Baixando imagem...`);
   await baixarImagem(imagemUrl, imgPath);
 
-  const trilha = selecionarTrilha(emocao);
+  const trilha = trilhaSelecionada?.caminho || null;
   const DURACAO = 12;
   const filtro = [
     `scale=1080:1920:force_original_aspect_ratio=decrease`,
@@ -232,7 +232,7 @@ async function gerarVideoStory(ffmpeg, imagemUrl, nomeArquivo, emocao) {
 
   let args;
   if (trilha) {
-    console.log(`  [FFmpeg] Trilha: ${path.basename(trilha)} (${emocao})`);
+    console.log(`  [FFmpeg] Trilha: ${trilhaSelecionada.id} · ${path.basename(trilha)} (${emocao})`);
     args = [
       "-loop", "1", "-i", imgPath,
       "-i", trilha,
@@ -240,7 +240,7 @@ async function gerarVideoStory(ffmpeg, imagemUrl, nomeArquivo, emocao) {
       "-vf", filtro,
       "-c:v", "libx264", "-preset", "fast", "-crf", "23",
       "-c:a", "aac", "-b:a", "128k", "-ar", "44100",
-      "-af", `afade=t=out:st=${DURACAO - 2}:d=2,volume=0.7`,
+      "-af", `loudnorm=I=-23:TP=-4:LRA=5,afade=t=out:st=${DURACAO - 2}:d=2`,
       "-shortest", "-movflags", "+faststart",
       "-y", videoPath,
     ];
@@ -559,7 +559,7 @@ async function publicarYouTubeShort(videoPath, caption) {
 // ════════════════════════════════════════════════════════════════════════════
 
 function temChaveTikTok() {
-  return !!(process.env.TIKTOK_TOKEN ||
+  return process.env.TIKTOK_ENABLED === "true" && !!(process.env.TIKTOK_TOKEN ||
     (process.env.TIKTOK_CLIENT_KEY && process.env.TIKTOK_CLIENT_SECRET && process.env.TIKTOK_REFRESH_TOKEN));
 }
 
@@ -816,14 +816,30 @@ async function main() {
 
   // ── FFmpeg ──────────────────────────────────────────────────────────────
   const ffmpeg = encontrarFFmpeg();
-  const nomeVideo = `CF-${codigo}-story.mp4`;
+  const dataPublicacao = dataBrasiliaISO();
   let videoPath = null;
   let videoUrl  = urlStory; // fallback = imagem se vídeo falhar
+  let trilhaSelecionada = null;
 
   if (ffmpeg) {
     try {
       const emocao = detectarEmocao(caption);
-      videoPath = await gerarVideoStory(ffmpeg, urlStory, nomeVideo, emocao);
+      const chavePublicacao = `${dataPublicacao}|${plano.tipo}|CF-${codigo}`;
+      trilhaSelecionada = selecionarTrilha({
+        emocao,
+        codigo: `CF-${codigo}`,
+        chavePublicacao,
+      });
+      const tipoArquivo = String(plano.tipo).replace(/[^a-z0-9-]/gi, "-");
+      const nomeVideo = `CF-${codigo}-story-${dataPublicacao}-${tipoArquivo}-${trilhaSelecionada.id}.mp4`;
+      videoPath = await gerarVideoStory(
+        ffmpeg,
+        urlStory,
+        nomeVideo,
+        emocao,
+        trilhaSelecionada,
+      );
+      registrarUsoTrilha(trilhaSelecionada, { codigo: `CF-${codigo}`, emocao });
 
       // Hospedar no GitHub para que o IG possa acessar a URL
       const ghUrl = await subirVideoGitHub(videoPath, nomeVideo);
@@ -839,7 +855,19 @@ async function main() {
   }
 
   // ── Publicar ─────────────────────────────────────────────────────────────
-  const reg = { codigo, data: new Date().toISOString(), fb_feed: "—", fb_story: "—", fb_reel: "—", ig_feed: "—", ig_story: "—", ig_reel: "—", youtube: "—", tiktok: "—" };
+  const reg = {
+    codigo,
+    data: new Date().toISOString(),
+    trilha: trilhaSelecionada?.id || "—",
+    fb_feed: "—",
+    fb_story: "—",
+    fb_reel: "—",
+    ig_feed: "—",
+    ig_story: "—",
+    ig_reel: "—",
+    youtube: "—",
+    tiktok: "—",
+  };
   const semanaAtual = semanaISO(new Date(Date.now() - 3 * 3600 * 1000));
   const retryAnterior = plano.tipo === "locacao"
     && estado.retryLocacao?.codigo === codigo
@@ -950,7 +978,9 @@ async function main() {
   // TikTok (opcional — só quando há chave + vídeo). Inativo até colar o Secret.
   if (!manterCanalConcluido("tiktok")) {
     try {
-      if (temChaveTikTok() && videoPath) {
+      if (process.env.TIKTOK_ENABLED !== "true") {
+        reg.tiktok = "— (TikTok pausado)";
+      } else if (temChaveTikTok() && videoPath) {
         reg.tiktok = "✅ " + await publicarTikTok(videoPath, caption);
       } else {
         reg.tiktok = temChaveTikTok() ? "— (sem vídeo)" : "— (sem chave TikTok)";

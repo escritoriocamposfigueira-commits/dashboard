@@ -88,6 +88,9 @@ async function aguardarStatus(token, publishId) {
 
 /** Publica um VÍDEO no TikTok (Direct Post) a partir de uma URL pública (raw do GitHub). */
 async function postarVideoTikTok(videoUrl, caption) {
+  if (process.env.TIKTOK_ENABLED !== "true") {
+    throw new Error("TikTok pausado por configuração (TIKTOK_ENABLED=false).");
+  }
   const token = await obterAccessToken();
   const r = await httpJson(OAUTH_HOST, "/v2/post/publish/video/init/", "POST",
     { "Authorization": `Bearer ${token}` },
@@ -107,6 +110,9 @@ async function postarVideoTikTok(videoUrl, caption) {
 
 /** Publica um CARROSSEL de fotos no TikTok (Direct Post) a partir de URLs públicas. */
 async function postarCarrosselTikTok(imageUrls, caption, coverIndex = 0) {
+  if (process.env.TIKTOK_ENABLED !== "true") {
+    throw new Error("TikTok pausado por configuração (TIKTOK_ENABLED=false).");
+  }
   if (!Array.isArray(imageUrls) || imageUrls.length === 0) throw new Error("TikTok carrossel: sem imagens.");
   const token = await obterAccessToken();
   const r = await httpJson(OAUTH_HOST, "/v2/post/publish/content/init/", "POST",
