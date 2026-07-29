@@ -18,6 +18,7 @@
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
+const { codigoInativo } = require("./imoveis-inativos");
 
 // O librsvg/fontconfig usado pelo Sharp precisa de uma pasta de cache gravável.
 const cacheFontes = path.join(os.tmpdir(), "campos-figueira-fontconfig");
@@ -339,6 +340,9 @@ function montarLegenda(c) {
 
 function registrar(config, feedGerado, storyGerado, substituir) {
   const codigo = config.codigo;
+  if (codigoInativo(codigo)) {
+    throw new Error(`O imóvel CF-${codigo} está inativo e não pode voltar à fila.`);
+  }
   const arquivo = `CF - ${nomeSeguro(codigo)}.png`;
   const manifest = lerJson(MANIFESTO);
   const captions = lerJson(CAPTIONS);

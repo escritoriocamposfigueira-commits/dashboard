@@ -9,6 +9,10 @@ const {
   MODELOS,
   gerarVideoStoryProfissional,
 } = require("./video-story-profissional");
+const {
+  carregarCodigosInativos,
+  codigoInativo,
+} = require("./imoveis-inativos");
 
 const PASTA_IMAGENS =
   "D:\\01 - ESCRITÓRIO IMOBILIÁRIO\\04- REDE SOCIAL\\IMAGENS ANUNCIOS\\proporção 9.16";
@@ -103,12 +107,14 @@ function main() {
     throw new Error(`Parte inválida: ${parte}. Use de 0 a ${partes - 1}.`);
   }
   const catalogo = carregarCatalogo();
+  const codigosInativos = carregarCodigosInativos();
   const arquivos = fs
     .readdirSync(PASTA_IMAGENS, { withFileTypes: true })
     .filter((item) => item.isFile() && /\.(png|jpe?g|webp)$/i.test(item.name))
     .map((item) => item.name)
     .sort((a, b) => a.localeCompare(b, "pt-BR", { numeric: true }))
     .map((arquivo, indiceGlobal) => ({ arquivo, indiceGlobal }))
+    .filter(({ arquivo }) => !codigoInativo(path.parse(arquivo).name, codigosInativos))
     .slice(0, limite)
     .filter(({ indiceGlobal }) => consolidar || indiceGlobal % partes === parte);
 

@@ -1,0 +1,12 @@
+[
+  {
+    "codigo": "001",
+    "motivo": "Imóvel locado",
+    "inativado_em": "2026-07-29"
+  },
+  {
+    "codigo": "413",
+    "motivo": "Proprietário desistiu da venda",
+    "inativado_em": "2026-07-29"
+  }
+]

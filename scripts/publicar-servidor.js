@@ -31,6 +31,10 @@ const {
   registrarUsoModelo,
   selecionarModeloStory,
 } = require("./video-story-profissional");
+const {
+  carregarCodigosInativos,
+  filtrarCodigosAtivos,
+} = require("./imoveis-inativos");
 
 // ── Paths ─────────────────────────────────────────────────────────────────────
 const RAIZ      = path.join(__dirname, "..");
@@ -39,6 +43,7 @@ const CAPTIONS  = path.join(RAIZ, "src/content/captions-imoveis.json");
 const ESTADO    = path.join(RAIZ, "controle/estado-publicacao.json");
 const VIDEOS    = path.join(RAIZ, "public/videos");
 const TMP       = path.join(RAIZ, ".tmp-videos");
+const CODIGOS_INATIVOS = carregarCodigosInativos();
 
 // ── Constantes Meta ───────────────────────────────────────────────────────────
 const BASE_HOST = "graph.facebook.com";
@@ -672,7 +677,7 @@ function tipoAgendado() {
 
 // PURO: lê o estado e devolve o próximo código, sem alterar nada.
 function escolherProximo(manifest, estado, tipoForcado = "auto") {
-  const ordem = manifest.ordem.map(String);
+  const ordem = filtrarCodigosAtivos(manifest.ordem, CODIGOS_INATIVOS).map(String);
   const locacoes = ordem.filter((c) => LOCACAO_CODES.has(c));
   const vendas = ordem.filter((c) => !LOCACAO_CODES.has(c));
   const brt = new Date(Date.now() - 3 * 3600 * 1000);
@@ -773,8 +778,10 @@ async function main() {
     plano = escolherProximo(manifest, estado, tipoForcado);
   } catch (e) {
     console.log("  ⚠️  Rotação falhou, usando modo sequencial:", e.message);
-    const i = (estado.indice || 0) % manifest.ordem.length;
-    plano = { codigo: String(manifest.ordem[i]), tipo: "seq", vendaIdx: null };
+    const ordemAtiva = filtrarCodigosAtivos(manifest.ordem, CODIGOS_INATIVOS);
+    if (!ordemAtiva.length) throw new Error("Nenhum imóvel ativo disponível para publicação.");
+    const i = (estado.indice || 0) % ordemAtiva.length;
+    plano = { codigo: String(ordemAtiva[i]), tipo: "seq", vendaIdx: null };
   }
   console.log(`  Regra agendada: ${tipoForcado}`);
   if (plano.tipo === "noop") {
@@ -798,7 +805,8 @@ async function main() {
   // LOOP INFINITO: nunca termina. Ao esgotar a lista, recomeça sozinho.
   // A lista cresce automaticamente: basta adicionar o imóvel em imagens-urls.json
   // (e a legenda em captions-imoveis.json) que ele entra no rodízio no mesmo instante.
-  console.log(`\n▶ Publicando post #${(estado.publicados?.length || 0) + 1} (rodízio infinito de ${manifest.ordem.length} imóveis) — CF-${codigo}`);
+  const totalAtivos = filtrarCodigosAtivos(manifest.ordem, CODIGOS_INATIVOS).length;
+  console.log(`\n▶ Publicando post #${(estado.publicados?.length || 0) + 1} (rodízio infinito de ${totalAtivos} imóveis ativos) — CF-${codigo}`);
   console.log(`  Feed URL : ${urlFeed}`);
   console.log(`  Story URL: ${urlStory}`);
 
@@ -1008,7 +1016,9 @@ async function main() {
     }
     estado.publicados.push(reg);
     if (plano.tipo === "venda" && plano.vendaIdx !== null) {
-      const vendasTot = manifest.ordem.map(String).filter((c) => !LOCACAO_CODES.has(c)).length;
+      const vendasTot = filtrarCodigosAtivos(manifest.ordem, CODIGOS_INATIVOS)
+        .map(String)
+        .filter((c) => !LOCACAO_CODES.has(c)).length;
       estado.indiceVenda = (plano.vendaIdx + 1) % vendasTot;
     }
     if (plano.tipo === "captacao") {

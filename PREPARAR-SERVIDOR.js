@@ -18,6 +18,11 @@
 const fs = require("fs");
 const path = require("path");
 const { execSync } = require("child_process");
+const {
+  carregarCodigosInativos,
+  codigoInativo,
+  filtrarCodigosAtivos,
+} = require("./scripts/imoveis-inativos");
 
 const PASTA_PADRAO = "D:\\01 - ESCRITÓRIO IMOBILIÁRIO\\04- REDE SOCIAL\\IMAGENS ANUNCIOS";
 const args = process.argv.slice(2);
@@ -51,6 +56,7 @@ function listarImagens(dir) {
 }
 
 async function main() {
+  const codigosInativos = carregarCodigosInativos();
   console.log("\n╔══════════════════════════════════════════════════════════╗");
   console.log("║   PREPARAR SERVIDOR — 4:5 (feed) + 9:16 (story)           ║");
   console.log("╚══════════════════════════════════════════════════════════╝\n");
@@ -84,12 +90,19 @@ async function main() {
     manifest.urls_feed = m.urls_feed || {};
     console.log(`Manifesto existente: ${manifest.ordem.length} imóveis na fila (mantidos).\n`);
   }
+  manifest.ordem = filtrarCodigosAtivos(manifest.ordem, codigosInativos);
+  for (const codigo of Object.keys(manifest.urls)) {
+    if (codigoInativo(codigo, codigosInativos)) delete manifest.urls[codigo];
+  }
+  for (const codigo of Object.keys(manifest.urls_feed)) {
+    if (codigoInativo(codigo, codigosInativos)) delete manifest.urls_feed[codigo];
+  }
 
   // ── 9:16 (story) — define a ordem da fila ──
   let novos916 = 0;
   for (const arq of listarImagens(dir916)) {
     const cod = temCopy[normalizar(extrairCodigo(arq))];
-    if (!cod) continue;
+    if (!cod || codigoInativo(cod, codigosInativos)) continue;
     fs.copyFileSync(path.join(dir916, arq), path.join(DEST_STORY, arq));
     const url = RAW_STORY + encodeURIComponent(arq);
     if (!manifest.urls[cod]) { manifest.ordem.push(cod); novos916++; }
@@ -101,7 +114,7 @@ async function main() {
   if (tem45) {
     for (const arq of listarImagens(dir45)) {
       const cod = temCopy[normalizar(extrairCodigo(arq))];
-      if (!cod) continue;
+      if (!cod || codigoInativo(cod, codigosInativos)) continue;
       fs.copyFileSync(path.join(dir45, arq), path.join(DEST_FEED, arq));
       if (!manifest.urls_feed[cod]) nov45++;
       manifest.urls_feed[cod] = RAW_FEED + encodeURIComponent(arq);

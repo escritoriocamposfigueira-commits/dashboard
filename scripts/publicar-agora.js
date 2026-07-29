@@ -10,6 +10,10 @@
 // Carrega .env.local no Windows sem dotenv
 const fs = require("fs");
 const path = require("path");
+const {
+  carregarCodigosInativos,
+  filtrarCodigosAtivos,
+} = require("./imoveis-inativos");
 const https = require("https");
 
 const RAIZ = path.join(__dirname, "..");
@@ -153,6 +157,10 @@ async function main() {
   }
 
   const manifest = JSON.parse(fs.readFileSync(MANIFEST, "utf-8"));
+  manifest.ordem = filtrarCodigosAtivos(
+    manifest.ordem,
+    carregarCodigosInativos(),
+  );
   const captions = JSON.parse(fs.readFileSync(CAPTIONS, "utf-8"));
   const mapaCap = {};
   captions.forEach((c) => { mapaCap[c.codigo_imovel] = c.caption; });
