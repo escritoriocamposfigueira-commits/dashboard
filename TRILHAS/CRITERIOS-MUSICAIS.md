@@ -9,30 +9,28 @@ depende da pessoa, do contexto e da compatibilidade entre som, imagem e mensagem
 
 ## Decisões aplicadas
 
-- 60 instrumentais originais, sem voz, samples ou gravações de terceiros.
+- 56 músicas licenciadas do Mixkit e aprovadas auditivamente pelo usuário.
+- Nenhuma das aprovadas foi marcada pelo usuário como contendo voz ou gemido.
 - Ataque musical curto para o vídeo não começar “vazio”.
 - Volume final normalizado em aproximadamente -23 LUFS no vídeo.
 - Fade-out de dois segundos para evitar corte abrupto.
-- Andamentos moderados, entre 84 e 116 BPM.
-- Harmonia estável e baixa dissonância para preservar a leitura do anúncio.
-- Seis famílias com dez variações:
-  - `premium`: sofisticação, patrimônio e segurança;
-  - `lar`: acolhimento, família e mudança de vida;
-  - `conquista`: realização e decisão positiva;
-  - `engenharia`: precisão, projeto e confiança técnica;
-  - `oportunidade`: atenção e urgência controlada;
-  - `investimento`: firmeza, análise e patrimônio.
-- A rotação usa as 60 faixas antes de repetir uma delas.
+- Cada arquivo ativo contém um trecho contínuo de 20 segundos, sem emendas.
+- A rotação usa as 56 faixas antes de repetir uma delas.
 - Uma nova publicação do imóvel em outra data gera outro arquivo e outra trilha.
 - Uma repetição técnica da mesma publicação reutiliza o mesmo arquivo, evitando
   duplicidade ou mudança de áudio durante uma recuperação.
 
 ## Integridade e origem
 
-O arquivo `CERTIFICADO-ORIGEM.md` registra o SHA-256 de cada MP3. O catálogo ativo
-também registra parâmetros, versão do gerador e declaração de ausência de material
-de terceiros. Os MP3 antigos permanecem no repositório apenas para preservar o
-histórico, mas não são selecionados pelo robô.
+O arquivo `CERTIFICADO-ORIGEM.md` registra título, artista, link da fonte, licença
+declarada e SHA-256 de cada MP3 ativo. O catálogo também registra o lote e o número
+da avaliação. As músicas reprovadas, as amostras e os antigos arquivos sintéticos
+não são selecionados pelo robô.
+
+A biblioteca usa material de terceiros sob a Mixkit Stock Music Free License.
+Embora a licença permita o uso previsto, nenhum fornecedor pode garantir ausência
+absoluta de reivindicações automatizadas de Content ID; por isso a fonte e o hash
+de cada arquivo são preservados.
 
 ## Referências usadas no critério
 

@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "arte:imovel": "node scripts/gerar-artes-imovel.js",
-    "trilhas:gerar": "node scripts/gerar-trilhas-originais.js",
+    "trilhas:gerar-legado": "node scripts/gerar-trilhas-originais.js",
+    "trilhas:aprovadas": "node scripts/preparar-trilhas-aprovadas.js",
     "test:trilhas": "node --test tests/trilhas.test.js"
   },
   "dependencies": {

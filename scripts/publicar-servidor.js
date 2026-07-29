@@ -6,9 +6,9 @@
  *
  * Publica em 4 canais por imóvel:
  *   FB Feed  (imagem 4:5 + copy UTF-8)
- *   FB Story (VÍDEO 12s Ken Burns + trilha instrumental original)
+ *   FB Story (VÍDEO 12s Ken Burns + trilha instrumental aprovada)
  *   IG Feed  (imagem 4:5 + copy UTF-8)
- *   IG Story (VÍDEO 12s Ken Burns + trilha instrumental original)
+ *   IG Story (VÍDEO 12s Ken Burns + trilha instrumental aprovada)
  *
  * Variáveis de ambiente obrigatórias:
  *   META_PAGE_TOKEN  — Page Access Token permanente (GitHub Secret)
@@ -144,7 +144,7 @@ async function subirVideoGitHub(videoPath, nomeArquivo) {
 }
 
 // ════════════════════════════════════════════════════════════════════════════
-// FFMPEG — gerar vídeo 12s com Ken Burns + trilha instrumental original
+// FFMPEG — gerar vídeo 12s com Ken Burns + trilha instrumental aprovada
 // ════════════════════════════════════════════════════════════════════════════
 
 function encontrarFFmpeg() {

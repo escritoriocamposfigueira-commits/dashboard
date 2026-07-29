@@ -14,15 +14,19 @@ const {
   selecionarTrilha,
 } = require("../scripts/biblioteca-trilhas");
 
-test("catálogo ativo contém 60 MP3 originais íntegros", () => {
+test("catálogo ativo contém 56 MP3 licenciados, aprovados e íntegros", () => {
   const catalogo = carregarCatalogo();
-  assert.equal(catalogo.trilhas.length, 60);
-  assert.equal(new Set(catalogo.trilhas.map((trilha) => trilha.id)).size, 60);
+  assert.equal(catalogo.trilhas.length, 56);
+  assert.equal(catalogo.quantidade, 56);
+  assert.equal(new Set(catalogo.trilhas.map((trilha) => trilha.id)).size, 56);
 
   for (const trilha of catalogo.trilhas) {
     assert.equal(trilha.instrumental, true);
-    assert.equal(trilha.contem_samples_terceiros, false);
-    assert.equal(trilha.origem, "sintese-original-local");
+    assert.equal(trilha.aprovada_pelo_usuario, true);
+    assert.equal(trilha.avaliacao_sem_voz_gemido, true);
+    assert.equal(trilha.origem, "mixkit-stock-music-free-license");
+    assert.equal(trilha.licenca, "Mixkit Stock Music Free License");
+    assert.match(trilha.licenca_url, /^https:\/\/mixkit\.co\//);
     assert.ok(Array.isArray(trilha.emocoes) && trilha.emocoes.length >= 2);
     assert.match(trilha.arquivo, /\.mp3$/);
     const hash = crypto.createHash("sha256").update(fs.readFileSync(trilha.caminho)).digest("hex");
@@ -30,14 +34,14 @@ test("catálogo ativo contém 60 MP3 originais íntegros", () => {
   }
 });
 
-test("rotação usa as 60 faixas antes da primeira repetição", () => {
+test("rotação usa as 56 faixas antes da primeira repetição", () => {
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "teste-trilhas-"));
   const historicoPath = path.join(tmp, "estado-trilhas.json");
   fs.writeFileSync(historicoPath, '{"versao":1,"usos":[]}\n', "utf-8");
 
   try {
     const escolhidas = [];
-    for (let i = 0; i < 60; i += 1) {
+    for (let i = 0; i < 56; i += 1) {
       const trilha = selecionarTrilha({
         emocao: ["sonho", "familiar", "conquista", "confianca", "urgencia"][i % 5],
         codigo: `CF-TESTE-${i}`,
@@ -52,16 +56,16 @@ test("rotação usa as 60 faixas antes da primeira repetição", () => {
         historicoPath,
       });
     }
-    assert.equal(new Set(escolhidas).size, 60);
+    assert.equal(new Set(escolhidas).size, 56);
 
-    const sexagesimaPrimeira = selecionarTrilha({
+    const proxima = selecionarTrilha({
       emocao: "sonho",
-      codigo: "CF-TESTE-61",
-      chavePublicacao: "2026-09-01|teste|61",
+      codigo: "CF-TESTE-57",
+      chavePublicacao: "2026-09-01|teste|57",
       catalogoPath: CATALOGO_PATH,
       historicoPath,
     });
-    assert.notEqual(sexagesimaPrimeira.id, escolhidas.at(-1));
+    assert.notEqual(proxima.id, escolhidas.at(-1));
   } finally {
     fs.rmSync(tmp, { recursive: true, force: true });
   }
