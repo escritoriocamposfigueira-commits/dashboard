@@ -14,10 +14,16 @@
  * Requer: FFmpeg em C:\Users\Henrique\ffmpeg\bin\ffmpeg.exe ou no PATH
  */
 
-const { execSync, spawnSync } = require("child_process");
+const { spawnSync } = require("child_process");
 const fs = require("fs");
 const path = require("path");
 const { registrarUsoTrilha, selecionarTrilha } = require("./biblioteca-trilhas");
+const {
+  DURACAO_PADRAO,
+  gerarVideoStoryProfissional,
+  registrarUsoModelo,
+  selecionarModeloStory,
+} = require("./video-story-profissional");
 
 const RAIZ = path.join(__dirname, "..");
 const MANIFEST = path.join(RAIZ, "src/content/imagens-urls.json");
@@ -100,10 +106,15 @@ async function gerarVideoStory(codigo, emocaoOverride) {
     month: "2-digit",
     day: "2-digit",
   }).format(new Date());
+  const chavePublicacao = `${dataPublicacao}|manual|CF-${codigo}`;
   const trilha = selecionarTrilha({
     emocao,
     codigo: `CF-${codigo}`,
-    chavePublicacao: `${dataPublicacao}|manual|CF-${codigo}`,
+    chavePublicacao,
+  });
+  const modelo = selecionarModeloStory({
+    codigo: `CF-${codigo}`,
+    chavePublicacao,
   });
   const trilhaPath = trilha?.caminho;
   const semMusicaFallback = !trilhaPath || !fs.existsSync(trilhaPath);
@@ -112,56 +123,27 @@ async function gerarVideoStory(codigo, emocaoOverride) {
   } else {
     console.log(`🎵 Trilha: ${trilha.id} · ${path.basename(trilhaPath)} (${emocao})`);
   }
+  console.log(`🎞️ Modelo: ${modelo.titulo} (${modelo.id})`);
 
   // Gerar vídeo
   fs.mkdirSync(VIDEOS_DIR, { recursive: true });
   const videoSaida = path.join(
     VIDEOS_DIR,
-    `CF-${codigo}-story-${dataPublicacao}-manual-${trilha?.id || "sem-musica"}.mp4`,
+    `CF-${codigo}-story-${dataPublicacao}-manual-${modelo.id}-${trilha?.id || "sem-musica"}.mp4`,
   );
 
-  const DURACAO = 12; // segundos
-
-  // Filtro Ken Burns: zoom suave de 1.0 para 1.15 + pan central
-  // Dimensão alvo: 1080x1920 (9:16 para Stories)
-  const filtroVideo = [
-    `scale=1080:1920:force_original_aspect_ratio=decrease`,
-    `pad=1080:1920:(ow-iw)/2:(oh-ih)/2:black`,
-    `zoompan=z='if(lte(zoom,1.0),1.0,zoom+0.0010)':d=${DURACAO * 25}:x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s=1080x1920:fps=25`,
-    `format=yuv420p`,
-  ].join(",");
-
-  let cmd;
-  if (semMusicaFallback) {
-    cmd = [
-      `"${ffmpeg}"`,
-      `-loop 1 -i "${imagemLocal}"`,
-      `-t ${DURACAO}`,
-      `-vf "${filtroVideo}"`,
-      `-c:v libx264 -preset fast -crf 23`,
-      `-movflags +faststart`,
-      `-y "${videoSaida}"`,
-    ].join(" ");
-  } else {
-    cmd = [
-      `"${ffmpeg}"`,
-      `-loop 1 -i "${imagemLocal}"`,
-      `-i "${trilhaPath}"`,
-      `-t ${DURACAO}`,
-      `-vf "${filtroVideo}"`,
-      `-c:v libx264 -preset fast -crf 23`,
-      `-c:a aac -b:a 128k -ar 44100`,
-      `-af "loudnorm=I=-23:TP=-4:LRA=5,afade=t=out:st=${DURACAO - 2}:d=2"`,
-      `-shortest -movflags +faststart`,
-      `-y "${videoSaida}"`,
-    ].join(" ");
-  }
-
-  console.log(`\n🎬 Gerando vídeo (${DURACAO}s, 1080×1920, Ken Burns)...`);
+  console.log(`\n🎬 Gerando vídeo profissional (${DURACAO_PADRAO}s, 1080×1920)...`);
   try {
-    execSync(cmd, { stdio: "pipe", timeout: 120000 });
+    gerarVideoStoryProfissional({
+      ffmpeg,
+      imagemPath: imagemLocal,
+      audioPath: semMusicaFallback ? null : trilhaPath,
+      outputPath: videoSaida,
+      modeloId: modelo.id,
+    });
     const tamanho = Math.round(fs.statSync(videoSaida).size / 1024 / 1024 * 10) / 10;
     if (trilha) registrarUsoTrilha(trilha, { codigo: `CF-${codigo}`, emocao });
+    registrarUsoModelo(modelo, { codigo: `CF-${codigo}` });
     console.log(`✅ Vídeo gerado: ${videoSaida} (${tamanho}MB)`);
     return videoSaida;
   } catch (e) {

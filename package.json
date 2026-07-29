@@ -10,7 +10,10 @@
     "arte:imovel": "node scripts/gerar-artes-imovel.js",
     "trilhas:gerar-legado": "node scripts/gerar-trilhas-originais.js",
     "trilhas:aprovadas": "node scripts/preparar-trilhas-aprovadas.js",
-    "test:trilhas": "node --test tests/trilhas.test.js"
+    "test:trilhas": "node --test tests/trilhas.test.js",
+    "test:videos-story": "node --test tests/video-story-profissional.test.js",
+    "videos:story:biblioteca": "node scripts/gerar-biblioteca-videos-story.js",
+    "videos:story:validar": "node scripts/validar-biblioteca-videos-story.js"
   },
   "dependencies": {
     "date-fns": "^4.4.0",

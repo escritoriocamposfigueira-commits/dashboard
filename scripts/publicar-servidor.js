@@ -6,9 +6,9 @@
  *
  * Publica em 4 canais por imóvel:
  *   FB Feed  (imagem 4:5 + copy UTF-8)
- *   FB Story (VÍDEO 12s Ken Burns + trilha instrumental aprovada)
+ *   FB Story (VÍDEO 15s com montagem profissional + trilha aprovada)
  *   IG Feed  (imagem 4:5 + copy UTF-8)
- *   IG Story (VÍDEO 12s Ken Burns + trilha instrumental aprovada)
+ *   IG Story (VÍDEO 15s com montagem profissional + trilha aprovada)
  *
  * Variáveis de ambiente obrigatórias:
  *   META_PAGE_TOKEN  — Page Access Token permanente (GitHub Secret)
@@ -25,6 +25,12 @@ const {
   registrarUsoTrilha,
   selecionarTrilha,
 } = require("./biblioteca-trilhas");
+const {
+  DURACAO_PADRAO,
+  gerarVideoStoryProfissional,
+  registrarUsoModelo,
+  selecionarModeloStory,
+} = require("./video-story-profissional");
 
 // ── Paths ─────────────────────────────────────────────────────────────────────
 const RAIZ      = path.join(__dirname, "..");
@@ -144,7 +150,7 @@ async function subirVideoGitHub(videoPath, nomeArquivo) {
 }
 
 // ════════════════════════════════════════════════════════════════════════════
-// FFMPEG — gerar vídeo 12s com Ken Burns + trilha instrumental aprovada
+// FFMPEG — gerar vídeo 15s com montagem profissional + trilha aprovada
 // ════════════════════════════════════════════════════════════════════════════
 
 function encontrarFFmpeg() {
@@ -205,7 +211,14 @@ async function baixarImagem(url, destino) {
   });
 }
 
-async function gerarVideoStory(ffmpeg, imagemUrl, nomeArquivo, emocao, trilhaSelecionada) {
+async function gerarVideoStory(
+  ffmpeg,
+  imagemUrl,
+  nomeArquivo,
+  emocao,
+  trilhaSelecionada,
+  modeloSelecionado,
+) {
   fs.mkdirSync(TMP, { recursive: true });
   fs.mkdirSync(VIDEOS, { recursive: true });
 
@@ -222,46 +235,21 @@ async function gerarVideoStory(ffmpeg, imagemUrl, nomeArquivo, emocao, trilhaSel
   await baixarImagem(imagemUrl, imgPath);
 
   const trilha = trilhaSelecionada?.caminho || null;
-  const DURACAO = 12;
-  const filtro = [
-    `scale=1080:1920:force_original_aspect_ratio=decrease`,
-    `pad=1080:1920:(ow-iw)/2:(oh-ih)/2:black`,
-    `zoompan=z='if(lte(zoom,1.0),1.0,zoom+0.0010)':d=${DURACAO * 25}:x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s=1080x1920:fps=25`,
-    `format=yuv420p`,
-  ].join(",");
-
-  let args;
+  const modeloId = modeloSelecionado?.id || "topo-cinematografico";
   if (trilha) {
     console.log(`  [FFmpeg] Trilha: ${trilhaSelecionada.id} · ${path.basename(trilha)} (${emocao})`);
-    args = [
-      "-loop", "1", "-i", imgPath,
-      "-i", trilha,
-      "-t", String(DURACAO),
-      "-vf", filtro,
-      "-c:v", "libx264", "-preset", "fast", "-crf", "23",
-      "-c:a", "aac", "-b:a", "128k", "-ar", "44100",
-      "-af", `loudnorm=I=-23:TP=-4:LRA=5,afade=t=out:st=${DURACAO - 2}:d=2`,
-      "-shortest", "-movflags", "+faststart",
-      "-y", videoPath,
-    ];
   } else {
     console.log(`  [FFmpeg] Sem trilha disponível — gerando vídeo mudo.`);
-    args = [
-      "-loop", "1", "-i", imgPath,
-      "-t", String(DURACAO),
-      "-vf", filtro,
-      "-c:v", "libx264", "-preset", "fast", "-crf", "23",
-      "-movflags", "+faststart",
-      "-y", videoPath,
-    ];
   }
-
-  console.log(`  [FFmpeg] Gerando vídeo ${DURACAO}s 1080×1920...`);
-  const r = spawnSync(ffmpeg, args, { timeout: 120000 });
-  if (r.status !== 0) {
-    const err = r.stderr ? r.stderr.toString().slice(-400) : "erro desconhecido";
-    throw new Error("FFmpeg falhou: " + err);
-  }
+  console.log(`  [FFmpeg] Modelo: ${modeloId}`);
+  console.log(`  [FFmpeg] Gerando vídeo ${DURACAO_PADRAO}s 1080×1920...`);
+  gerarVideoStoryProfissional({
+    ffmpeg,
+    imagemPath: imgPath,
+    audioPath: trilha,
+    outputPath: videoPath,
+    modeloId,
+  });
   const kb = Math.round(fs.statSync(videoPath).size / 1024);
   console.log(`  [FFmpeg] ✅ ${nomeArquivo} (${kb}KB)`);
   return videoPath;
@@ -820,6 +808,7 @@ async function main() {
   let videoPath = null;
   let videoUrl  = urlStory; // fallback = imagem se vídeo falhar
   let trilhaSelecionada = null;
+  let modeloSelecionado = null;
 
   if (ffmpeg) {
     try {
@@ -830,16 +819,22 @@ async function main() {
         codigo: `CF-${codigo}`,
         chavePublicacao,
       });
+      modeloSelecionado = selecionarModeloStory({
+        codigo: `CF-${codigo}`,
+        chavePublicacao,
+      });
       const tipoArquivo = String(plano.tipo).replace(/[^a-z0-9-]/gi, "-");
-      const nomeVideo = `CF-${codigo}-story-${dataPublicacao}-${tipoArquivo}-${trilhaSelecionada.id}.mp4`;
+      const nomeVideo = `CF-${codigo}-story-${dataPublicacao}-${tipoArquivo}-${modeloSelecionado.id}-${trilhaSelecionada.id}.mp4`;
       videoPath = await gerarVideoStory(
         ffmpeg,
         urlStory,
         nomeVideo,
         emocao,
         trilhaSelecionada,
+        modeloSelecionado,
       );
       registrarUsoTrilha(trilhaSelecionada, { codigo: `CF-${codigo}`, emocao });
+      registrarUsoModelo(modeloSelecionado, { codigo: `CF-${codigo}` });
 
       // Hospedar no GitHub para que o IG possa acessar a URL
       const ghUrl = await subirVideoGitHub(videoPath, nomeVideo);
@@ -859,6 +854,7 @@ async function main() {
     codigo,
     data: new Date().toISOString(),
     trilha: trilhaSelecionada?.id || "—",
+    modelo_video: modeloSelecionado?.id || "—",
     fb_feed: "—",
     fb_story: "—",
     fb_reel: "—",
