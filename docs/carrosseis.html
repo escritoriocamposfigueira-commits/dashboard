@@ -79,8 +79,13 @@ const RAW="https://raw.githubusercontent.com/"+OWNER+"/"+REPO+"/refs/heads/"+BRA
 const TREE="https://api.github.com/repos/"+OWNER+"/"+REPO+"/git/trees/"+encodeURIComponent(BRANCH)+"?recursive=1";
 const CAP_JSON=RAW+"src/content/carrosseis-captions.json";
 
-// ==== MENÇÕES (troque pelos @ reais quando tiver) ====
-const H={ escritorio:"@escritoriocamposfigueira", henrique:"@henriquefigueira", renata:"@renatacamposfigueira" };
+// ==== MENÇÕES por rede (contas reais, marca as da própria rede) ====
+const MENC={
+  instagram:"@escritorio.figueira @henriquefigueiraoficial @gravataafiada",
+  facebook:"@eng.henriquefigueira @gravataafiada @Escritorio.figueira",
+  tiktok:"@henriquesfigueira @camposfigueira @gravataafiada",
+  youtube:"@gravataafiada"
+};
 
 function toast(m){const t=document.getElementById("toast");t.textContent=m;t.classList.add("on");clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove("on"),2400);}
 
@@ -100,11 +105,11 @@ async function baixarTodos(urls,base){ toast("Baixando "+urls.length+" imagens�
 
 // Legenda padrão (usada se não houver JSON específico do carrossel)
 function legendaPadrao(rede,nome){
-  const tags="#viral #imoveis #mogidascruzes #casapropria #realestate";
-  if(rede==="tiktok") return `🔥 Você precisa ver isso 👀\n\nGravata Afiada 👔 — imóveis em Mogi das Cruzes e região.\n\nChama ${H.henrique} · ${H.escritorio}\n\n#viral #fyp #foryou #imoveis #mogidascruzes #casapropria`;
-  if(rede==="youtube") return `🔥 Imóveis em Mogi das Cruzes que você precisa ver\n\nEscritório Campos Figueira ${H.escritorio} · ${H.henrique}\n\n#viral #Shorts #imoveis #mogidascruzes`;
-  // instagram / facebook
-  return `🔥 Salva esse post — você vai querer ver de novo 👀\n\n📍 Imóveis em Mogi das Cruzes e região com quem entende de verdade.\n\n🏠 ${H.escritorio}\n👔 ${H.henrique}\n💎 ${H.renata}\n\n${tags}`;
+  if(rede==="tiktok") return `🔥 Assiste até o fim — isso pode te livrar de um prejuízo 👀\n\n👔 Gravata Afiada — imóveis, engenharia e regularização em Mogi das Cruzes e região.\n📲 Chama no direct que a gente resolve.\n\n${MENC.tiktok}\n\n#viral #fyp #foryou #foryoupage #imoveis #mogidascruzes #engenharia #regularizacao`;
+  if(rede==="youtube") return `🔥 O que ninguém te conta sobre imóveis em Mogi das Cruzes #Shorts\n\nEscritório Campos Figueira — imóveis, engenharia e regularização com quem entende de verdade.\n${MENC.youtube}\n\n#viral #Shorts #imoveis #mogidascruzes #engenharia #regularizacao`;
+  if(rede==="facebook") return `🔥 Salva e compartilha — isso pode te livrar de uma dor de cabeça 👀\n\n📍 Imóveis, engenharia e regularização em Mogi das Cruzes e região.\n💬 Comente "QUERO" que a gente te chama no particular.\n\n${MENC.facebook}\n\n#viral #imoveis #mogidascruzes #engenharia #regularizacao #casapropria`;
+  // instagram
+  return `🔥 Salva esse post — você vai querer ver de novo 👀\n\n📍 Imóveis, engenharia e regularização em Mogi das Cruzes e região.\n💬 Comente "QUERO" ou chama no direct.\n\n${MENC.instagram}\n\n#viral #fyp #imoveis #mogidascruzes #engenharia #regularizacao #casapropria #realestate`;
 }
 
 let CAPS={};
