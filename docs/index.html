@@ -56,6 +56,7 @@
     padding:11px 10px;border-radius:11px;font-size:13.5px;font-weight:700;cursor:pointer;
     border:1px solid transparent;text-align:center}
   .btn-ouro{background:linear-gradient(135deg,var(--ouro2),var(--ouro));color:#1a1200}
+  .btn-video{background:#12242a;border-color:#1f4a55;color:#8fe3f0}
   .btn-linha{background:transparent;border-color:var(--linha);color:#d9d3c6}
   .btn:active{transform:scale(.98)}
   .vazio{color:var(--cinza);text-align:center;padding:30px 10px;font-size:14px}
@@ -86,9 +87,9 @@
   <div class="aviso">
     <b>📲 Como postar no Status do WhatsApp em 10 segundos:</b>
     <ol>
-      <li>Toque em <b>Baixar HD</b> no imóvel que o robô postou hoje.</li>
-      <li>A imagem abre — segure o dedo nela e toque em <b>“Salvar em Fotos”</b> (iPhone) ou <b>“Baixar imagem”</b> (Android).</li>
-      <li>Abra o <b>WhatsApp → Status → Câmera/Galeria</b> e escolha a imagem salva. Pronto, em <b>qualidade máxima</b>. ✅</li>
+      <li>No imóvel de hoje, toque em <b>Baixar HD</b> (imagem) ou <b>🎬 Baixar Vídeo</b>.</li>
+      <li>Abre em tela cheia — segure o dedo e toque em <b>“Salvar em Fotos”</b> (iPhone) ou <b>“Baixar”</b> (Android).</li>
+      <li>Abra o <b>WhatsApp → Status → Câmera/Galeria</b> e escolha o arquivo salvo. Pronto, em <b>qualidade máxima</b>. ✅</li>
     </ol>
   </div>
 
@@ -112,8 +113,25 @@
 const BASE="https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/";
 const URL_ESTADO=BASE+"controle/estado-publicacao.json";
 const URL_MANIFEST=BASE+"src/content/imagens-urls.json";
+const URL_VIDEOS="https://api.github.com/repos/escritoriocamposfigueira-commits/dashboard/contents/public/videos?ref=claude/campos-figueira-growth-qmjsux";
 
 let MAN=null;
+let VID={};   // codigo -> url do vídeo (.mp4)
+
+// Lê a pasta de vídeos ao vivo e monta o mapa codigo -> arquivo mais recente.
+async function carregarVideos(){
+  try{
+    const r=await fetch(URL_VIDEOS);
+    if(!r.ok) return;
+    const lista=await r.json();
+    if(!Array.isArray(lista)) return;
+    for(const f of lista){
+      if(!/\.mp4$/i.test(f.name||"")) continue;
+      const m=f.name.match(/^CF-(.+?)-story/i);   // extrai o código do nome do arquivo
+      if(m && f.download_url) VID[m[1]]=f.download_url;
+    }
+  }catch(e){/* sem vídeos disponíveis agora */}
+}
 
 function toast(msg){
   const t=document.getElementById("toast");
@@ -156,14 +174,16 @@ function card(cod,{destaque=false,selo=null}={}){
   const el=document.createElement("div");
   el.className="card"+(destaque?" dest":"");
   const seloHtml=selo?`<div class="selo ${selo.novo?'novo':''}">${selo.txt}</div>`:"";
+  const vid=VID[cod];
   const btnStory=story?`<a class="btn btn-ouro" href="${story}" onclick="baixar('${story}','${nomeArq(cod,'status')}',event)">⬇ Baixar HD · Status 9:16</a>`:"";
+  const btnVideo=vid?`<a class="btn btn-video" href="${vid}" onclick="baixar('${vid}','${nomeArq(cod,'video').replace('.png','.mp4')}',event)">🎬 Baixar Vídeo 9:16</a>`:"";
   const btnFeed=feed?`<a class="btn btn-linha" href="${feed}" onclick="baixar('${feed}','${nomeArq(cod,'feed')}',event)">⬇ Versão Feed 4:5</a>`:"";
   el.innerHTML=`
     <a class="thumbwrap" href="${capa}" target="_blank" rel="noopener">
       ${seloHtml}<img loading="lazy" src="${capa}" alt="CF ${cod}">
     </a>
     <div class="cod">CF-${cod} <span>· toque na foto p/ ampliar</span></div>
-    <div class="acoes">${btnStory}${btnFeed}</div>`;
+    <div class="acoes">${btnStory}${btnVideo}${btnFeed}</div>`;
   return el;
 }
 
@@ -208,7 +228,7 @@ function render(estado){
 
 (async function(){
   try{
-    const [mR,eR]=await Promise.all([fetch(URL_MANIFEST),fetch(URL_ESTADO)]);
+    const [mR,eR]=await Promise.all([fetch(URL_MANIFEST),fetch(URL_ESTADO),carregarVideos()]);
     MAN=await mR.json();
     const estado=await eR.json();
     render(estado);
