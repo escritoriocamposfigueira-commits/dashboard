@@ -119,9 +119,10 @@ const URL_MANIFEST=BASE+"src/content/imagens-urls.json";
 const URL_VIDEOS="https://api.github.com/repos/escritoriocamposfigueira-commits/dashboard/contents/public/videos?ref=claude/campos-figueira-growth-qmjsux";
 
 let MAN=null;
-let VID={};   // codigo -> url do vídeo (.mp4)
+let VID={};   // codigo -> { url, detalhado }  (vídeo animado)
 
-// Lê a pasta de vídeos ao vivo e monta o mapa codigo -> arquivo mais recente.
+// Lê a pasta de vídeos ao vivo e monta o mapa codigo -> vídeo.
+// Dá preferência ao vídeo ANIMADO novo (nome com modelo+trilha) sobre o antigo.
 async function carregarVideos(){
   try{
     const r=await fetch(URL_VIDEOS);
@@ -129,9 +130,14 @@ async function carregarVideos(){
     const lista=await r.json();
     if(!Array.isArray(lista)) return;
     for(const f of lista){
-      if(!/\.mp4$/i.test(f.name||"")) continue;
-      const m=f.name.match(/^CF-(.+?)-story/i);   // extrai o código do nome do arquivo
-      if(m && f.download_url) VID[m[1]]=f.download_url;
+      const nome=f.name||"";
+      const m=nome.match(/^CF-(.+?)-story(-.+)?\.mp4$/i);   // CF-<cod>-story[-modelo-trilha].mp4
+      if(!m || !f.download_url) continue;
+      const cod=m[1], detalhado=!!m[2];
+      const atual=VID[cod];
+      if(!atual || (detalhado && !atual.detalhado)){
+        VID[cod]={url:f.download_url, detalhado};
+      }
     }
   }catch(e){/* sem vídeos disponíveis agora */}
 }
@@ -199,7 +205,7 @@ function card(cod,{destaque=false,selo=null}={}){
   const el=document.createElement("div");
   el.className="card"+(destaque?" dest":"");
   const seloHtml=selo?`<div class="selo ${selo.novo?'novo':''}">${selo.txt}</div>`:"";
-  const vid=VID[cod];
+  const vid=VID[cod]&&VID[cod].url;
   const nStory=nomeArq(cod,'status'), nVideo=nomeArq(cod,'video').replace('.png','.mp4');
   const btnStory=story?`<a class="btn btn-ouro" href="${story}" onclick="enviar('${story}','${nStory}','image/png',event)">📲 Enviar p/ Status</a>`:"";
   const btnVideo=vid?`<a class="btn btn-video" href="${vid}" onclick="enviar('${vid}','${nVideo}','video/mp4',event)">🎬 Enviar Vídeo p/ Status</a>`:"";
