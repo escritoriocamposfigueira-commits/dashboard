@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Status do Dia — Campos Figueira</title>
+<meta name="theme-color" content="#0d0d0d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Status CF">
+<link rel="apple-touch-icon" href="https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios-feed/CF%20-%20429.png">
+<style>
+  :root{
+    --ouro:#c9a24b; --ouro2:#e6c877; --preto:#0d0d0d; --carvao:#161616;
+    --carvao2:#1f1f1f; --linha:#2c2c2c; --texto:#f4f0e6; --cinza:#9a948a;
+    --verde:#25D366;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--preto);color:var(--texto);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    padding-bottom:40px}
+  header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,#000,#0d0d0d);
+    border-bottom:1px solid var(--linha);padding:14px 16px calc(14px + env(safe-area-inset-top,0)) 16px;
+    padding-top:calc(14px + env(safe-area-inset-top,0))}
+  .marca{display:flex;align-items:center;gap:10px}
+  .marca .dot{width:34px;height:34px;border-radius:9px;flex:0 0 auto;
+    background:linear-gradient(135deg,var(--ouro2),var(--ouro));
+    display:flex;align-items:center;justify-content:center;color:#000;font-weight:800;font-size:15px}
+  .marca h1{font-size:16px;margin:0;letter-spacing:.3px}
+  .marca small{display:block;color:var(--cinza);font-weight:500;font-size:11px;margin-top:1px}
+  .wrap{max-width:720px;margin:0 auto;padding:0 14px}
+  .aviso{background:var(--carvao);border:1px solid var(--linha);border-radius:14px;
+    padding:14px 16px;margin:16px 0}
+  .aviso b{color:var(--ouro2)}
+  .aviso ol{margin:8px 0 0;padding-left:20px;color:#d9d3c6;font-size:14px;line-height:1.55}
+  .aviso ol li{margin-bottom:4px}
+  h2{font-size:14px;text-transform:uppercase;letter-spacing:1.5px;color:var(--ouro);
+    margin:26px 4px 12px;display:flex;align-items:center;gap:8px}
+  .busca{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--linha);
+    background:var(--carvao);color:var(--texto);font-size:15px;margin:2px 0 6px}
+  .busca::placeholder{color:#6f6a61}
+  .grade{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:420px){.grade{grid-template-columns:1fr}}
+  .card{background:var(--carvao);border:1px solid var(--linha);border-radius:16px;
+    overflow:hidden;display:flex;flex-direction:column}
+  .card.dest{border-color:var(--ouro);box-shadow:0 0 0 1px rgba(201,162,75,.25)}
+  .thumbwrap{position:relative;background:#000;aspect-ratio:9/16;display:flex}
+  .thumbwrap img{width:100%;height:100%;object-fit:cover;display:block}
+  .selo{position:absolute;top:8px;left:8px;background:rgba(0,0,0,.72);color:var(--ouro2);
+    font-size:10px;font-weight:700;letter-spacing:.5px;padding:4px 8px;border-radius:20px;
+    border:1px solid rgba(201,162,75,.4)}
+  .selo.novo{color:#000;background:linear-gradient(135deg,var(--ouro2),var(--ouro));border:none}
+  .card .cod{padding:10px 12px 4px;font-weight:700;font-size:14px}
+  .card .cod span{color:var(--cinza);font-weight:500;font-size:12px}
+  .acoes{padding:6px 10px 12px;display:flex;flex-direction:column;gap:7px;margin-top:auto}
+  .btn{display:flex;align-items:center;justify-content:center;gap:7px;text-decoration:none;
+    padding:11px 10px;border-radius:11px;font-size:13.5px;font-weight:700;cursor:pointer;
+    border:1px solid transparent;text-align:center}
+  .btn-ouro{background:linear-gradient(135deg,var(--ouro2),var(--ouro));color:#1a1200}
+  .btn-linha{background:transparent;border-color:var(--linha);color:#d9d3c6}
+  .btn:active{transform:scale(.98)}
+  .vazio{color:var(--cinza);text-align:center;padding:30px 10px;font-size:14px}
+  footer{max-width:720px;margin:34px auto 0;padding:18px 16px;border-top:1px solid var(--linha);
+    color:#6f6a61;font-size:12px;line-height:1.6;text-align:center}
+  .zap{display:inline-flex;align-items:center;gap:6px;color:var(--verde);text-decoration:none;font-weight:700}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);
+    background:#000;border:1px solid var(--ouro);color:var(--ouro2);padding:11px 18px;border-radius:30px;
+    font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:.25s;z-index:50;max-width:90%}
+  .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+  .load{text-align:center;color:var(--cinza);padding:40px 0;font-size:14px}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap" style="padding:0">
+    <div class="marca">
+      <div class="dot">CF</div>
+      <div>
+        <h1>Status do Dia</h1>
+        <small>Escritório Campos Figueira · CRECI 043649-J</small>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="aviso">
+    <b>📲 Como postar no Status do WhatsApp em 10 segundos:</b>
+    <ol>
+      <li>Toque em <b>Baixar HD</b> no imóvel que o robô postou hoje.</li>
+      <li>A imagem abre — segure o dedo nela e toque em <b>“Salvar em Fotos”</b> (iPhone) ou <b>“Baixar imagem”</b> (Android).</li>
+      <li>Abra o <b>WhatsApp → Status → Câmera/Galeria</b> e escolha a imagem salva. Pronto, em <b>qualidade máxima</b>. ✅</li>
+    </ol>
+  </div>
+
+  <h2>🔥 Últimos que o robô postou</h2>
+  <div id="recentes" class="grade"><div class="load">Carregando…</div></div>
+
+  <h2>📁 Catálogo completo</h2>
+  <input id="busca" class="busca" placeholder="🔎 Buscar por código (ex.: 584, 429, casa…)" autocomplete="off">
+  <div id="catalogo" class="grade"></div>
+</div>
+
+<footer>
+  Escritório Campos Figueira · Imóveis &amp; Engenharia · Mogi das Cruzes/SP<br>
+  <a class="zap" href="https://wa.me/551123785643" target="_blank" rel="noopener">💬 WhatsApp (11) 2378-5643</a><br>
+  <span style="color:#4a463f">Página interna — os arquivos são os mesmos que o robô publica no Facebook e Instagram.</span>
+</footer>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const BASE="https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/";
+const URL_ESTADO=BASE+"controle/estado-publicacao.json";
+const URL_MANIFEST=BASE+"src/content/imagens-urls.json";
+
+let MAN=null;
+
+function toast(msg){
+  const t=document.getElementById("toast");
+  t.textContent=msg; t.classList.add("on");
+  clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove("on"),2600);
+}
+
+// Tenta baixar de verdade (blob). Se o navegador do celular bloquear cross-origin,
+// abre a imagem em nova aba para o usuário segurar e "Salvar em Fotos".
+async function baixar(url,nome,ev){
+  if(ev) ev.preventDefault();
+  toast("Baixando… segure na imagem e salve em Fotos");
+  try{
+    const r=await fetch(url,{mode:"cors"});
+    if(!r.ok) throw 0;
+    const b=await r.blob();
+    const u=URL.createObjectURL(b);
+    const a=document.createElement("a");
+    a.href=u; a.download=nome; document.body.appendChild(a); a.click();
+    a.remove(); setTimeout(()=>URL.revokeObjectURL(u),4000);
+  }catch(e){
+    window.open(url,"_blank","noopener");
+  }
+}
+
+function imgs(cod){
+  const s=MAN.urls&&MAN.urls[cod];
+  const f=MAN.urls_feed&&MAN.urls_feed[cod];
+  return {story:s,feed:f};
+}
+
+function nomeArq(cod,tipo){
+  return "CF-"+String(cod).replace(/[^\w]+/g,"-")+"-"+tipo+".png";
+}
+
+function card(cod,{destaque=false,selo=null}={}){
+  const {story,feed}=imgs(cod);
+  if(!story&&!feed) return null;               // sem imagem no manifesto → não mostra
+  const capa=story||feed;
+  const el=document.createElement("div");
+  el.className="card"+(destaque?" dest":"");
+  const seloHtml=selo?`<div class="selo ${selo.novo?'novo':''}">${selo.txt}</div>`:"";
+  const btnStory=story?`<a class="btn btn-ouro" href="${story}" onclick="baixar('${story}','${nomeArq(cod,'status')}',event)">⬇ Baixar HD · Status 9:16</a>`:"";
+  const btnFeed=feed?`<a class="btn btn-linha" href="${feed}" onclick="baixar('${feed}','${nomeArq(cod,'feed')}',event)">⬇ Versão Feed 4:5</a>`:"";
+  el.innerHTML=`
+    <a class="thumbwrap" href="${capa}" target="_blank" rel="noopener">
+      ${seloHtml}<img loading="lazy" src="${capa}" alt="CF ${cod}">
+    </a>
+    <div class="cod">CF-${cod} <span>· toque na foto p/ ampliar</span></div>
+    <div class="acoes">${btnStory}${btnFeed}</div>`;
+  return el;
+}
+
+function render(estado){
+  // ---- Recentes: pega os publicados mais novos, sem repetir código, com imagem no manifesto
+  const pub=(estado.publicados||[]).slice().reverse();
+  const vistos=new Set(); const recentes=[];
+  for(const p of pub){
+    const cod=p.codigo;
+    if(vistos.has(cod)) continue;
+    const {story,feed}=imgs(cod);
+    if(!story&&!feed) continue;
+    vistos.add(cod); recentes.push(p);
+    if(recentes.length>=6) break;
+  }
+  const box=document.getElementById("recentes"); box.innerHTML="";
+  recentes.forEach((p,i)=>{
+    const d=new Date(p.data);
+    const dataTxt=isNaN(d)?"":d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"});
+    const c=card(p.codigo,{destaque:i===0,selo:{txt:i===0?"HOJE • "+dataTxt:dataTxt,novo:i===0}});
+    if(c) box.appendChild(c);
+  });
+  if(!box.children.length) box.innerHTML='<div class="vazio">Nada publicado ainda.</div>';
+
+  // ---- Catálogo completo (ordem do robô)
+  const cat=document.getElementById("catalogo");
+  const ordem=(MAN.ordem||[]).slice();
+  function pintar(filtro){
+    cat.innerHTML="";
+    let n=0;
+    ordem.forEach(cod=>{
+      if(filtro && !String(cod).toLowerCase().includes(filtro)) return;
+      const c=card(cod); if(c){cat.appendChild(c);n++;}
+    });
+    if(!n) cat.innerHTML='<div class="vazio">Nenhum imóvel com esse código.</div>';
+  }
+  pintar("");
+  document.getElementById("busca").addEventListener("input",e=>{
+    pintar(e.target.value.trim().toLowerCase());
+  });
+}
+
+(async function(){
+  try{
+    const [mR,eR]=await Promise.all([fetch(URL_MANIFEST),fetch(URL_ESTADO)]);
+    MAN=await mR.json();
+    const estado=await eR.json();
+    render(estado);
+  }catch(e){
+    document.getElementById("recentes").innerHTML=
+      '<div class="vazio">Não consegui carregar agora. Puxe a tela pra baixo e tente de novo.</div>';
+  }
+})();
+</script>
+</body>
+</html>
