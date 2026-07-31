@@ -1,0 +1,16 @@
+PASTA DOS CARROSSEIS VIRAIS — Escritorio Campos Figueira
+
+Coloque cada carrossel em uma subpasta propria, por exemplo:
+
+  public/carrosseis/gravata-afiada-01/1.png
+  public/carrosseis/gravata-afiada-01/2.png
+  public/carrosseis/gravata-afiada-01/3.png
+  public/carrosseis/gravata-afiada-02/1.png
+  ...
+
+A pagina docs/carrosseis.html le esta pasta ao vivo e monta um card por
+subpasta, com botoes de baixar/enviar cada slide e as legendas prontas
+por rede social.
+
+As imagens podem ser .png, .jpg ou .webp. A ordem dos slides segue o
+numero no nome do arquivo (1, 2, 3...).

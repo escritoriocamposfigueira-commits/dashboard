@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Carrosséis Virais — Campos Figueira</title>
+<meta name="theme-color" content="#0d0d0d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Carrosséis CF">
+<style>
+  :root{--ouro:#c9a24b;--ouro2:#e6c877;--preto:#0d0d0d;--carvao:#161616;--carvao2:#1f1f1f;
+    --linha:#2c2c2c;--texto:#f4f0e6;--cinza:#9a948a;--verde:#25D366}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--preto);color:var(--texto);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;padding-bottom:40px}
+  header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,#000,#0d0d0d);
+    border-bottom:1px solid var(--linha);padding:14px 16px;padding-top:calc(14px + env(safe-area-inset-top,0))}
+  .marca{display:flex;align-items:center;gap:10px;max-width:760px;margin:0 auto}
+  .marca .dot{width:34px;height:34px;border-radius:9px;flex:0 0 auto;
+    background:linear-gradient(135deg,var(--ouro2),var(--ouro));display:flex;align-items:center;justify-content:center;color:#000;font-weight:800}
+  .marca h1{font-size:16px;margin:0}
+  .marca small{display:block;color:var(--cinza);font-size:11px;margin-top:1px}
+  .wrap{max-width:760px;margin:0 auto;padding:0 14px}
+  .aviso{background:var(--carvao);border:1px solid var(--linha);border-radius:14px;padding:14px 16px;margin:16px 0;font-size:14px;line-height:1.55}
+  .aviso b{color:var(--ouro2)}
+  .carrossel{background:var(--carvao);border:1px solid var(--linha);border-radius:18px;margin:18px 0;overflow:hidden}
+  .carrossel > h2{margin:0;padding:14px 16px;font-size:15px;border-bottom:1px solid var(--linha);display:flex;align-items:center;gap:8px}
+  .carrossel > h2 .n{color:var(--cinza);font-weight:500;font-size:12px;margin-left:auto}
+  .slides{display:flex;gap:10px;overflow-x:auto;padding:14px 16px;scroll-snap-type:x mandatory}
+  .slide{flex:0 0 auto;width:150px;scroll-snap-align:start}
+  .slide .ph{position:relative;background:#000;border-radius:12px;overflow:hidden;border:1px solid var(--linha)}
+  .slide img{width:100%;display:block}
+  .slide .idx{position:absolute;top:6px;left:6px;background:rgba(0,0,0,.7);color:var(--ouro2);font-size:11px;font-weight:700;padding:2px 7px;border-radius:20px}
+  .slide .mini{display:flex;gap:6px;margin-top:6px}
+  .mini a{flex:1;text-align:center;font-size:11px;font-weight:700;padding:7px 4px;border-radius:9px;text-decoration:none;border:1px solid var(--linha);color:#d9d3c6}
+  .mini a.env{background:linear-gradient(135deg,var(--ouro2),var(--ouro));color:#1a1200;border:none}
+  .barra{display:flex;gap:8px;padding:0 16px 14px;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 14px;border-radius:11px;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;border:1px solid var(--linha);color:#d9d3c6;background:transparent}
+  .btn.ouro{background:linear-gradient(135deg,var(--ouro2),var(--ouro));color:#1a1200;border:none}
+  .legendas{border-top:1px solid var(--linha);padding:12px 16px 16px}
+  .abas{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+  .aba{font-size:12px;font-weight:700;padding:7px 12px;border-radius:20px;border:1px solid var(--linha);background:var(--carvao2);color:#d9d3c6;cursor:pointer}
+  .aba.on{background:var(--ouro);color:#1a1200;border-color:var(--ouro)}
+  .legenda{white-space:pre-wrap;font-size:13.5px;line-height:1.5;color:#e9e3d6;background:#000;border:1px solid var(--linha);border-radius:12px;padding:12px;max-height:230px;overflow:auto}
+  .copiar{margin-top:8px;width:100%}
+  .vazio{color:var(--cinza);text-align:center;padding:30px 12px;font-size:14px;line-height:1.6}
+  footer{max-width:760px;margin:30px auto 0;padding:18px 16px;border-top:1px solid var(--linha);color:#6f6a61;font-size:12px;text-align:center;line-height:1.6}
+  .zap{color:var(--verde);text-decoration:none;font-weight:700}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:#000;border:1px solid var(--ouro);color:var(--ouro2);padding:11px 18px;border-radius:30px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:.25s;z-index:50;max-width:90%;text-align:center}
+  .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+  .load{text-align:center;color:var(--cinza);padding:40px 0}
+</style>
+</head>
+<body>
+<header>
+  <div class="marca">
+    <div class="dot">CF</div>
+    <div><h1>Carrosséis Virais</h1><small>Escritório Campos Figueira · pronto pra postar</small></div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="aviso">
+    <b>Como usar:</b> escolha o carrossel → toque em <b>📲</b> em cada slide (ou <b>Baixar todos</b>) →
+    poste no feed. Depois copie a <b>legenda pronta</b> da rede certa (já vem com <b>#viral</b> e as menções). ✅
+  </div>
+  <div id="lista"><div class="load">Carregando carrosséis…</div></div>
+</div>
+
+<footer>
+  Escritório Campos Figueira · Imóveis &amp; Engenharia · Mogi das Cruzes/SP<br>
+  <a class="zap" href="https://wa.me/551123785643" target="_blank" rel="noopener">💬 WhatsApp (11) 2378-5643</a>
+</footer>
+<div id="toast" class="toast"></div>
+
+<script>
+const OWNER="escritoriocamposfigueira-commits", REPO="dashboard", BRANCH="claude/campos-figueira-growth-qmjsux";
+const RAW="https://raw.githubusercontent.com/"+OWNER+"/"+REPO+"/refs/heads/"+BRANCH+"/";
+const TREE="https://api.github.com/repos/"+OWNER+"/"+REPO+"/git/trees/"+encodeURIComponent(BRANCH)+"?recursive=1";
+const CAP_JSON=RAW+"src/content/carrosseis-captions.json";
+
+// ==== MENÇÕES (troque pelos @ reais quando tiver) ====
+const H={ escritorio:"@escritoriocamposfigueira", henrique:"@henriquefigueira", renata:"@renatacamposfigueira" };
+
+function toast(m){const t=document.getElementById("toast");t.textContent=m;t.classList.add("on");clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove("on"),2400);}
+
+async function enviar(url,nome,ev){ if(ev)ev.preventDefault();
+  try{ const r=await fetch(url,{mode:"cors"}); const b=await r.blob();
+    const f=new File([b],nome,{type:b.type||"image/png"});
+    if(navigator.canShare&&navigator.canShare({files:[f]})){toast("Escolha a rede e poste");await navigator.share({files:[f]});}
+    else baixar(url,nome);
+  }catch(e){ if(e&&e.name==="AbortError")return; baixar(url,nome);} }
+async function baixar(url,nome,ev){ if(ev)ev.preventDefault(); toast("Baixando…");
+  try{ const r=await fetch(url,{mode:"cors"}); const b=await r.blob(); const u=URL.createObjectURL(b);
+    const a=document.createElement("a");a.href=u;a.download=nome;document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(u),4000);
+  }catch(e){ window.open(url,"_blank","noopener"); } }
+async function baixarTodos(urls,base){ toast("Baixando "+urls.length+" imagens…");
+  for(let i=0;i<urls.length;i++){ await baixar(urls[i],base+"-"+(i+1)+".png"); await new Promise(r=>setTimeout(r,700)); } }
+
+// Legenda padrão (usada se não houver JSON específico do carrossel)
+function legendaPadrao(rede,nome){
+  const tags="#viral #imoveis #mogidascruzes #casapropria #realestate";
+  if(rede==="tiktok") return `🔥 Você precisa ver isso 👀\n\nGravata Afiada 👔 — imóveis em Mogi das Cruzes e região.\n\nChama ${H.henrique} · ${H.escritorio}\n\n#viral #fyp #foryou #imoveis #mogidascruzes #casapropria`;
+  if(rede==="youtube") return `🔥 Imóveis em Mogi das Cruzes que você precisa ver\n\nEscritório Campos Figueira ${H.escritorio} · ${H.henrique}\n\n#viral #Shorts #imoveis #mogidascruzes`;
+  // instagram / facebook
+  return `🔥 Salva esse post — você vai querer ver de novo 👀\n\n📍 Imóveis em Mogi das Cruzes e região com quem entende de verdade.\n\n🏠 ${H.escritorio}\n👔 ${H.henrique}\n💎 ${H.renata}\n\n${tags}`;
+}
+
+let CAPS={};
+async function carregarCaptions(){ try{ const r=await fetch(CAP_JSON); if(r.ok) CAPS=await r.json(); }catch(e){} }
+function legenda(nome,rede){
+  const c=CAPS[nome]; if(c&&c[rede]) return c[rede];
+  return legendaPadrao(rede,nome);
+}
+
+function blocoLegendas(nome){
+  const redes=[["instagram","Instagram"],["facebook","Facebook"],["tiktok","TikTok"],["youtube","YouTube"]];
+  const idBase="leg-"+btoa(unescape(encodeURIComponent(nome))).replace(/[^a-zA-Z0-9]/g,"");
+  const abas=redes.map((r,i)=>`<div class="aba ${i===0?'on':''}" data-r="${r[0]}" onclick="trocaAba('${idBase}','${r[0]}',this)">${r[1]}</div>`).join("");
+  return `<div class="legendas">
+    <div class="abas">${abas}</div>
+    <div class="legenda" id="${idBase}">${escapar(legenda(nome,"instagram"))}</div>
+    <button class="btn ouro copiar" onclick="copiar('${idBase}')">📋 Copiar legenda</button>
+  </div>`;
+}
+window._legnome={};
+function trocaAba(idBase,rede,el){
+  const nome=window._legnome[idBase];
+  document.getElementById(idBase).textContent=legenda(nome,rede);
+  el.parentNode.querySelectorAll(".aba").forEach(a=>a.classList.remove("on")); el.classList.add("on");
+}
+function copiar(idBase){ const t=document.getElementById(idBase).textContent;
+  navigator.clipboard.writeText(t).then(()=>toast("Legenda copiada! 📋")).catch(()=>toast("Selecione e copie manualmente")); }
+function escapar(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+
+function render(grupos){
+  const lista=document.getElementById("lista"); lista.innerHTML="";
+  const nomes=Object.keys(grupos).sort((a,b)=>a.localeCompare(b,"pt-BR",{numeric:true}));
+  if(!nomes.length){ lista.innerHTML=`<div class="vazio">Nenhum carrossel ainda.<br><br>Suba as imagens em <b>public/carrosseis/&lt;nome-do-carrossel&gt;/</b> e recarregue esta página.</div>`; return; }
+  nomes.forEach((nome,gi)=>{
+    const slides=grupos[nome].sort((a,b)=>a.path.localeCompare(b.path,"pt-BR",{numeric:true}));
+    const urls=slides.map(s=>RAW+s.path.split("/").map(encodeURIComponent).join("/"));
+    const idBase="leg-"+btoa(unescape(encodeURIComponent(nome))).replace(/[^a-zA-Z0-9]/g,"");
+    window._legnome[idBase]=nome;
+    const slidesHtml=slides.map((s,i)=>{
+      const u=urls[i];
+      return `<div class="slide"><div class="ph"><span class="idx">${i+1}</span><img loading="lazy" src="${u}"></div>
+        <div class="mini"><a class="env" href="${u}" onclick="enviar('${u}','${nomeArqSlide(nome,i+1)}',event)">📲</a>
+        <a href="${u}" onclick="baixar('${u}','${nomeArqSlide(nome,i+1)}',event)">⬇</a></div></div>`;
+    }).join("");
+    const div=document.createElement("div"); div.className="carrossel";
+    const jsUrls=JSON.stringify(urls).replace(/"/g,"&quot;");
+    div.innerHTML=`<h2>🖼️ ${escapar(nome)} <span class="n">${slides.length} slides</span></h2>
+      <div class="slides">${slidesHtml}</div>
+      <div class="barra"><a class="btn ouro" onclick='baixarTodos(${jsUrls.replace(/&quot;/g,"\"")}, "${escapar(nome)}")'>⬇ Baixar todos os ${slides.length}</a></div>
+      ${blocoLegendas(nome)}`;
+    lista.appendChild(div);
+  });
+}
+function nomeArqSlide(nome,i){ return (nome+"-"+i+".png").replace(/[^\w.\- ]+/g,"-"); }
+
+(async function(){
+  await carregarCaptions();
+  try{
+    const r=await fetch(TREE);
+    if(!r.ok) throw 0;
+    const data=await r.json();
+    const grupos={};
+    (data.tree||[]).forEach(n=>{
+      if(n.type!=="blob") return;
+      if(!/^public\/carrosseis\//i.test(n.path)) return;
+      if(!/\.(png|jpe?g|webp)$/i.test(n.path)) return;
+      const resto=n.path.replace(/^public\/carrosseis\//i,"");
+      const partes=resto.split("/");
+      const grupo=partes.length>1?partes[0]:"Geral";
+      (grupos[grupo]=grupos[grupo]||[]).push(n);
+    });
+    render(grupos);
+  }catch(e){
+    document.getElementById("lista").innerHTML='<div class="vazio">Não consegui carregar agora.<br>Tente recarregar em instantes.</div>';
+  }
+})();
+</script>
+</body>
+</html>
