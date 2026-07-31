@@ -49,6 +49,24 @@
   .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:#000;border:1px solid var(--ouro);color:var(--ouro2);padding:11px 18px;border-radius:30px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:.25s;z-index:50;max-width:90%;text-align:center}
   .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
   .load{text-align:center;color:var(--cinza);padding:40px 0}
+  .redes{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:12px 16px 4px}
+  .rede{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:12px 8px;border-radius:13px;font-size:14px;font-weight:800;cursor:pointer;border:none;color:#fff;text-decoration:none;text-align:center;line-height:1.15}
+  .rede small{font-weight:600;font-size:10px;opacity:.9}
+  .r-ig{background:linear-gradient(135deg,#feda75,#d62976 45%,#962fbf 78%,#4f5bd5)}
+  .r-fb{background:#1877f2}
+  .r-tt{background:#010101;border:1px solid #383838}
+  .r-yt{background:#ff0000}
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.94);z-index:100;display:none;flex-direction:column;padding:calc(12px + env(safe-area-inset-top,0)) 12px 16px}
+  .overlay.on{display:flex}
+  .ov-top{display:flex;align-items:center;gap:10px;margin-bottom:10px;color:#f4f0e6}
+  .ov-top b{font-size:15px}
+  .ov-x{margin-left:auto;background:#222;border:1px solid #444;color:#fff;border-radius:10px;padding:9px 13px;font-weight:700;cursor:pointer}
+  .ov-imgs{overflow:auto;flex:1;display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;align-content:start}
+  .ov-imgs figure{margin:0}
+  .ov-imgs img{width:100%;border-radius:10px;border:1px solid #333;display:block;background:#000}
+  .ov-imgs a{display:block;text-align:center;font-size:12px;font-weight:700;padding:7px;color:#1a1200;background:linear-gradient(135deg,var(--ouro2),var(--ouro));border-radius:8px;margin-top:5px;text-decoration:none}
+  .ov-cap{margin-top:10px;background:#000;border:1px solid var(--linha);border-radius:12px;padding:10px;color:#e9e3d6;font-size:12.5px;white-space:pre-wrap;max-height:110px;overflow:auto}
+  .ov-actions{display:flex;gap:8px;margin-top:8px}
 </style>
 </head>
 <body>
@@ -61,10 +79,10 @@
 
 <div class="wrap">
   <div class="aviso">
-    <b>Como postar cada carrossel:</b><br>
-    📲 <b>Feed (Instagram/Facebook):</b> use as imagens <b>4:5</b> (botão <b>📲</b> por slide ou <b>⬇ Feed 4:5</b>).<br>
-    🎬 <b>TikTok / Reels / Shorts:</b> baixe o <b>🎬 Vídeo c/ música</b> (já vem com trilha liberada, sem risco de direitos). Se quiser <b>mais alcance</b>, na hora de postar troque por um <b>som em alta do próprio app</b> (2 toques).<br>
-    📝 Depois copie a <b>legenda</b> da rede certa (aba abaixo) — já vem com <b>título viral, #viral e as suas menções</b>. ✅
+    <b>Como postar:</b> escolha o carrossel e toque no botão da <b>rede</b> (🟣 Instagram · 🔵 Facebook · ⚫ TikTok · 🔴 YouTube).
+    Ele <b>abre todas as imagens no tamanho certo</b> daquela rede (feed 4:5 ou vertical 9:16) e já <b>copia a legenda</b>
+    (título viral + <b>#viral</b> + suas menções). No celular, é só escolher o app e postar. ✅<br>
+    🎬 Pra <b>TikTok / Reels / Shorts com som</b>, use o botão <b>vídeo c/ música</b> (trilha liberada, sem risco de direitos).
   </div>
   <div id="lista"><div class="load">Carregando carrosséis…</div></div>
 </div>
@@ -73,6 +91,15 @@
   Escritório Campos Figueira · Imóveis &amp; Engenharia · Mogi das Cruzes/SP<br>
   <a class="zap" href="https://wa.me/551123785643" target="_blank" rel="noopener">💬 WhatsApp (11) 2378-5643</a>
 </footer>
+<div id="overlay" class="overlay">
+  <div class="ov-top"><b id="ovTitulo"></b><button class="ov-x" onclick="fecharOverlay()">✕ Fechar</button></div>
+  <div class="ov-imgs" id="ovImgs"></div>
+  <div class="ov-cap" id="ovCap"></div>
+  <div class="ov-actions">
+    <button class="btn ouro" style="flex:1" onclick="copiarOverlay()">📋 Copiar legenda</button>
+    <button class="btn ouro" style="flex:1" onclick="baixarOverlay()">⬇ Baixar todas</button>
+  </div>
+</div>
 <div id="toast" class="toast"></div>
 
 <script>
@@ -168,17 +195,24 @@ function render(carr){
         <a href="${u}" onclick="baixar('${u}','${nomeArqSlide(nome,i+1)}',event)">⬇</a></div></div>`;
     }).join("");
 
+    window._carr[nome]={feed:feedUrls, vert:vertUrls};
     const vid=MANIFEST[nome];
     const botaoVideo = vid
-      ? `<a class="btn ouro" href="${urlDe(vid.video)}" onclick="baixar('${urlDe(vid.video)}','${nomeArqBase(nome)}-video-musica.mp4',event)">🎬 Vídeo c/ música (9:16)</a>`
+      ? `<a class="btn ouro" href="${urlDe(vid.video)}" onclick="baixar('${urlDe(vid.video)}','${nomeArqBase(nome)}-video-musica.mp4',event)">🎬 Baixar vídeo c/ música (TikTok/Reels/Shorts)</a>`
       : `<span class="btn" style="opacity:.5">🎬 Vídeo processando…</span>`;
-    const btnFeed = feed.length?`<a class="btn" onclick='baixarLote(${JSON.stringify(feedUrls)}, "${nomeArqBase(nome)}-feed-4x5")'>⬇ Feed 4:5 (${feed.length})</a>`:"";
-    const btnVert = vert.length?`<a class="btn" onclick='baixarLote(${JSON.stringify(vertUrls)}, "${nomeArqBase(nome)}-9x16")'>⬇ Vertical 9:16 (${vert.length})</a>`:"";
+
+    const redes=`<div class="redes">
+      <a class="rede r-ig" onclick="abrirRede('${nome}','instagram',event)">🟣 Instagram<small>abre fotos 4:5 + legenda</small></a>
+      <a class="rede r-fb" onclick="abrirRede('${nome}','facebook',event)">🔵 Facebook<small>abre fotos 4:5 + legenda</small></a>
+      <a class="rede r-tt" onclick="abrirRede('${nome}','tiktok',event)">⚫ TikTok<small>abre fotos 9:16 + legenda</small></a>
+      <a class="rede r-yt" onclick="abrirRede('${nome}','youtube',event)">🔴 YouTube<small>abre fotos 9:16 + legenda</small></a>
+    </div>`;
 
     const div=document.createElement("div"); div.className="carrossel";
     div.innerHTML=`<h2>🔥 ${escapar(titulo)} <span class="n">${escapar(nomeBonito(nome))} · ${preview.length} slides</span></h2>
       <div class="slides">${slidesHtml}</div>
-      <div class="barra">${botaoVideo}${btnFeed}${btnVert}</div>
+      ${redes}
+      <div class="barra">${botaoVideo}</div>
       ${blocoLegendas(nome)}`;
     lista.appendChild(div);
   });
@@ -187,6 +221,47 @@ function nomeArqSlide(nome,i){ return (nomeBonito(nome)+"-"+i+".png").replace(/[
 function nomeArqBase(nome){ return nomeBonito(nome).replace(/[^\w.\- ]+/g,"-"); }
 async function baixarLote(urls,base){ toast("Baixando "+urls.length+" imagens…");
   for(let i=0;i<urls.length;i++){ await baixar(urls[i],base+"-"+(i+1)+".png"); await new Promise(r=>setTimeout(r,700)); } }
+
+// ==== Botão por rede: abre TODAS as imagens no tamanho certo + copia a legenda ====
+window._carr={};
+const REDE_FMT={instagram:"feed",facebook:"feed",tiktok:"vert",youtube:"vert"};
+const REDE_NOME={instagram:"Instagram",facebook:"Facebook",tiktok:"TikTok",youtube:"YouTube"};
+let _ovUrls=[], _ovBase="", _ovCap="";
+async function abrirRede(nome,rede,ev){ if(ev)ev.preventDefault();
+  const d=window._carr[nome]||{feed:[],vert:[]};
+  let urls = REDE_FMT[rede]==="vert" ? d.vert : d.feed;
+  if(!urls||!urls.length) urls=(d.vert&&d.vert.length)?d.vert:d.feed;
+  if(!urls||!urls.length){ toast("Sem imagens neste formato"); return; }
+  const cap=legenda(nome,rede);
+  try{ await navigator.clipboard.writeText(cap); }catch(e){}
+  toast("Preparando "+urls.length+" imagens…");
+  try{
+    const files=[];
+    for(let i=0;i<urls.length;i++){ const r=await fetch(urls[i]); const b=await r.blob();
+      files.push(new File([b], nomeArqBase(nome)+"-"+(i+1)+".png", {type:b.type||"image/png"})); }
+    if(navigator.canShare && navigator.canShare({files})){
+      toast("Legenda copiada ✓ — escolha "+REDE_NOME[rede]);
+      await navigator.share({files, text:cap});
+      return;
+    }
+    galeria(nome,rede,urls,cap);
+  }catch(e){ if(e&&e.name==="AbortError")return; galeria(nome,rede,urls,cap); }
+}
+function galeria(nome,rede,urls,cap){
+  _ovUrls=urls; _ovBase=nomeArqBase(nome); _ovCap=cap;
+  document.getElementById("ovTitulo").textContent=REDE_NOME[rede]+" · "+urls.length+" imagens";
+  const cont=document.getElementById("ovImgs"); cont.innerHTML="";
+  urls.forEach((u,i)=>{ const fig=document.createElement("figure");
+    fig.innerHTML=`<img loading="lazy" src="${u}"><a href="${u}" onclick="baixar('${u}','${_ovBase}-${i+1}.png',event)">⬇ ${i+1}</a>`;
+    cont.appendChild(fig); });
+  document.getElementById("ovCap").textContent=cap;
+  document.getElementById("overlay").classList.add("on");
+  document.body.style.overflow="hidden";
+}
+function fecharOverlay(){ document.getElementById("overlay").classList.remove("on"); document.body.style.overflow=""; }
+function copiarOverlay(){ navigator.clipboard.writeText(_ovCap).then(()=>toast("Legenda copiada! 📋")).catch(()=>toast("Selecione e copie manualmente")); }
+async function baixarOverlay(){ toast("Baixando "+_ovUrls.length+"…");
+  for(let i=0;i<_ovUrls.length;i++){ await baixar(_ovUrls[i], _ovBase+"-"+(i+1)+".png"); await new Promise(r=>setTimeout(r,700)); } }
 
 (async function(){
   await Promise.all([carregarCaptions(), carregarManifest()]);
