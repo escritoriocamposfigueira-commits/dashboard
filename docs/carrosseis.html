@@ -173,7 +173,8 @@ function nomeArqSlide(nome,i){ return (nome+"-"+i+".png").replace(/[^\w.\- ]+/g,
       if(!/\.(png|jpe?g|webp)$/i.test(n.path)) return;
       const resto=n.path.replace(/^public\/carrosseis\//i,"");
       const partes=resto.split("/");
-      const grupo=partes.length>1?partes[0]:"Geral";
+      // agrupa pela pasta IMEDIATA do arquivo (funciona com qualquer nível de subpasta)
+      const grupo=partes.length>1?partes[partes.length-2]:"Geral";
       (grupos[grupo]=grupos[grupo]||[]).push(n);
     });
     render(grupos);
