@@ -61,8 +61,10 @@
 
 <div class="wrap">
   <div class="aviso">
-    <b>Como usar:</b> escolha o carrossel → toque em <b>📲</b> em cada slide (ou <b>Baixar todos</b>) →
-    poste no feed. Depois copie a <b>legenda pronta</b> da rede certa (já vem com <b>#viral</b> e as menções). ✅
+    <b>Como postar cada carrossel:</b><br>
+    📲 <b>Feed (Instagram/Facebook):</b> use as imagens <b>4:5</b> (botão <b>📲</b> por slide ou <b>⬇ Feed 4:5</b>).<br>
+    🎬 <b>TikTok / Reels / Shorts:</b> baixe o <b>🎬 Vídeo c/ música</b> (já vem com trilha liberada, sem risco de direitos). Se quiser <b>mais alcance</b>, na hora de postar troque por um <b>som em alta do próprio app</b> (2 toques).<br>
+    📝 Depois copie a <b>legenda</b> da rede certa (aba abaixo) — já vem com <b>título viral, #viral e as suas menções</b>. ✅
   </div>
   <div id="lista"><div class="load">Carregando carrosséis…</div></div>
 </div>
@@ -139,50 +141,73 @@ function copiar(idBase){ const t=document.getElementById(idBase).textContent;
   navigator.clipboard.writeText(t).then(()=>toast("Legenda copiada! 📋")).catch(()=>toast("Selecione e copie manualmente")); }
 function escapar(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
 
-function render(grupos){
+function nomeBonito(nome){ const m=nome.match(/CARROSSEL[_\s]*0*(\d+)/i); return m?("Carrossel "+m[1]):nome; }
+function urlDe(p){ return RAW+p.split("/").map(encodeURIComponent).join("/"); }
+
+let MANIFEST={};
+async function carregarManifest(){ try{ const r=await fetch(RAW+"public/carrosseis-videos/manifest.json"); if(r.ok) MANIFEST=await r.json(); }catch(e){} }
+
+function render(carr){
   const lista=document.getElementById("lista"); lista.innerHTML="";
-  const nomes=Object.keys(grupos).sort((a,b)=>a.localeCompare(b,"pt-BR",{numeric:true}));
-  if(!nomes.length){ lista.innerHTML=`<div class="vazio">Nenhum carrossel ainda.<br><br>Suba as imagens em <b>public/carrosseis/&lt;nome-do-carrossel&gt;/</b> e recarregue esta página.</div>`; return; }
-  nomes.forEach((nome,gi)=>{
-    const slides=grupos[nome].sort((a,b)=>a.path.localeCompare(b.path,"pt-BR",{numeric:true}));
-    const urls=slides.map(s=>RAW+s.path.split("/").map(encodeURIComponent).join("/"));
+  const nomes=Object.keys(carr).sort((a,b)=>a.localeCompare(b,"pt-BR",{numeric:true}));
+  if(!nomes.length){ lista.innerHTML=`<div class="vazio">Nenhum carrossel ainda.<br><br>Suba as imagens em <b>public/carrosseis/&lt;nome&gt;/</b> e recarregue.</div>`; return; }
+  nomes.forEach((nome)=>{
+    const c=carr[nome];
+    const feed=(c.feed||[]).slice().sort((a,b)=>a.localeCompare(b,"pt-BR",{numeric:true}));
+    const vert=(c.vert||[]).slice().sort((a,b)=>a.localeCompare(b,"pt-BR",{numeric:true}));
+    const preview=feed.length?feed:vert;
+    const feedUrls=feed.map(urlDe), vertUrls=vert.map(urlDe), prevUrls=preview.map(urlDe);
     const idBase="leg-"+btoa(unescape(encodeURIComponent(nome))).replace(/[^a-zA-Z0-9]/g,"");
     window._legnome[idBase]=nome;
-    const slidesHtml=slides.map((s,i)=>{
-      const u=urls[i];
+    const titulo=(CAPS[nome]&&CAPS[nome]._titulo)||nomeBonito(nome);
+
+    const slidesHtml=preview.map((p,i)=>{
+      const u=prevUrls[i];
       return `<div class="slide"><div class="ph"><span class="idx">${i+1}</span><img loading="lazy" src="${u}"></div>
         <div class="mini"><a class="env" href="${u}" onclick="enviar('${u}','${nomeArqSlide(nome,i+1)}',event)">📲</a>
         <a href="${u}" onclick="baixar('${u}','${nomeArqSlide(nome,i+1)}',event)">⬇</a></div></div>`;
     }).join("");
+
+    const vid=MANIFEST[nome];
+    const botaoVideo = vid
+      ? `<a class="btn ouro" href="${urlDe(vid.video)}" onclick="baixar('${urlDe(vid.video)}','${nomeArqBase(nome)}-video-musica.mp4',event)">🎬 Vídeo c/ música (9:16)</a>`
+      : `<span class="btn" style="opacity:.5">🎬 Vídeo processando…</span>`;
+    const btnFeed = feed.length?`<a class="btn" onclick='baixarLote(${JSON.stringify(feedUrls)}, "${nomeArqBase(nome)}-feed-4x5")'>⬇ Feed 4:5 (${feed.length})</a>`:"";
+    const btnVert = vert.length?`<a class="btn" onclick='baixarLote(${JSON.stringify(vertUrls)}, "${nomeArqBase(nome)}-9x16")'>⬇ Vertical 9:16 (${vert.length})</a>`:"";
+
     const div=document.createElement("div"); div.className="carrossel";
-    const jsUrls=JSON.stringify(urls).replace(/"/g,"&quot;");
-    div.innerHTML=`<h2>🖼️ ${escapar(nome)} <span class="n">${slides.length} slides</span></h2>
+    div.innerHTML=`<h2>🔥 ${escapar(titulo)} <span class="n">${escapar(nomeBonito(nome))} · ${preview.length} slides</span></h2>
       <div class="slides">${slidesHtml}</div>
-      <div class="barra"><a class="btn ouro" onclick='baixarTodos(${jsUrls.replace(/&quot;/g,"\"")}, "${escapar(nome)}")'>⬇ Baixar todos os ${slides.length}</a></div>
+      <div class="barra">${botaoVideo}${btnFeed}${btnVert}</div>
       ${blocoLegendas(nome)}`;
     lista.appendChild(div);
   });
 }
-function nomeArqSlide(nome,i){ return (nome+"-"+i+".png").replace(/[^\w.\- ]+/g,"-"); }
+function nomeArqSlide(nome,i){ return (nomeBonito(nome)+"-"+i+".png").replace(/[^\w.\- ]+/g,"-"); }
+function nomeArqBase(nome){ return nomeBonito(nome).replace(/[^\w.\- ]+/g,"-"); }
+async function baixarLote(urls,base){ toast("Baixando "+urls.length+" imagens…");
+  for(let i=0;i<urls.length;i++){ await baixar(urls[i],base+"-"+(i+1)+".png"); await new Promise(r=>setTimeout(r,700)); } }
 
 (async function(){
-  await carregarCaptions();
+  await Promise.all([carregarCaptions(), carregarManifest()]);
   try{
     const r=await fetch(TREE);
     if(!r.ok) throw 0;
     const data=await r.json();
-    const grupos={};
+    const carr={};
     (data.tree||[]).forEach(n=>{
       if(n.type!=="blob") return;
       if(!/^public\/carrosseis\//i.test(n.path)) return;
       if(!/\.(png|jpe?g|webp)$/i.test(n.path)) return;
       const resto=n.path.replace(/^public\/carrosseis\//i,"");
       const partes=resto.split("/");
-      // agrupa pela pasta IMEDIATA do arquivo (funciona com qualquer nível de subpasta)
-      const grupo=partes.length>1?partes[partes.length-2]:"Geral";
-      (grupos[grupo]=grupos[grupo]||[]).push(n);
+      if(partes.length<2) return;
+      const nome=partes[0], fmt=partes[1];
+      const c=carr[nome]||(carr[nome]={feed:[],vert:[]});
+      if(/9x16|vertical/i.test(fmt)) c.vert.push(n.path);
+      else if(/4x5|feed/i.test(fmt)) c.feed.push(n.path);
     });
-    render(grupos);
+    render(carr);
   }catch(e){
     document.getElementById("lista").innerHTML='<div class="vazio">Não consegui carregar agora.<br>Tente recarregar em instantes.</div>';
   }
