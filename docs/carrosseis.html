@@ -81,8 +81,7 @@
   <div class="aviso">
     <b>Como postar:</b> escolha o carrossel e toque no botão da <b>rede</b> (🟣 Instagram · 🔵 Facebook · ⚫ TikTok · 🔴 YouTube).
     Ele <b>abre todas as imagens no tamanho certo</b> daquela rede (feed 4:5 ou vertical 9:16) e já <b>copia a legenda</b>
-    (título viral + <b>#viral</b> + suas menções). No celular, é só escolher o app e postar. ✅<br>
-    🎬 Pra <b>TikTok / Reels / Shorts com som</b>, use o botão <b>vídeo c/ música</b> (trilha liberada, sem risco de direitos).
+    (título viral + <b>#viral</b> + suas menções). No celular, é só escolher o app e postar como <b>carrossel de fotos</b>. ✅
   </div>
   <div id="lista"><div class="load">Carregando carrosséis…</div></div>
 </div>
@@ -196,10 +195,6 @@ function render(carr){
     }).join("");
 
     window._carr[nome]={feed:feedUrls, vert:vertUrls};
-    const vid=MANIFEST[nome];
-    const botaoVideo = vid
-      ? `<a class="btn" style="font-size:12px;opacity:.85" href="${urlDe(vid.video)}" onclick="baixar('${urlDe(vid.video)}','${nomeArqBase(nome)}-video-musica.mp4',event)">🎬 Opcional: vídeo c/ música (só se quiser som no TikTok/Reels/Shorts)</a>`
-      : `<span class="btn" style="opacity:.4;font-size:12px">🎬 Vídeo processando…</span>`;
 
     const redes=`<div class="redes">
       <a class="rede r-ig" onclick="abrirRede('${nome}','instagram',event)">🟣 Instagram<small>abre fotos 4:5 + legenda</small></a>
@@ -212,7 +207,6 @@ function render(carr){
     div.innerHTML=`<h2>🔥 ${escapar(titulo)} <span class="n">${escapar(nomeBonito(nome))} · ${preview.length} slides</span></h2>
       <div class="slides">${slidesHtml}</div>
       ${redes}
-      <div class="barra">${botaoVideo}</div>
       ${blocoLegendas(nome)}`;
     lista.appendChild(div);
   });
