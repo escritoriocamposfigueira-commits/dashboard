@@ -10,14 +10,20 @@ const RAIZ = path.join(__dirname, "..");
 const BASE = path.join(RAIZ, "public", "carrosseis");
 const SAIDA = path.join(RAIZ, "src", "content", "carrosseis-captions.json");
 
-const MENC = {
-  instagram: "@escritorio.figueira @henriquefigueiraoficial @gravataafiada",
-  facebook: "@eng.henriquefigueira @gravataafiada @Escritorio.figueira",
-  tiktok: "@henriquesfigueira @camposfigueira @gravataafiada",
-  youtube: "@gravataafiada",
+// Contas por rede: quem TAGAR e quem o público deve SEGUIR
+const CONTAS = {
+  instagram: { tag: "@escritorio.figueira @henriquefigueiraoficial @gravataafiada", seguir: "@henriquefigueiraoficial" },
+  facebook:  { tag: "@eng.henriquefigueira @gravataafiada @Escritorio.figueira", seguir: "@eng.henriquefigueira" },
+  tiktok:    { tag: "@henriquesfigueira @camposfigueira @gravataafiada", seguir: "@gravataafiada" },
+  youtube:   { tag: "@gravataafiada", seguir: "@gravataafiada" },
 };
-
-const TAGS_BASE = "#gravataafiada #imoveis #mogidascruzes #engenharia #regularizacao #registrodeimoveis #cartorio #documentos #direitoimobiliario #casapropria";
+// Hashtags sob medida por rede (mix: nicho + local + amplas)
+const TAGS = {
+  instagram: "#imoveis #mogidascruzes #altotietê #engenhariacivil #regularizacaodeimoveis #cartorio #matriculadeimovel #comprarimovel #dicasdeimovel #direitoimobiliario #gravataafiada #viral #fyp",
+  facebook:  "#imoveis #mogidascruzes #regularizacao #engenharia #comprarimovel #dicasdeimovel #gravataafiada",
+  tiktok:    "#fyp #foryou #viral #imoveis #mogidascruzes #direitoimobiliario #dicasdeimovel #engenharia #regularizacao #aprendanotiktok",
+  youtube:   "#Shorts #imoveis #mogidascruzes #engenharia #regularizacao #dicasdeimovel #viral",
+};
 
 function limpar(s) {
   return (s || "")
@@ -89,22 +95,48 @@ const GENERICOS = [
 // Títulos definidos à mão quando não há roteiro no arquivo.
 const OVERRIDES = {};
 
+// Pega uma frase curta de valor a partir do apoio do roteiro.
+function fraseValor(s) {
+  if (!s) return "";
+  s = s.trim();
+  if (s.length <= 140) return s;
+  let f = s.slice(0, 137);
+  const corte = Math.max(f.lastIndexOf(". "), f.lastIndexOf(" "));
+  if (corte > 60) f = f.slice(0, corte);
+  return f.trim() + "…";
+}
+
 function montar(info, fallback) {
   const t = info.titulo || fallback || GENERICOS[0];
-  const apoio = info.apoio ? `\n\n${info.apoio}` : "";
-  const site = info.site ? `\n🔗 ${info.site}` : "";
-  const salvar = `📌 SALVE • ENVIE pra quem precisa • SIGA`;
+  const valor = fraseValor(info.apoio) || "Um detalhe simples aqui evita dor de cabeça (e prejuízo) na hora de comprar, vender ou regularizar o imóvel.";
+  const site = info.site ? `🔗 ${info.site}` : "";
+  const cross = "📲 Me segue também no @gravataafiada (Instagram • TikTok • YouTube).";
+
+  function bloco(rede, canal, incluirCross) {
+    const c = CONTAS[rede];
+    const p = [];
+    p.push(t);                                    // gancho viral
+    p.push("");
+    p.push(valor);                                // 1 linha de valor
+    p.push("");
+    p.push(`👉 SEGUE ${c.seguir} pra não cair em cilada de imóvel.`);
+    p.push(`🔖 SALVA esse post e MARCA quem vai comprar ou vender.`);
+    p.push(`💬 Comenta "QUERO" que eu te respondo ${canal}.`);
+    if (incluirCross) { p.push(""); p.push(cross); }
+    if (site) { p.push(""); p.push(site); }
+    p.push("");
+    p.push(c.tag);
+    p.push("");
+    p.push(TAGS[rede]);
+    return p.join("\n");
+  }
 
   return {
     _titulo: t,
-    instagram:
-      `🔥 ${t}${apoio}\n\n${salvar}\n💬 Comente "QUERO" ou chama no direct que a gente te orienta.${site}\n\n${MENC.instagram}\n\n#viral #fyp ${TAGS_BASE}`,
-    facebook:
-      `🔥 ${t}${apoio}\n\n${salvar}\n💬 Comente "QUERO" que a gente te chama no particular.${site}\n\n${MENC.facebook}\n\n#viral ${TAGS_BASE}`,
-    tiktok:
-      `🔥 ${t} 👀\n\n👔 Gravata Afiada — imóveis, engenharia e regularização em Mogi das Cruzes e região.${site}\n\n${MENC.tiktok}\n\n#viral #fyp #foryou #foryoupage #mogidascruzes #imoveis #engenharia #regularizacao`,
-    youtube:
-      `🔥 ${t} #Shorts\n\nEscritório Campos Figueira — imóveis, engenharia e regularização com quem entende de verdade.${site}\n${MENC.youtube}\n\n#viral #Shorts #imoveis #mogidascruzes #engenharia #regularizacao`,
+    instagram: bloco("instagram", "no direct", true),
+    facebook:  bloco("facebook", "no particular", true),
+    tiktok:    bloco("tiktok", "nos comentários", false),
+    youtube:   bloco("youtube", "nos comentários", false),
   };
 }
 
