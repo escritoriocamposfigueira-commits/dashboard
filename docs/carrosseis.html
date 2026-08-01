@@ -81,7 +81,7 @@
 <div class="wrap">
   <div class="aviso">
     <b>Toque na rede</b> → 1️⃣ <b>Salva todas as fotos</b> (tamanho certo) e copia a legenda → 2️⃣ <b>Abre direto no destino</b>:
-    🟣 Instagram e 🔵 Facebook abrem o <b>app</b> (pra você colocar <b>música</b> no carrossel), ⚫ TikTok abre o <b>TikTok Studio</b> e 🔴 YouTube abre o app pra <b>Criar → Criar post</b> (carrossel de imagens).<br>
+    🟣 Instagram e 🔵 Facebook abrem o <b>app</b> (pra você colocar <b>música</b> no carrossel), ⚫ TikTok abre o <b>TikTok Studio</b> e 🔴 YouTube te dá um <b>vídeo (Short)</b> pra você pôr a música lá dentro.<br>
     🎵 Música no carrossel só existe <b>dentro do app</b> — por isso Instagram/Facebook abrem o app, e <b>não</b> o Meta Business Suite.<br>
     <small style="color:#9a948a">Carrossel de fotos = post de <b>feed</b> (não é Reels).</small>
   </div>
@@ -237,7 +237,7 @@ const ABRIR={
   instagram:{tipo:"app",scheme:"instagram://app",web:"https://www.instagram.com/",nome:"Instagram",cor:"#c2185b"},
   facebook :{tipo:"app",scheme:"fb://",web:"https://m.facebook.com/",nome:"Facebook",cor:"#0866ff"},
   tiktok   :{tipo:"url",web:"https://www.tiktok.com/tiktokstudio/upload",nome:"TikTok Studio",cor:"#010101"},
-  youtube  :{tipo:"url",web:"https://www.youtube.com/",nome:"YouTube (post)",cor:"#ff0000"},
+  youtube  :{tipo:"url",web:"https://www.youtube.com/",nome:"YouTube (Short)",cor:"#ff0000"},
 };
 // Tenta abrir o app; se não abrir em 1,2s, cai pro site.
 function abrirApp(scheme,web){
@@ -252,7 +252,7 @@ const PASSOS={
   instagram:"🎵 <b>Com música (celular):</b> 📲 Salve as fotos → abra o <b>Instagram</b> → <b>+</b> → Publicação → <b>Selecionar vários</b> → escolha as fotos na ordem → <b>Adicionar música</b> → Avançar → <b>Config. avançadas → Agendar</b>. Cole a legenda (já copiada).",
   facebook:"📲 Salve as fotos → abra o <b>Facebook</b> → Criar publicação → <b>Foto/Vídeo</b> → selecione as fotos → adicione <b>música</b> (quando disponível) → <b>Agendar</b>. Legenda já copiada.",
   tiktok:"🎵 <b>Com música (celular):</b> 📲 Salve as fotos → abra o <b>TikTok</b> → <b>+</b> → <b>Carregar → Fotos</b> → selecione na ordem → escolha o <b>som</b> → poste. Legenda já copiada.",
-  youtube:"📲 Salve as fotos → abra o YouTube → <b>Criar (＋) → Criar post</b> → adicione as fotos (carrossel até 10) → no app dá pra pôr <b>música até 15s</b> → Publicar/Agendar. ⚠️ NÃO é pelo 'upload de vídeo'. Precisa dos <b>Recursos avançados</b> ativados no canal.",
+  youtube:"🎬 Baixe o <b>vídeo (Short)</b> aqui → abra o YouTube → <b>Criar (＋) → enviar como Short</b> → toque em <b>Som/Adicionar áudio</b> e escolha a música da biblioteca do YouTube → Publicar. Dá pra pôr música <b>depois</b> também: Studio → Conteúdo → seu Short → <b>Áudio</b>. (O vídeo vem <b>sem música</b> de propósito, pra você escolher.)",
 };
 let _ovUrls=[], _ovBase="", _ovCap="", _ovNome="", _ovRede="";
 async function abrirRede(nome,rede,ev){ if(ev)ev.preventDefault();
@@ -283,10 +283,18 @@ function galeria(nome,rede,urls,cap){
   const btnAbrir = ab.tipo==="app"
     ? `<button class="btn" style="background:${ab.cor};color:#fff;border:none" onclick="abrirApp('${ab.scheme}','${ab.web}')">📲 Abrir ${ab.nome} (com música)</button>`
     : `<a class="btn" style="background:${ab.cor};color:#fff;border:none" href="${ab.web}" target="_blank" rel="noopener">📲 Abrir ${ab.nome}</a>`;
+  // YouTube: oferece o VÍDEO (Short) sem música — o usuário põe a música no próprio YouTube
+  let btnVideo="";
+  if(rede==="youtube" && MANIFEST[nome] && MANIFEST[nome].video){
+    const vurl=urlDe(MANIFEST[nome].video);
+    btnVideo=`<a class="btn ouro" href="${vurl}" onclick="baixar('${vurl}','${nomeArqBase(nome)}-video.mp4',event)">🎬 Baixar vídeo (Short, sem música)</a>`;
+  }
   document.getElementById("ovActions").innerHTML=
-    (podeCompart?`<button class="btn ouro" onclick="compartilharOverlay()">1️⃣ Salvar TODAS as fotos</button>`:``)+
+    (rede==="youtube"
+      ? btnVideo
+      : (podeCompart?`<button class="btn ouro" onclick="compartilharOverlay()">1️⃣ Salvar TODAS as fotos</button>`:``))+
     btnAbrir+
-    `<button class="btn" onclick="baixarOverlay()">⬇ Baixar todas</button>`+
+    (rede==="youtube"?``:`<button class="btn" onclick="baixarOverlay()">⬇ Baixar todas</button>`)+
     `<button class="btn" onclick="copiarOverlay()">📋 Copiar legenda</button>`;
   document.getElementById("overlay").classList.add("on");
   document.body.style.overflow="hidden";

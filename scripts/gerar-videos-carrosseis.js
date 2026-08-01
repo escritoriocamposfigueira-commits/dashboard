@@ -14,7 +14,9 @@ const { spawnSync } = require("child_process");
 const RAIZ = path.join(__dirname, "..");
 const FF = require("ffmpeg-static");
 const BASE = path.join(RAIZ, "public", "carrosseis");
-const SAIDA = path.join(RAIZ, "public", "carrosseis-videos");
+const SILENCIO = process.env.SILENCIO === "1";           // vídeo sem música (p/ YouTube)
+const REL = (process.env.SAIDA_DIR || "public/carrosseis-videos").replace(/\\/g, "/");
+const SAIDA = path.join(RAIZ, REL);
 const TRILHAS_DIR = path.join(RAIZ, "TRILHAS", "aprovadas");
 const SEG_POR_SLIDE = 3.2;
 const W = 1080, H = 1920;
@@ -33,7 +35,7 @@ function imagensDe(carrDir) {
   if (!escolha) return [];
   const dir = path.join(carrDir, escolha);
   return fs.readdirSync(dir)
-    .filter((f) => /\.(png|jpe?g)$/i.test(f))
+    .filter((f) => /^\d+\.(png|jpe?g)$/i.test(f))   // só slides numerados (ignora _source)
     .sort((a, b) => a.localeCompare(b, "pt-BR", { numeric: true }))
     .map((f) => path.join(dir, f));
 }
@@ -41,7 +43,7 @@ function imagensDe(carrDir) {
 function gerarUm(carr, faixa) {
   const carrDir = path.join(BASE, carr);
   const imgs = imagensDe(carrDir);
-  if (!imgs.length) { console.log("  (sem imagens)", carr); return false; }
+  if (imgs.length < 3) { console.log("  (incompleto/sem imagens, pulado)", carr); return false; }
 
   const dur = +(imgs.length * SEG_POR_SLIDE).toFixed(2);
   const fadeSt = Math.max(0, dur - 1.6);
@@ -58,7 +60,16 @@ function gerarUm(carr, faixa) {
 
   const out = path.join(SAIDA, carr + ".mp4");
   const vf = `scale=${W}:${H}:force_original_aspect_ratio=decrease,pad=${W}:${H}:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,fps=30,format=yuv420p`;
-  const args = [
+  const args = SILENCIO ? [
+    "-y",
+    "-f", "concat", "-safe", "0", "-i", listaPath,
+    "-map", "0:v",
+    "-t", String(dur),
+    "-vf", vf,
+    "-c:v", "libx264", "-preset", "veryfast", "-crf", "23",
+    "-movflags", "+faststart",
+    out,
+  ] : [
     "-y",
     "-f", "concat", "-safe", "0", "-i", listaPath,
     "-stream_loop", "-1", "-i", faixa,
@@ -78,7 +89,7 @@ function gerarUm(carr, faixa) {
     return false;
   }
   const kb = Math.round(fs.statSync(out).size / 1024);
-  console.log(`  �e ${carr}.mp4  (${imgs.length} slides, ${dur}s, ${kb} KB, trilha ${path.basename(faixa)})`);
+  console.log(`  ok ${carr}.mp4  (${imgs.length} slides, ${dur}s, ${kb} KB${SILENCIO ? ", sem musica" : ", trilha " + path.basename(faixa)})`);
   return true;
 }
 
@@ -97,7 +108,7 @@ function main() {
   carrosseis.forEach((c, i) => {
     const faixa = faixas[i % faixas.length];
     const ok = gerarUm(c, faixa);
-    if (ok) manifest[c] = { video: `public/carrosseis-videos/${c}.mp4`, trilha: path.basename(faixa) };
+    if (ok) manifest[c] = { video: `${REL}/${c}.mp4`, trilha: SILENCIO ? null : path.basename(faixa) };
   });
 
   // mescla manifest (não perde entradas de execuções anteriores)
