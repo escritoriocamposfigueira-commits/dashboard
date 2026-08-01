@@ -10,12 +10,12 @@ const RAIZ = path.join(__dirname, "..");
 const BASE = path.join(RAIZ, "public", "carrosseis");
 const SAIDA = path.join(RAIZ, "src", "content", "carrosseis-captions.json");
 
-// Contas por rede: quem TAGAR e quem o público deve SEGUIR
+// Contas por rede: menção em formato de créditos (Apresentador / Apoio)
 const CONTAS = {
-  instagram: { tag: "@escritorio.figueira @henriquefigueiraoficial @gravataafiada", seguir: "@henriquefigueiraoficial" },
-  facebook:  { tag: "@eng.henriquefigueira @gravataafiada @Escritorio.figueira", seguir: "@eng.henriquefigueira" },
-  tiktok:    { tag: "@henriquesfigueira @camposfigueira @gravataafiada", seguir: "@gravataafiada" },
-  youtube:   { tag: "@gravataafiada", seguir: "@gravataafiada" },
+  instagram: { apresentador: "@henriquefigueiraoficial", apoio: "@escritorio.figueira @gravataafiada" },
+  facebook:  { apresentador: "@eng.henriquefigueira", apoio: "@Escritorio.figueira @gravataafiada" },
+  tiktok:    { apresentador: "@henriquesfigueira", apoio: "@camposfigueira @gravataafiada" },
+  youtube:   { apresentador: "Henrique Figueira", apoio: "@gravataafiada" },
 };
 // Hashtags sob medida por rede (mix: nicho + local + amplas)
 const TAGS = {
@@ -110,22 +110,20 @@ function montar(info, fallback) {
   const t = info.titulo || fallback || GENERICOS[0];
   const valor = fraseValor(info.apoio) || "Um detalhe simples aqui evita dor de cabeça (e prejuízo) na hora de comprar, vender ou regularizar o imóvel.";
   const site = info.site ? `🔗 ${info.site}` : "";
-  const cross = "📲 Me segue também no @gravataafiada (Instagram • TikTok • YouTube).";
 
-  function bloco(rede, canal, incluirCross) {
+  function bloco(rede, canal) {
     const c = CONTAS[rede];
     const p = [];
     p.push(t);                                    // gancho viral
     p.push("");
     p.push(valor);                                // 1 linha de valor
     p.push("");
-    p.push(`👉 SEGUE ${c.seguir} pra não cair em cilada de imóvel.`);
     p.push(`🔖 SALVA esse post e MARCA quem vai comprar ou vender.`);
     p.push(`💬 Comenta "QUERO" que eu te respondo ${canal}.`);
-    if (incluirCross) { p.push(""); p.push(cross); }
     if (site) { p.push(""); p.push(site); }
     p.push("");
-    p.push(c.tag);
+    p.push(`🎤 Apresentador: ${c.apresentador}`);   // menção em créditos
+    p.push(`🤝 Apoio: ${c.apoio}`);
     p.push("");
     p.push(TAGS[rede]);
     return p.join("\n");
@@ -133,10 +131,10 @@ function montar(info, fallback) {
 
   return {
     _titulo: t,
-    instagram: bloco("instagram", "no direct", true),
-    facebook:  bloco("facebook", "no particular", true),
-    tiktok:    bloco("tiktok", "nos comentários", false),
-    youtube:   bloco("youtube", "nos comentários", false),
+    instagram: bloco("instagram", "no direct"),
+    facebook:  bloco("facebook", "no particular"),
+    tiktok:    bloco("tiktok", "nos comentários"),
+    youtube:   bloco("youtube", "nos comentários"),
   };
 }
 
