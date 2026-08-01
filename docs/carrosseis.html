@@ -80,10 +80,10 @@
 
 <div class="wrap">
   <div class="aviso">
-    <b>Toque na rede</b> → 1️⃣ <b>Salva todas as fotos</b> (tamanho certo) e copia a legenda → 2️⃣ <b>Abre direto no destino</b>:
-    🟣 Instagram e 🔵 Facebook abrem o <b>app</b> (pra você colocar <b>música</b> no carrossel), ⚫ TikTok abre o <b>TikTok Studio</b> e 🔴 YouTube te dá um <b>vídeo (Short)</b> pra você pôr a música lá dentro.<br>
-    🎵 Música no carrossel só existe <b>dentro do app</b> — por isso Instagram/Facebook abrem o app, e <b>não</b> o Meta Business Suite.<br>
-    <small style="color:#9a948a">Carrossel de fotos = post de <b>feed</b> (não é Reels).</small>
+    <b>Toque na rede</b> → você recebe as <b>FOTOS (carrossel)</b> <u>e</u> um <b>VÍDEO na proporção certa</b> (4:5 no Insta/Face · 9:16 no TikTok/YouTube), com a <b>legenda</b> copiada.<br>
+    🎵 O vídeo vem <b>sem música</b> de propósito — você adiciona a trilha <b>no próprio app</b> (único jeito de ter música no carrossel/Reel/Short, sem risco de direitos).<br>
+    📲 Instagram/Facebook abrem o <b>app</b>; TikTok o <b>TikTok Studio</b>; YouTube o <b>app pra Short</b>.<br>
+    <small style="color:#9a948a">Fotos = post de <b>feed</b> · Vídeo = <b>Reels/Short</b>. Use o que preferir.</small>
   </div>
   <div id="lista"><div class="load">Carregando carrosséis…</div></div>
 </div>
@@ -182,8 +182,11 @@ function escapar(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(
 function nomeBonito(nome){ const m=nome.match(/CARROSSEL[_\s]*0*(\d+)/i); return m?("Carrossel "+m[1]):nome; }
 function urlDe(p){ return RAW+p.split("/").map(encodeURIComponent).join("/"); }
 
-let MANIFEST={};
-async function carregarManifest(){ try{ const r=await fetch(RAW+"public/carrosseis-videos/manifest.json"); if(r.ok) MANIFEST=await r.json(); }catch(e){} }
+let MANIFEST={}, MANIFEST45={};   // 9:16 (TikTok/YouTube) e 4:5 (Instagram/Facebook)
+async function carregarManifest(){
+  try{ const r=await fetch(RAW+"public/carrosseis-videos/manifest.json"); if(r.ok) MANIFEST=await r.json(); }catch(e){}
+  try{ const r=await fetch(RAW+"public/carrosseis-videos-4x5/manifest.json"); if(r.ok) MANIFEST45=await r.json(); }catch(e){}
+}
 
 function render(carr){
   const lista=document.getElementById("lista"); lista.innerHTML="";
@@ -273,7 +276,8 @@ function galeria(nome,rede,urls,cap){
   const ab=ABRIR[rede];
   const fmt=REDE_FMT[rede]==="vert"?"9:16":"4:5";
   document.getElementById("ovTitulo").textContent=REDE_NOME[rede]+" · "+urls.length+" fotos "+fmt+" (carrossel de feed)";
-  document.getElementById("ovPasso").innerHTML=PASSOS[rede]||"";
+  document.getElementById("ovPasso").innerHTML=
+    `🎬 <b>Vídeo ${REDE_FMT[rede]==="vert"?"9:16":"4:5"}</b> pronto (sem música — você põe a trilha no app) OU poste as <b>fotos</b> em carrossel.<br>`+(PASSOS[rede]||"");
   const cont=document.getElementById("ovImgs"); cont.innerHTML="";
   urls.forEach((u,i)=>{ const fig=document.createElement("figure");
     fig.innerHTML=`<img loading="lazy" src="${u}"><a href="${u}" onclick="baixar('${u}','${_ovBase}-${i+1}.png',event)">⬇ ${i+1}</a>`;
@@ -283,18 +287,19 @@ function galeria(nome,rede,urls,cap){
   const btnAbrir = ab.tipo==="app"
     ? `<button class="btn" style="background:${ab.cor};color:#fff;border:none" onclick="abrirApp('${ab.scheme}','${ab.web}')">📲 Abrir ${ab.nome} (com música)</button>`
     : `<a class="btn" style="background:${ab.cor};color:#fff;border:none" href="${ab.web}" target="_blank" rel="noopener">📲 Abrir ${ab.nome}</a>`;
-  // YouTube: oferece o VÍDEO (Short) sem música — o usuário põe a música no próprio YouTube
-  let btnVideo="";
-  if(rede==="youtube" && MANIFEST[nome] && MANIFEST[nome].video){
-    const vurl=urlDe(MANIFEST[nome].video);
-    btnVideo=`<a class="btn ouro" href="${vurl}" onclick="baixar('${vurl}','${nomeArqBase(nome)}-video.mp4',event)">🎬 Baixar vídeo (Short, sem música)</a>`;
-  }
+  // VÍDEO na proporção certa da rede: Instagram/Facebook = 4:5 · TikTok/YouTube = 9:16
+  const usa45 = (rede==="instagram"||rede==="facebook");
+  let vinfo=null, prop="9:16";
+  if(usa45 && MANIFEST45[nome] && MANIFEST45[nome].video){ vinfo=MANIFEST45[nome]; prop="4:5"; }
+  else if(MANIFEST[nome] && MANIFEST[nome].video){ vinfo=MANIFEST[nome]; prop="9:16"; }
+  const btnVideo = vinfo
+    ? `<a class="btn ouro" href="${urlDe(vinfo.video)}" onclick="baixar('${urlDe(vinfo.video)}','${nomeArqBase(nome)}-video-${prop.replace(':','x')}.mp4',event)">🎬 Baixar vídeo (${prop}, sem música)</a>`
+    : "";
   document.getElementById("ovActions").innerHTML=
-    (rede==="youtube"
-      ? btnVideo
-      : (podeCompart?`<button class="btn ouro" onclick="compartilharOverlay()">1️⃣ Salvar TODAS as fotos</button>`:``))+
+    btnVideo+
+    (podeCompart?`<button class="btn" onclick="compartilharOverlay()">📲 Salvar fotos</button>`:``)+
     btnAbrir+
-    (rede==="youtube"?``:`<button class="btn" onclick="baixarOverlay()">⬇ Baixar todas</button>`)+
+    `<button class="btn" onclick="baixarOverlay()">⬇ Baixar fotos</button>`+
     `<button class="btn" onclick="copiarOverlay()">📋 Copiar legenda</button>`;
   document.getElementById("overlay").classList.add("on");
   document.body.style.overflow="hidden";

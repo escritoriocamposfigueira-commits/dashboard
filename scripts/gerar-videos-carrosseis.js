@@ -19,7 +19,8 @@ const REL = (process.env.SAIDA_DIR || "public/carrosseis-videos").replace(/\\/g,
 const SAIDA = path.join(RAIZ, REL);
 const TRILHAS_DIR = path.join(RAIZ, "TRILHAS", "aprovadas");
 const SEG_POR_SLIDE = 3.2;
-const W = 1080, H = 1920;
+const PROP = process.env.PROP === "4x5" ? "4x5" : "9x16";   // proporção do vídeo
+const W = 1080, H = PROP === "4x5" ? 1350 : 1920;
 
 function trilhas() {
   return fs.readdirSync(TRILHAS_DIR).filter((f) => /\.mp3$/i.test(f)).sort()
@@ -31,7 +32,7 @@ function imagensDe(carrDir) {
   });
   const vert = subs.find((s) => /9x16|vertical/i.test(s));
   const feed = subs.find((s) => /4x5|feed/i.test(s));
-  const escolha = vert || feed;
+  const escolha = PROP === "4x5" ? feed : (vert || feed);   // 4:5 usa feed; 9:16 usa vertical
   if (!escolha) return [];
   const dir = path.join(carrDir, escolha);
   return fs.readdirSync(dir)
