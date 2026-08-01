@@ -255,7 +255,7 @@ const PASSOS={
   instagram:"🎵 <b>Com música (celular):</b> 📲 Salve as fotos → abra o <b>Instagram</b> → <b>+</b> → Publicação → <b>Selecionar vários</b> → escolha as fotos na ordem → <b>Adicionar música</b> → Avançar → <b>Config. avançadas → Agendar</b>. Cole a legenda (já copiada).",
   facebook:"📲 Salve as fotos → abra o <b>Facebook</b> → Criar publicação → <b>Foto/Vídeo</b> → selecione as fotos → adicione <b>música</b> (quando disponível) → <b>Agendar</b>. Legenda já copiada.",
   tiktok:"🎵 <b>Com música (celular):</b> 📲 Salve as fotos → abra o <b>TikTok</b> → <b>+</b> → <b>Carregar → Fotos</b> → selecione na ordem → escolha o <b>som</b> → poste. Legenda já copiada.",
-  youtube:"🎬 Toque em <b>Postar VÍDEO</b> → escolha o <b>YouTube</b> na tela de compartilhar → ele abre já pra <b>enviar como Short</b> → toque em <b>Som/Adicionar áudio</b> (música do YouTube) → Publicar. Dá pra pôr música <b>depois</b> também: Studio → Conteúdo → seu Short → <b>Áudio</b>. (O vídeo vem <b>sem música</b> de propósito.)",
+  youtube:"⚠️ O YouTube <b>não recebe vídeo pelo compartilhar do navegador</b> (por isso ele não aparece na lista). Faça assim: 1️⃣ toque em <b>Salvar vídeo na galeria</b> (escolha <b>'Salvar vídeo'</b>) → 2️⃣ abra o app do <b>YouTube</b> → <b>＋ Criar → Enviar</b> → escolha o vídeo na <b>galeria</b> → vira <b>Short</b> → <b>Adicionar som</b> → Publicar. 💡 Mantenha o app do YouTube <b>atualizado</b>.",
 };
 let _ovUrls=[], _ovBase="", _ovCap="", _ovNome="", _ovRede="", _ovVideoUrl="";
 async function abrirRede(nome,rede,ev){ if(ev)ev.preventDefault();
@@ -294,8 +294,10 @@ function galeria(nome,rede,urls,cap){
   else if(MANIFEST[nome] && MANIFEST[nome].video){ vinfo=MANIFEST[nome]; prop="9:16"; }
   _ovVideoUrl = vinfo ? urlDe(vinfo.video) : "";
   const arqVid = `${nomeArqBase(nome)}-video-${prop.replace(':','x')}.mp4`;
+  // YouTube não recebe vídeo do navegador — o certo é salvar na galeria e enviar pelo app.
+  const rotuloVid = rede==="youtube" ? `📲 Salvar vídeo na galeria (${prop})` : `📲 Postar VÍDEO no ${REDE_NOME[rede]} (${prop})`;
   const btnVideo = vinfo
-    ? `<button class="btn ouro" onclick="postarVideo()">📲 Postar VÍDEO no ${REDE_NOME[rede]} (${prop})</button>`+
+    ? `<button class="btn ouro" onclick="postarVideo()">${rotuloVid}</button>`+
       `<a class="btn" href="${_ovVideoUrl}" onclick="baixar('${_ovVideoUrl}','${arqVid}',event)">⬇ Baixar vídeo</a>`
     : "";
   document.getElementById("ovActions").innerHTML=
