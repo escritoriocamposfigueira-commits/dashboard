@@ -80,10 +80,10 @@
 
 <div class="wrap">
   <div class="aviso">
-    <b>Toque na rede</b> → salva <b>todas as fotos</b> no tamanho certo (feed 4:5 / TikTok 9:16) e <b>copia a legenda</b>.<br>
-    🎵 <b>Quer com MÚSICA?</b> Só dá <b>pelo app do celular</b> (Instagram/TikTok não deixam pôr música por PC). Salve as fotos aqui → abra o app → monte o <b>carrossel</b> → adicione a <b>música</b> → <b>agende</b> ali mesmo.<br>
-    📅 <b>Sem música?</b> Aí pode agendar no <b>PC</b> (Meta Business Suite / TikTok Studio) — botão dentro de cada rede.<br>
-    <small style="color:#9a948a">Carrossel de fotos = post de <b>feed</b> (não é Reels). O feed é o que mais gera salvamento e conversa pro seu conteúdo.</small>
+    <b>Toque na rede</b> → 1️⃣ <b>Salva todas as fotos</b> (tamanho certo) e copia a legenda → 2️⃣ <b>Abre direto no destino</b>:
+    🟣 Instagram e 🔵 Facebook abrem o <b>app</b> (pra você colocar <b>música</b> no carrossel), ⚫ TikTok abre o <b>TikTok Studio</b> e 🔴 YouTube o <b>YouTube Studio</b>.<br>
+    🎵 Música no carrossel só existe <b>dentro do app</b> — por isso Instagram/Facebook abrem o app, e <b>não</b> o Meta Business Suite.<br>
+    <small style="color:#9a948a">Carrossel de fotos = post de <b>feed</b> (não é Reels).</small>
   </div>
   <div id="lista"><div class="load">Carregando carrosséis…</div></div>
 </div>
@@ -235,13 +235,21 @@ async function baixarLote(urls,base){ toast("Baixando "+urls.length+" imagens…
 window._carr={};
 const REDE_FMT={instagram:"feed",facebook:"feed",tiktok:"vert",youtube:"vert"};
 const REDE_NOME={instagram:"Instagram",facebook:"Facebook",tiktok:"TikTok",youtube:"YouTube"};
-// Onde AGENDAR/postar cada rede (ferramenta oficial no navegador)
-const STUDIO={
-  instagram:{nome:"Meta Business Suite",url:"https://business.facebook.com/latest/composer",cor:"#0866ff"},
-  facebook :{nome:"Meta Business Suite",url:"https://business.facebook.com/latest/composer",cor:"#0866ff"},
-  tiktok   :{nome:"TikTok Studio",url:"https://www.tiktok.com/tiktokstudio/upload",cor:"#010101"},
-  youtube  :{nome:"YouTube Studio",url:"https://studio.youtube.com/",cor:"#ff0000"},
+// Abrir DIRETO no destino certo (Insta/Face = app, p/ ter MÚSICA; TikTok/YouTube = Studio)
+const ABRIR={
+  instagram:{tipo:"app",scheme:"instagram://app",web:"https://www.instagram.com/",nome:"Instagram",cor:"#c2185b"},
+  facebook :{tipo:"app",scheme:"fb://",web:"https://m.facebook.com/",nome:"Facebook",cor:"#0866ff"},
+  tiktok   :{tipo:"url",web:"https://www.tiktok.com/tiktokstudio/upload",nome:"TikTok Studio",cor:"#010101"},
+  youtube  :{tipo:"url",web:"https://studio.youtube.com/",nome:"YouTube Studio",cor:"#ff0000"},
 };
+// Tenta abrir o app; se não abrir em 1,2s, cai pro site.
+function abrirApp(scheme,web){
+  let caiu=false;
+  const t=setTimeout(()=>{ if(!caiu) window.location.href=web; },1200);
+  function vis(){ if(document.hidden){ caiu=true; clearTimeout(t); document.removeEventListener("visibilitychange",vis);} }
+  document.addEventListener("visibilitychange",vis);
+  try{ window.location.href=scheme; }catch(e){ clearTimeout(t); window.location.href=web; }
+}
 // Passo a passo PELO CELULAR (é o único jeito de colocar MÚSICA no carrossel de fotos)
 const PASSOS={
   instagram:"🎵 <b>Com música (celular):</b> 📲 Salve as fotos → abra o <b>Instagram</b> → <b>+</b> → Publicação → <b>Selecionar vários</b> → escolha as fotos na ordem → <b>Adicionar música</b> → Avançar → <b>Config. avançadas → Agendar</b>. Cole a legenda (já copiada).",
@@ -265,7 +273,7 @@ async function abrirRede(nome,rede,ev){ if(ev)ev.preventDefault();
 }
 function galeria(nome,rede,urls,cap){
   _ovUrls=urls; _ovBase=nomeArqBase(nome); _ovCap=cap; _ovNome=nome; _ovRede=rede;
-  const st=STUDIO[rede];
+  const ab=ABRIR[rede];
   const fmt=REDE_FMT[rede]==="vert"?"9:16":"4:5";
   document.getElementById("ovTitulo").textContent=REDE_NOME[rede]+" · "+urls.length+" fotos "+fmt+" (carrossel de feed)";
   document.getElementById("ovPasso").innerHTML=PASSOS[rede]||"";
@@ -275,11 +283,14 @@ function galeria(nome,rede,urls,cap){
     cont.appendChild(fig); });
   document.getElementById("ovCap").textContent=cap;
   const podeCompart = !!(navigator.canShare);
+  const btnAbrir = ab.tipo==="app"
+    ? `<button class="btn" style="background:${ab.cor};color:#fff;border:none" onclick="abrirApp('${ab.scheme}','${ab.web}')">📲 Abrir ${ab.nome} (com música)</button>`
+    : `<a class="btn" style="background:${ab.cor};color:#fff;border:none" href="${ab.web}" target="_blank" rel="noopener">📲 Abrir ${ab.nome}</a>`;
   document.getElementById("ovActions").innerHTML=
-    (podeCompart?`<button class="btn ouro" onclick="compartilharOverlay()">📲 Salvar TODAS as fotos</button>`:``)+
-    `<button class="btn ouro" onclick="baixarOverlay()">⬇ Baixar todas</button>`+
-    `<button class="btn" onclick="copiarOverlay()">📋 Copiar legenda</button>`+
-    `<a class="btn" style="background:${st.cor};color:#fff;border:none" href="${st.url}" target="_blank" rel="noopener">📅 Agendar no PC (${st.nome}) — sem música</a>`;
+    (podeCompart?`<button class="btn ouro" onclick="compartilharOverlay()">1️⃣ Salvar TODAS as fotos</button>`:``)+
+    btnAbrir+
+    `<button class="btn" onclick="baixarOverlay()">⬇ Baixar todas</button>`+
+    `<button class="btn" onclick="copiarOverlay()">📋 Copiar legenda</button>`;
   document.getElementById("overlay").classList.add("on");
   document.body.style.overflow="hidden";
 }
