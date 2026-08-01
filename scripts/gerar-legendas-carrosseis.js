@@ -174,10 +174,12 @@ function montar(info, fallback, key) {
 
   return {
     _titulo: t,
+    _titulo_youtube: t,   // título viral p/ o campo "Título" do YouTube (Short)
     instagram: bloco("instagram"),
     facebook:  bloco("facebook"),
     tiktok:    bloco("tiktok"),
-    youtube:   bloco("youtube"),
+    // YouTube tem TÍTULO + DESCRIÇÃO separados
+    youtube:   `🎬 TÍTULO (copie no campo "Título" do Short):\n${t}\n\n📝 DESCRIÇÃO:\n` + bloco("youtube"),
   };
 }
 
