@@ -80,10 +80,10 @@
 
 <div class="wrap">
   <div class="aviso">
-    <b>Como agendar:</b> toque no botão da <b>rede</b> → abre <b>todas as fotos no tamanho certo</b> (4:5 ou 9:16) e <b>copia a legenda</b>.
-    Depois é só: 1️⃣ <b>Baixar todas</b> · 2️⃣ tocar em <b>📅 Abrir o estúdio</b> (Meta Business Suite p/ Instagram+Facebook, TikTok Studio, YouTube Studio) ·
-    3️⃣ enviar as fotos como <b>carrossel</b> · 4️⃣ <b>colar a legenda e agendar</b>. ✅<br>
-    <small style="color:#9a948a">Dica: agendar funciona melhor no <b>computador</b>. No celular, os estúdios abrem no navegador do mesmo jeito.</small>
+    <b>Toque na rede</b> → salva <b>todas as fotos</b> no tamanho certo (feed 4:5 / TikTok 9:16) e <b>copia a legenda</b>.<br>
+    🎵 <b>Quer com MÚSICA?</b> Só dá <b>pelo app do celular</b> (Instagram/TikTok não deixam pôr música por PC). Salve as fotos aqui → abra o app → monte o <b>carrossel</b> → adicione a <b>música</b> → <b>agende</b> ali mesmo.<br>
+    📅 <b>Sem música?</b> Aí pode agendar no <b>PC</b> (Meta Business Suite / TikTok Studio) — botão dentro de cada rede.<br>
+    <small style="color:#9a948a">Carrossel de fotos = post de <b>feed</b> (não é Reels). O feed é o que mais gera salvamento e conversa pro seu conteúdo.</small>
   </div>
   <div id="lista"><div class="load">Carregando carrosséis…</div></div>
 </div>
@@ -227,6 +227,13 @@ const STUDIO={
   tiktok   :{nome:"TikTok Studio",url:"https://www.tiktok.com/tiktokstudio/upload",cor:"#010101"},
   youtube  :{nome:"YouTube Studio",url:"https://studio.youtube.com/",cor:"#ff0000"},
 };
+// Passo a passo PELO CELULAR (é o único jeito de colocar MÚSICA no carrossel de fotos)
+const PASSOS={
+  instagram:"🎵 <b>Com música (celular):</b> 📲 Salve as fotos → abra o <b>Instagram</b> → <b>+</b> → Publicação → <b>Selecionar vários</b> → escolha as fotos na ordem → <b>Adicionar música</b> → Avançar → <b>Config. avançadas → Agendar</b>. Cole a legenda (já copiada).",
+  facebook:"📲 Salve as fotos → abra o <b>Facebook</b> → Criar publicação → <b>Foto/Vídeo</b> → selecione as fotos → adicione <b>música</b> (quando disponível) → <b>Agendar</b>. Legenda já copiada.",
+  tiktok:"🎵 <b>Com música (celular):</b> 📲 Salve as fotos → abra o <b>TikTok</b> → <b>+</b> → <b>Carregar → Fotos</b> → selecione na ordem → escolha o <b>som</b> → poste. Legenda já copiada.",
+  youtube:"ℹ️ O YouTube não tem carrossel de fotos. Use no <b>YouTube Studio</b> como <b>post da comunidade</b> (imagem) ou transforme em vídeo/Short. Legenda já copiada.",
+};
 let _ovUrls=[], _ovBase="", _ovCap="", _ovNome="", _ovRede="";
 async function abrirRede(nome,rede,ev){ if(ev)ev.preventDefault();
   const d=window._carr[nome]||{feed:[],vert:[]};
@@ -236,14 +243,17 @@ async function abrirRede(nome,rede,ev){ if(ev)ev.preventDefault();
   const cap=legenda(nome,rede);
   try{ await navigator.clipboard.writeText(cap); toast("Legenda copiada ✓"); }catch(e){}
   galeria(nome,rede,urls,cap);
+  // no celular (toque), já abre a tela de salvar TODAS as fotos de uma vez
+  if(navigator.canShare && window.matchMedia && window.matchMedia("(pointer:coarse)").matches){
+    compartilharOverlay();
+  }
 }
 function galeria(nome,rede,urls,cap){
   _ovUrls=urls; _ovBase=nomeArqBase(nome); _ovCap=cap; _ovNome=nome; _ovRede=rede;
   const st=STUDIO[rede];
   const fmt=REDE_FMT[rede]==="vert"?"9:16":"4:5";
-  document.getElementById("ovTitulo").textContent=REDE_NOME[rede]+" · "+urls.length+" fotos "+fmt;
-  document.getElementById("ovPasso").innerHTML=
-    `1️⃣ <b>Baixe as fotos</b> · 2️⃣ <b>Abra o ${st.nome}</b> · 3️⃣ envie as fotos como <b>carrossel</b> · 4️⃣ <b>cole a legenda</b> (já copiada) e <b>agende</b>.`;
+  document.getElementById("ovTitulo").textContent=REDE_NOME[rede]+" · "+urls.length+" fotos "+fmt+" (carrossel de feed)";
+  document.getElementById("ovPasso").innerHTML=PASSOS[rede]||"";
   const cont=document.getElementById("ovImgs"); cont.innerHTML="";
   urls.forEach((u,i)=>{ const fig=document.createElement("figure");
     fig.innerHTML=`<img loading="lazy" src="${u}"><a href="${u}" onclick="baixar('${u}','${_ovBase}-${i+1}.png',event)">⬇ ${i+1}</a>`;
@@ -251,10 +261,10 @@ function galeria(nome,rede,urls,cap){
   document.getElementById("ovCap").textContent=cap;
   const podeCompart = !!(navigator.canShare);
   document.getElementById("ovActions").innerHTML=
+    (podeCompart?`<button class="btn ouro" onclick="compartilharOverlay()">📲 Salvar TODAS as fotos</button>`:``)+
     `<button class="btn ouro" onclick="baixarOverlay()">⬇ Baixar todas</button>`+
-    `<button class="btn ouro" onclick="copiarOverlay()">📋 Copiar legenda</button>`+
-    (podeCompart?`<button class="btn" onclick="compartilharOverlay()">📲 Salvar no celular</button>`:``)+
-    `<a class="btn" style="background:${st.cor};color:#fff;border:none" href="${st.url}" target="_blank" rel="noopener">📅 Abrir ${st.nome} p/ agendar</a>`;
+    `<button class="btn" onclick="copiarOverlay()">📋 Copiar legenda</button>`+
+    `<a class="btn" style="background:${st.cor};color:#fff;border:none" href="${st.url}" target="_blank" rel="noopener">📅 Agendar no PC (${st.nome}) — sem música</a>`;
   document.getElementById("overlay").classList.add("on");
   document.body.style.overflow="hidden";
 }
