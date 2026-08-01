@@ -255,9 +255,9 @@ const PASSOS={
   instagram:"🎵 <b>Com música (celular):</b> 📲 Salve as fotos → abra o <b>Instagram</b> → <b>+</b> → Publicação → <b>Selecionar vários</b> → escolha as fotos na ordem → <b>Adicionar música</b> → Avançar → <b>Config. avançadas → Agendar</b>. Cole a legenda (já copiada).",
   facebook:"📲 Salve as fotos → abra o <b>Facebook</b> → Criar publicação → <b>Foto/Vídeo</b> → selecione as fotos → adicione <b>música</b> (quando disponível) → <b>Agendar</b>. Legenda já copiada.",
   tiktok:"🎵 <b>Com música (celular):</b> 📲 Salve as fotos → abra o <b>TikTok</b> → <b>+</b> → <b>Carregar → Fotos</b> → selecione na ordem → escolha o <b>som</b> → poste. Legenda já copiada.",
-  youtube:"🎬 Baixe o <b>vídeo (Short)</b> aqui → abra o YouTube → <b>Criar (＋) → enviar como Short</b> → toque em <b>Som/Adicionar áudio</b> e escolha a música da biblioteca do YouTube → Publicar. Dá pra pôr música <b>depois</b> também: Studio → Conteúdo → seu Short → <b>Áudio</b>. (O vídeo vem <b>sem música</b> de propósito, pra você escolher.)",
+  youtube:"🎬 Toque em <b>Postar VÍDEO</b> → escolha o <b>YouTube</b> na tela de compartilhar → ele abre já pra <b>enviar como Short</b> → toque em <b>Som/Adicionar áudio</b> (música do YouTube) → Publicar. Dá pra pôr música <b>depois</b> também: Studio → Conteúdo → seu Short → <b>Áudio</b>. (O vídeo vem <b>sem música</b> de propósito.)",
 };
-let _ovUrls=[], _ovBase="", _ovCap="", _ovNome="", _ovRede="";
+let _ovUrls=[], _ovBase="", _ovCap="", _ovNome="", _ovRede="", _ovVideoUrl="";
 async function abrirRede(nome,rede,ev){ if(ev)ev.preventDefault();
   const d=window._carr[nome]||{feed:[],vert:[]};
   let urls = REDE_FMT[rede]==="vert" ? d.vert : d.feed;
@@ -292,12 +292,15 @@ function galeria(nome,rede,urls,cap){
   let vinfo=null, prop="9:16";
   if(usa45 && MANIFEST45[nome] && MANIFEST45[nome].video){ vinfo=MANIFEST45[nome]; prop="4:5"; }
   else if(MANIFEST[nome] && MANIFEST[nome].video){ vinfo=MANIFEST[nome]; prop="9:16"; }
+  _ovVideoUrl = vinfo ? urlDe(vinfo.video) : "";
+  const arqVid = `${nomeArqBase(nome)}-video-${prop.replace(':','x')}.mp4`;
   const btnVideo = vinfo
-    ? `<a class="btn ouro" href="${urlDe(vinfo.video)}" onclick="baixar('${urlDe(vinfo.video)}','${nomeArqBase(nome)}-video-${prop.replace(':','x')}.mp4',event)">🎬 Baixar vídeo (${prop}, sem música)</a>`
+    ? `<button class="btn ouro" onclick="postarVideo()">📲 Postar VÍDEO no ${REDE_NOME[rede]} (${prop})</button>`+
+      `<a class="btn" href="${_ovVideoUrl}" onclick="baixar('${_ovVideoUrl}','${arqVid}',event)">⬇ Baixar vídeo</a>`
     : "";
   document.getElementById("ovActions").innerHTML=
     btnVideo+
-    (podeCompart?`<button class="btn" onclick="compartilharOverlay()">📲 Salvar fotos</button>`:``)+
+    (podeCompart?`<button class="btn" onclick="compartilharOverlay()">📲 Postar FOTOS</button>`:``)+
     btnAbrir+
     `<button class="btn" onclick="baixarOverlay()">⬇ Baixar fotos</button>`+
     `<button class="btn" onclick="copiarOverlay()">📋 Copiar legenda</button>`;
@@ -308,6 +311,19 @@ function fecharOverlay(){ document.getElementById("overlay").classList.remove("o
 function copiarOverlay(){ navigator.clipboard.writeText(_ovCap).then(()=>toast("Legenda copiada! 📋")).catch(()=>toast("Selecione e copie manualmente")); }
 async function baixarOverlay(){ toast("Baixando "+_ovUrls.length+" fotos…");
   for(let i=0;i<_ovUrls.length;i++){ await baixar(_ovUrls[i], _ovBase+"-"+(i+1)+".png"); await new Promise(r=>setTimeout(r,700)); } }
+async function postarVideo(){
+  if(!_ovVideoUrl){ toast("Sem vídeo"); return; }
+  const cap=_ovCap; try{ await navigator.clipboard.writeText(cap); }catch(e){}
+  toast("Preparando o vídeo…");
+  try{
+    const r=await fetch(_ovVideoUrl); const b=await r.blob();
+    const f=new File([b], _ovBase+"-video.mp4", {type:"video/mp4"});
+    if(navigator.canShare && navigator.canShare({files:[f]})){
+      toast("Legenda copiada ✓ — escolha o app e poste");
+      await navigator.share({files:[f], text:cap});
+    } else { baixar(_ovVideoUrl, _ovBase+"-video.mp4"); }
+  }catch(e){ if(e&&e.name==="AbortError")return; baixar(_ovVideoUrl, _ovBase+"-video.mp4"); }
+}
 async function compartilharOverlay(){ toast("Preparando "+_ovUrls.length+" fotos…");
   try{ const files=[];
     for(let i=0;i<_ovUrls.length;i++){ const r=await fetch(_ovUrls[i]); const b=await r.blob();
