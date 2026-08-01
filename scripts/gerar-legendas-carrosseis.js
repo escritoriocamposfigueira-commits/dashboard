@@ -17,12 +17,13 @@ const CONTAS = {
   tiktok:    { apresentador: "@henriquesfigueira", apoio: "@camposfigueira @gravataafiada" },
   youtube:   { apresentador: "Henrique Figueira", apoio: "@gravataafiada" },
 };
-// Hashtags sob medida por rede (mix: nicho + local + amplas)
+// Hashtags por rede — quantidade e escolha baseadas em pesquisa (2026):
+// IG máx 5 (nicho+local), TikTok 5 (popular+nicho+tema, sem #fyp), FB 2, YouTube 3 (#Shorts).
 const TAGS = {
-  instagram: "#imoveis #mogidascruzes #altotietê #engenhariacivil #regularizacaodeimoveis #cartorio #matriculadeimovel #comprarimovel #dicasdeimovel #direitoimobiliario #gravataafiada #viral #fyp",
-  facebook:  "#imoveis #mogidascruzes #regularizacao #engenharia #comprarimovel #dicasdeimovel #gravataafiada",
-  tiktok:    "#fyp #foryou #viral #imoveis #mogidascruzes #direitoimobiliario #dicasdeimovel #engenharia #regularizacao #aprendanotiktok",
-  youtube:   "#Shorts #imoveis #mogidascruzes #engenharia #regularizacao #dicasdeimovel #viral",
+  instagram: "#imoveis #comprarimovel #regularizacaodeimoveis #matriculadeimovel #mogidascruzes",
+  facebook:  "#imoveis #mogidascruzes",
+  tiktok:    "#imoveis #regularizacaodeimoveis #cartorio #dicasdeimovel #direitoimobiliario",
+  youtube:   "#Shorts #imoveis #mogidascruzes",
 };
 
 function limpar(s) {
