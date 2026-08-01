@@ -145,13 +145,10 @@ const TAGSRD={
   youtube:"#Shorts #imoveis #mogidascruzes"
 };
 function legendaPadrao(rede,nome){
-  const canal = rede==="facebook"?"no particular":(rede==="instagram"?"no direct":"nos comentários");
-  const extra = rede==="youtube"?" #Shorts":"";
   const c = CRED[rede];
-  return `Antes de comprar, vender ou regularizar um imóvel, veja isto 👇${extra}\n\n`+
-    `Um detalhe simples aqui evita dor de cabeça (e prejuízo).\n\n`+
-    `🔖 SALVA esse post e MARCA quem vai comprar ou vender.\n`+
-    `💬 Comenta "QUERO" que eu te respondo ${canal}.\n\n`+
+  return `Um detalhe que quase ninguém confere pode custar caro na hora de comprar, vender ou regularizar um imóvel.\n\n`+
+    `Você já passou por algo parecido? Conta aqui nos comentários 👇\n`+
+    `🔖 Salva pra não esquecer e marca quem vai comprar ou vender.\n\n`+
     `🎤 Apresentador: ${c.apresentador}\n🤝 Apoio: ${c.apoio}\n\n${TAGSRD[rede]}`;
 }
 
