@@ -66,7 +66,8 @@
   .ov-imgs img{width:100%;border-radius:10px;border:1px solid #333;display:block;background:#000}
   .ov-imgs a{display:block;text-align:center;font-size:12px;font-weight:700;padding:7px;color:#1a1200;background:linear-gradient(135deg,var(--ouro2),var(--ouro));border-radius:8px;margin-top:5px;text-decoration:none}
   .ov-cap{margin-top:10px;background:#000;border:1px solid var(--linha);border-radius:12px;padding:10px;color:#e9e3d6;font-size:12.5px;white-space:pre-wrap;max-height:110px;overflow:auto}
-  .ov-actions{display:flex;gap:8px;margin-top:8px}
+  .ov-actions{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+  .ov-actions .btn{flex:1 1 45%;min-width:140px}
 </style>
 </head>
 <body>
@@ -79,9 +80,10 @@
 
 <div class="wrap">
   <div class="aviso">
-    <b>Como postar:</b> escolha o carrossel e toque no botão da <b>rede</b> (🟣 Instagram · 🔵 Facebook · ⚫ TikTok · 🔴 YouTube).
-    Ele <b>abre todas as imagens no tamanho certo</b> daquela rede (feed 4:5 ou vertical 9:16) e já <b>copia a legenda</b>
-    (título viral + <b>#viral</b> + suas menções). No celular, é só escolher o app e postar como <b>carrossel de fotos</b>. ✅
+    <b>Como agendar:</b> toque no botão da <b>rede</b> → abre <b>todas as fotos no tamanho certo</b> (4:5 ou 9:16) e <b>copia a legenda</b>.
+    Depois é só: 1️⃣ <b>Baixar todas</b> · 2️⃣ tocar em <b>📅 Abrir o estúdio</b> (Meta Business Suite p/ Instagram+Facebook, TikTok Studio, YouTube Studio) ·
+    3️⃣ enviar as fotos como <b>carrossel</b> · 4️⃣ <b>colar a legenda e agendar</b>. ✅<br>
+    <small style="color:#9a948a">Dica: agendar funciona melhor no <b>computador</b>. No celular, os estúdios abrem no navegador do mesmo jeito.</small>
   </div>
   <div id="lista"><div class="load">Carregando carrosséis…</div></div>
 </div>
@@ -92,12 +94,10 @@
 </footer>
 <div id="overlay" class="overlay">
   <div class="ov-top"><b id="ovTitulo"></b><button class="ov-x" onclick="fecharOverlay()">✕ Fechar</button></div>
+  <div id="ovPasso" style="color:#c9a24b;font-size:12.5px;margin-bottom:8px"></div>
   <div class="ov-imgs" id="ovImgs"></div>
   <div class="ov-cap" id="ovCap"></div>
-  <div class="ov-actions">
-    <button class="btn ouro" style="flex:1" onclick="copiarOverlay()">📋 Copiar legenda</button>
-    <button class="btn ouro" style="flex:1" onclick="baixarOverlay()">⬇ Baixar todas</button>
-  </div>
+  <div class="ov-actions" id="ovActions"></div>
 </div>
 <div id="toast" class="toast"></div>
 
@@ -197,10 +197,10 @@ function render(carr){
     window._carr[nome]={feed:feedUrls, vert:vertUrls};
 
     const redes=`<div class="redes">
-      <a class="rede r-ig" onclick="abrirRede('${nome}','instagram',event)">🟣 Instagram<small>abre fotos 4:5 + legenda</small></a>
-      <a class="rede r-fb" onclick="abrirRede('${nome}','facebook',event)">🔵 Facebook<small>abre fotos 4:5 + legenda</small></a>
-      <a class="rede r-tt" onclick="abrirRede('${nome}','tiktok',event)">⚫ TikTok<small>abre fotos 9:16 + legenda</small></a>
-      <a class="rede r-yt" onclick="abrirRede('${nome}','youtube',event)">🔴 YouTube<small>abre fotos 9:16 + legenda</small></a>
+      <a class="rede r-ig" onclick="abrirRede('${nome}','instagram',event)">🟣 Instagram<small>fotos 4:5 + agendar</small></a>
+      <a class="rede r-fb" onclick="abrirRede('${nome}','facebook',event)">🔵 Facebook<small>fotos 4:5 + agendar</small></a>
+      <a class="rede r-tt" onclick="abrirRede('${nome}','tiktok',event)">⚫ TikTok<small>fotos 9:16 + agendar</small></a>
+      <a class="rede r-yt" onclick="abrirRede('${nome}','youtube',event)">🔴 YouTube<small>fotos 9:16 + agendar</small></a>
     </div>`;
 
     const div=document.createElement("div"); div.className="carrossel";
@@ -216,46 +216,60 @@ function nomeArqBase(nome){ return nomeBonito(nome).replace(/[^\w.\- ]+/g,"-"); 
 async function baixarLote(urls,base){ toast("Baixando "+urls.length+" imagens…");
   for(let i=0;i<urls.length;i++){ await baixar(urls[i],base+"-"+(i+1)+".png"); await new Promise(r=>setTimeout(r,700)); } }
 
-// ==== Botão por rede: abre TODAS as imagens no tamanho certo + copia a legenda ====
+// ==== Botão por rede: abre TODAS as imagens no tamanho certo + legenda + agendador ====
 window._carr={};
 const REDE_FMT={instagram:"feed",facebook:"feed",tiktok:"vert",youtube:"vert"};
 const REDE_NOME={instagram:"Instagram",facebook:"Facebook",tiktok:"TikTok",youtube:"YouTube"};
-let _ovUrls=[], _ovBase="", _ovCap="";
+// Onde AGENDAR/postar cada rede (ferramenta oficial no navegador)
+const STUDIO={
+  instagram:{nome:"Meta Business Suite",url:"https://business.facebook.com/latest/composer",cor:"#0866ff"},
+  facebook :{nome:"Meta Business Suite",url:"https://business.facebook.com/latest/composer",cor:"#0866ff"},
+  tiktok   :{nome:"TikTok Studio",url:"https://www.tiktok.com/tiktokstudio/upload",cor:"#010101"},
+  youtube  :{nome:"YouTube Studio",url:"https://studio.youtube.com/",cor:"#ff0000"},
+};
+let _ovUrls=[], _ovBase="", _ovCap="", _ovNome="", _ovRede="";
 async function abrirRede(nome,rede,ev){ if(ev)ev.preventDefault();
   const d=window._carr[nome]||{feed:[],vert:[]};
   let urls = REDE_FMT[rede]==="vert" ? d.vert : d.feed;
   if(!urls||!urls.length) urls=(d.vert&&d.vert.length)?d.vert:d.feed;
   if(!urls||!urls.length){ toast("Sem imagens neste formato"); return; }
   const cap=legenda(nome,rede);
-  try{ await navigator.clipboard.writeText(cap); }catch(e){}
-  toast("Preparando "+urls.length+" imagens…");
-  try{
-    const files=[];
-    for(let i=0;i<urls.length;i++){ const r=await fetch(urls[i]); const b=await r.blob();
-      files.push(new File([b], nomeArqBase(nome)+"-"+(i+1)+".png", {type:b.type||"image/png"})); }
-    if(navigator.canShare && navigator.canShare({files})){
-      toast("Legenda copiada ✓ — escolha "+REDE_NOME[rede]);
-      await navigator.share({files, text:cap});
-      return;
-    }
-    galeria(nome,rede,urls,cap);
-  }catch(e){ if(e&&e.name==="AbortError")return; galeria(nome,rede,urls,cap); }
+  try{ await navigator.clipboard.writeText(cap); toast("Legenda copiada ✓"); }catch(e){}
+  galeria(nome,rede,urls,cap);
 }
 function galeria(nome,rede,urls,cap){
-  _ovUrls=urls; _ovBase=nomeArqBase(nome); _ovCap=cap;
-  document.getElementById("ovTitulo").textContent=REDE_NOME[rede]+" · "+urls.length+" imagens";
+  _ovUrls=urls; _ovBase=nomeArqBase(nome); _ovCap=cap; _ovNome=nome; _ovRede=rede;
+  const st=STUDIO[rede];
+  const fmt=REDE_FMT[rede]==="vert"?"9:16":"4:5";
+  document.getElementById("ovTitulo").textContent=REDE_NOME[rede]+" · "+urls.length+" fotos "+fmt;
+  document.getElementById("ovPasso").innerHTML=
+    `1️⃣ <b>Baixe as fotos</b> · 2️⃣ <b>Abra o ${st.nome}</b> · 3️⃣ envie as fotos como <b>carrossel</b> · 4️⃣ <b>cole a legenda</b> (já copiada) e <b>agende</b>.`;
   const cont=document.getElementById("ovImgs"); cont.innerHTML="";
   urls.forEach((u,i)=>{ const fig=document.createElement("figure");
     fig.innerHTML=`<img loading="lazy" src="${u}"><a href="${u}" onclick="baixar('${u}','${_ovBase}-${i+1}.png',event)">⬇ ${i+1}</a>`;
     cont.appendChild(fig); });
   document.getElementById("ovCap").textContent=cap;
+  const podeCompart = !!(navigator.canShare);
+  document.getElementById("ovActions").innerHTML=
+    `<button class="btn ouro" onclick="baixarOverlay()">⬇ Baixar todas</button>`+
+    `<button class="btn ouro" onclick="copiarOverlay()">📋 Copiar legenda</button>`+
+    (podeCompart?`<button class="btn" onclick="compartilharOverlay()">📲 Salvar no celular</button>`:``)+
+    `<a class="btn" style="background:${st.cor};color:#fff;border:none" href="${st.url}" target="_blank" rel="noopener">📅 Abrir ${st.nome} p/ agendar</a>`;
   document.getElementById("overlay").classList.add("on");
   document.body.style.overflow="hidden";
 }
 function fecharOverlay(){ document.getElementById("overlay").classList.remove("on"); document.body.style.overflow=""; }
 function copiarOverlay(){ navigator.clipboard.writeText(_ovCap).then(()=>toast("Legenda copiada! 📋")).catch(()=>toast("Selecione e copie manualmente")); }
-async function baixarOverlay(){ toast("Baixando "+_ovUrls.length+"…");
+async function baixarOverlay(){ toast("Baixando "+_ovUrls.length+" fotos…");
   for(let i=0;i<_ovUrls.length;i++){ await baixar(_ovUrls[i], _ovBase+"-"+(i+1)+".png"); await new Promise(r=>setTimeout(r,700)); } }
+async function compartilharOverlay(){ toast("Preparando "+_ovUrls.length+" fotos…");
+  try{ const files=[];
+    for(let i=0;i<_ovUrls.length;i++){ const r=await fetch(_ovUrls[i]); const b=await r.blob();
+      files.push(new File([b], _ovBase+"-"+(i+1)+".png", {type:b.type||"image/png"})); }
+    if(navigator.canShare && navigator.canShare({files})) await navigator.share({files, text:_ovCap});
+    else toast("Use ⬇ Baixar todas");
+  }catch(e){ if(e&&e.name==="AbortError")return; toast("Use ⬇ Baixar todas"); }
+}
 
 (async function(){
   await Promise.all([carregarCaptions(), carregarManifest()]);
