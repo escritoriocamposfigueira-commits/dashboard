@@ -306,7 +306,9 @@ async function compartilharOverlay(){ toast("Preparando "+_ovUrls.length+" fotos
     (data.tree||[]).forEach(n=>{
       if(n.type!=="blob") return;
       if(!/^public\/carrosseis\//i.test(n.path)) return;
-      if(!/\.(png|jpe?g|webp)$/i.test(n.path)) return;
+      const arq=n.path.split("/").pop();
+      // só slides finais numerados (1.png, 2.png…) — ignora _source, _integrated, etc.
+      if(!/^\d+\.(png|jpe?g|webp)$/i.test(arq)) return;
       const resto=n.path.replace(/^public\/carrosseis\//i,"");
       const partes=resto.split("/");
       if(partes.length<2) return;
@@ -314,6 +316,11 @@ async function compartilharOverlay(){ toast("Preparando "+_ovUrls.length+" fotos
       const c=carr[nome]||(carr[nome]={feed:[],vert:[]});
       if(/9x16|vertical/i.test(fmt)) c.vert.push(n.path);
       else if(/4x5|feed/i.test(fmt)) c.feed.push(n.path);
+    });
+    // esconde carrosséis incompletos (menos de 3 slides em ambos os formatos)
+    Object.keys(carr).forEach(k=>{
+      const c=carr[k];
+      if(Math.max((c.feed||[]).length,(c.vert||[]).length) < 3) delete carr[k];
     });
     render(carr);
   }catch(e){

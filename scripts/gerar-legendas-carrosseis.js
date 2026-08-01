@@ -92,8 +92,14 @@ const GENERICOS = [
   "Isso pode travar a compra do seu imóvel",
   "O erro que custa caro na hora de comprar um imóvel",
 ];
-// Títulos definidos à mão quando não há roteiro no arquivo.
-const OVERRIDES = {};
+// Títulos/apoio definidos à mão (lidos direto da arte) quando não há roteiro.
+const OVERRIDES = {
+  CARROSSEL_001_RECRIADO_INTEGRADO: { titulo: "5 ERROS QUE PODEM TRAVAR A SUA ESCRITURA", apoio: "Você pode pagar pelo imóvel e ainda não conseguir registrar." },
+  CARROSSEL_002_FINAL_INTEGRADO_APROVADO: { titulo: "NÃO PEÇA A MATRÍCULA ANTES DE VER ESTE MAPA", apoio: "O cartório mais perto pode ser o errado — e devolver seu pedido antes de começar.", site: "mapa.onr.org.br" },
+  CARROSSEL_015: { titulo: "A CASA EXISTE NO QUINTAL. PARA O BANCO, ELA PODE NÃO EXISTIR", apoio: "A visita mostra a construção. A análise precisa identificar a garantia." },
+  CARROSSEL_016: { titulo: "A PREFEITURA MANDA O IPTU. O CARTÓRIO PODE NÃO TER A MATRÍCULA", apoio: "O cadastro cobra e localiza. O registro identifica juridicamente o imóvel." },
+  CARROSSEL_017: { titulo: "A MATRÍCULA É VERDADEIRA. MESMO ASSIM, PODE ESTAR VELHA DEMAIS", apoio: "O documento pode ser autêntico e ainda mostrar uma realidade que já mudou." },
+};
 
 // Pega uma frase curta de valor a partir do apoio do roteiro.
 function fraseValor(s) {
@@ -162,7 +168,8 @@ function main() {
     if (rot) {
       try { info = extrair(fs.readFileSync(rot, "utf8")); } catch (e) {}
     }
-    if (OVERRIDES[c]) info.titulo = OVERRIDES[c];
+    const ov = OVERRIDES[c];
+    if (ov) { info.titulo = ov.titulo; if (ov.apoio) info.apoio = ov.apoio; if (ov.site) info.site = ov.site; }
     const fallback = GENERICOS[idx % GENERICOS.length];
     out[c] = montar(info, fallback);
   });
