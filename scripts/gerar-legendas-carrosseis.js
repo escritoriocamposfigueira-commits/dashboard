@@ -102,41 +102,39 @@ const OVERRIDES = {
   CARROSSEL_017: { titulo: "A MATRÍCULA É VERDADEIRA. MESMO ASSIM, PODE ESTAR VELHA DEMAIS", apoio: "O documento pode ser autêntico e ainda mostrar uma realidade que já mudou." },
 };
 
-// Conteúdo sob medida por carrossel:
-//  abertura = conexão emocional (dor/sonho) · seo = frase-chave evergreen (o que a
-//  pessoa PESQUISA hoje e por anos) · pergunta = envolvimento profundo que puxa história.
+// Conteúdo compacto por carrossel: gancho curto (com a palavra-chave = SEO) + pergunta curta.
 const CONTEUDO = {
-  CARROSSEL_001_RECRIADO_INTEGRADO: { abertura: "Você junta uma vida inteira pra comprar um imóvel… e um detalhe pequeno pode te impedir de colocar ele no seu nome.", seo: "Estes são os erros que travam a escritura e o registro de um imóvel — e como evitá-los antes de comprar.", pergunta: "Imagina descobrir, depois de anos economizando, que a casa que você pagou ainda não é sua no papel. Isso te tira o sono? Desabafa aqui 👇" },
-  CARROSSEL_002_FINAL_INTEGRADO_APROVADO: { abertura: "Pedir a certidão no cartório errado devolve o seu pedido antes mesmo de começar — e você perde tempo, dinheiro e paciência.", seo: "Veja como descobrir qual cartório de registro de imóveis é o competente antes de pedir a matrícula.", pergunta: "Já teve aquela sensação de correr atrás de papel e só ouvir 'não é aqui'? Como foi pra você? 👇" },
-  CARROSSEL_003_RECRIADO_INTEGRADO: { abertura: "Recebeu a certidão por WhatsApp e ficou tranquilo? Aquele print pode esconder justamente o que mais importa.", seo: "Aprenda a validar a autenticidade de uma certidão de matrícula de imóvel e não cair em documento falso.", pergunta: "Seja sincero: você confere a origem de um documento, ou confia no print que chega no WhatsApp? 👇" },
-  CARROSSEL_004_RECRIADO_INTEGRADO: { abertura: "Pegar a chave dá aquela emoção de 'conquistei'. Mas, sem registro, no papel a casa ainda pode não ser sua.", seo: "Entenda por que só o registro no cartório transfere a propriedade do imóvel — a posse da chave não basta.", pergunta: "Qual foi a maior emoção que você sentiu ao pegar a chave de um imóvel — e você chegou a conferir o registro depois? 👇" },
-  CARROSSEL_005_RECRIADO_INTEGRADO: { abertura: "Pagar o IPTU todo ano dá a sensação de dono. Só que IPTU é cobrança — não é prova de que o imóvel é seu.", seo: "Saiba a diferença entre estar no carnê do IPTU e ser o dono registrado do imóvel na matrícula.", pergunta: "Você paga IPTU de algum imóvel que talvez não esteja no seu nome? Isso te preocupa? 👇" },
-  CARROSSEL_006_RECRIADO_INTEGRADO: { abertura: "Você vive dentro dela todos os dias, criou seus filhos ali… mas, na matrícula, essa casa pode simplesmente não existir.", seo: "Como saber se a construção está averbada na matrícula do imóvel e por que a averbação é essencial.", pergunta: "Sua casa tem a sua história em cada canto — mas o que você faria se descobrisse que ela não existe na matrícula? 👇" },
-  CARROSSEL_007_RECRIADO_INTEGRADO: { abertura: "Construir no terreno da família parece o caminho seguro… até o dia em que você precisa provar que a casa é sua.", seo: "Entenda os riscos de construir em terreno de terceiros e como proteger o seu patrimônio na família.", pergunta: "Você construiria (ou já construiu) no terreno da sua família confiando só na palavra? Conta sua experiência 👇" },
-  CARROSSEL_008_RECRIADO_INTEGRADO: { abertura: "O muro está no mesmo lugar há 30 anos — e mesmo assim a divisa de verdade pode ser outra bem diferente.", seo: "Saiba como conferir a divisa e a área do terreno na matrícula antes que vire briga com o vizinho.", pergunta: "Já viu uma amizade de anos entre vizinhos acabar por causa de um metro de divisa? Conta essa história 👇" },
-  CARROSSEL_009_RECRIADO_INTEGRADO: { abertura: "O banco aprovou o SEU crédito, você já comemorou… só que o financiamento ainda pode travar por causa do imóvel.", seo: "Entenda por que o banco reprova o imóvel no financiamento mesmo com o seu crédito aprovado.", pergunta: "Já sentiu a frustração de ter o crédito aprovado e ver o sonho travar na última hora? Como foi? 👇" },
-  CARROSSEL_010_RECRIADO_INTEGRADO: { abertura: "Você compra o apartamento dos sonhos… e a dívida de condomínio do antigo dono pode vir de brinde, no seu nome.", seo: "Saiba como a dívida de condomínio acompanha o imóvel e como se proteger antes de comprar um apartamento.", pergunta: "Você já herdou (ou quase herdou) uma dívida que não era sua ao comprar algo? Conta 👇" },
-  CARROSSEL_011_RECRIADO_INTEGRADO: { abertura: "Duas casas, dois portões, duas famílias — e uma única matrícula no papel. Isso trava venda, financiamento e herança.", seo: "Entenda o desmembramento de imóvel e por que duas casas em uma matrícula só travam a venda.", pergunta: "Você mora ou conhece um imóvel que é 'dois em um' na mesma matrícula? Como isso complicou a vida de alguém? 👇" },
-  CARROSSEL_012_RECRIADO_INTEGRADO: { abertura: "O Pix do sinal caiu na hora e bateu aquele alívio. Mas quem recebeu pode simplesmente não ter poder pra vender aquele imóvel.", seo: "Saiba como confirmar se quem vende o imóvel realmente pode vender antes de pagar o sinal.", pergunta: "Já deu um sinal no impulso, no calor da emoção, antes de conferir tudo? Conta essa 👇" },
-  CARROSSEL_013_RECRIADO_INTEGRADO: { abertura: "A visita encanta, o sonho fala mais alto… e é a matrícula que revela o problema que ninguém te contou.", seo: "Aprenda a ler a matrícula do imóvel para não comprar um problema disfarçado de sonho.", pergunta: "Você já se apaixonou por um imóvel a ponto de quase ignorar os sinais de alerta? 👇" },
-  CARROSSEL_014_RECRIADO_INTEGRADO: { abertura: "Vinte anos morando no mesmo lugar não colocam, sozinhos, o seu nome na matrícula do imóvel.", seo: "Entenda o usucapião e por que morar por muitos anos não transfere automaticamente o imóvel pro seu nome.", pergunta: "Você conhece uma família que mora há décadas num imóvel que ainda não é dela no papel? O que impede? 👇" },
-  CARROSSEL_017_RECRIADO_INTEGRADO: { abertura: "A matrícula é verdadeira, autêntica, assinada… e ainda assim pode estar mostrando uma realidade que já mudou.", seo: "Saiba por que você precisa de uma certidão de matrícula atualizada antes de comprar ou financiar um imóvel.", pergunta: "De quando é a última vez que você olhou a matrícula do seu imóvel? Tem coragem de conferir hoje? 👇" },
-  CARROSSEL_018: { abertura: "'Falta a escritura' é o que todo mundo repete. Mas esse pode ser o diagnóstico errado — e te fazer gastar à toa.", seo: "Entenda a diferença entre escritura, registro e matrícula na regularização de um imóvel.", pergunta: "Já te disseram que o seu problema era 'falta de escritura'? Você acreditou de primeira? 👇" },
-  CARROSSEL_019: { abertura: "O imóvel existe, você mora nele há anos — mas, pro sistema, o endereço pode simplesmente não aparecer no mapa.", seo: "Saiba o que fazer quando o endereço do imóvel diverge entre a matrícula e o cadastro da prefeitura.", pergunta: "O endereço do seu imóvel bate igual em todos os documentos, ou já te deu dor de cabeça? 👇" },
-  CARROSSEL_020: { abertura: "Aquele papel velho e amassado esquecido na gaveta pode ser exatamente o que leva até a matrícula do seu imóvel.", seo: "Aprenda a encontrar o número da matrícula do imóvel a partir de documentos e escrituras antigas.", pergunta: "Você sabe onde estão os documentos antigos do seu imóvel — ou eles somem quando você mais precisa? 👇" },
-  CARROSSEL_021: { abertura: "Você comprou aquele lote, pisou no terreno… mas a matrícula pode estar apontando pra um pedaço de terra diferente.", seo: "Saiba como conferir se o lote comprado corresponde à matrícula e à área realmente registrada.", pergunta: "Você confere no chão o que está no papel, ou confia no que te mostram na hora da venda? 👇" },
-  CARROSSEL_022: { abertura: "Tem documento que, se você perde hoje, pode travar a venda do seu imóvel lá na frente — quando você mais precisar.", seo: "Descubra quais documentos do imóvel você não pode perder e como guardá-los com segurança.", pergunta: "Se um documento do seu imóvel sumisse hoje, você saberia recuperar? Isso te dá aflição? 👇" },
-  CARROSSEL_023: { abertura: "O golpe imobiliário mais perigoso não parece golpe: ele começa num anúncio bonito e num site perfeitinho.", seo: "Aprenda a identificar um golpe imobiliário e a verificar um imóvel antes de pagar qualquer valor.", pergunta: "Você, um amigo ou um familiar já foi vítima (ou quase) de um golpe imobiliário? Conta pra alertar outras pessoas 👇" },
-  CARROSSEL_024: { abertura: "O primeiro nome que aparece na matrícula pode não ser o dono de hoje. Parar de ler ali é terminar com a resposta errada.", seo: "Entenda a cadeia de proprietários na matrícula e como descobrir quem é o dono atual do imóvel.", pergunta: "Você leria a matrícula até o último ato, ou pararia no primeiro nome? Seja honesto 👇" },
-  CARROSSEL_025: { abertura: "Assinou a escritura e sentiu que finalmente acabou? Ainda falta o passo que de verdade coloca o imóvel no seu nome.", seo: "Saiba por que a escritura só transfere o imóvel depois do registro no cartório de registro de imóveis.", pergunta: "Você achava que assinar a escritura era o fim da história? O que ninguém te contou? 👇" },
-  CARROSSEL_026: { abertura: "O IPTU diz 180 m². A matrícula diz 120. No fim das contas, qual área você realmente comprou?", seo: "Entenda a divergência de área entre IPTU e matrícula e o que isso muda na compra do imóvel.", pergunta: "Você já comparou a metragem do seu IPTU com a da matrícula? Tem medo do que vai encontrar? 👇" },
-  CARROSSEL_027: { abertura: "Seu contrato prova que você comprou. Mas comprar não é a mesma coisa que ser o dono lá no registro.", seo: "Entenda a diferença entre contrato de compra e venda e registro de propriedade do imóvel.", pergunta: "Você guardaria um contrato achando que já é dono? Quantas pessoas você conhece que fazem isso? 👇" },
-  CARROSSEL_028: { abertura: "A casa está pronta, habitada, cheia de memórias… e mesmo assim pode simplesmente não existir nos documentos.", seo: "Saiba como regularizar uma construção e averbar a casa na matrícula do imóvel.", pergunta: "Sua casa está cheia de vida — mas está regularizada no papel? O que te impede de regularizar? 👇" },
-  CARROSSEL_029: { abertura: "A planta aprovada mostra 2 quartos. A casa real tem 4. Essa diferença pode virar uma baita dor de cabeça na hora de vender.", seo: "Entenda por que a diferença entre a planta aprovada e a construção real trava a venda do imóvel.", pergunta: "A sua casa é igual à planta aprovada, ou foi 'crescendo' com o tempo? Conta 👇" },
-  CARROSSEL_030: { abertura: "A planta mostra o desenho, o memorial descreve os detalhes. Quando os dois se contradizem, o problema acaba sendo seu.", seo: "Entenda a relação entre planta e memorial descritivo na regularização e no registro do imóvel.", pergunta: "Você sabia que a planta e o memorial descritivo precisam contar a mesma história? Já tinha parado pra pensar nisso? 👇" },
-  CARROSSEL_031: { abertura: "Ter uma assinatura na planta não é a mesma coisa que ter alguém que, de verdade, assumiu a responsabilidade técnica pela obra.", seo: "Entenda a importância da ART e da RRT e da responsabilidade técnica na construção de um imóvel.", pergunta: "Você sabe o nome de quem assumiu a responsabilidade técnica da sua obra — ou nunca perguntou? 👇" },
-  CARROSSEL_032: { abertura: "Vinte anos morando no mesmo lugar não colocam, sozinhos, o seu nome na matrícula do imóvel.", seo: "Entenda o usucapião e por que morar por muitos anos não transfere automaticamente o imóvel pro seu nome.", pergunta: "Você conhece uma família que mora há décadas num imóvel que ainda não é dela no papel? O que impede? 👇" },
-  CARROSSEL_033: { abertura: "Pagar IPTU por 15 anos dá aquela forte sensação de dono… mas será que isso, sozinho, torna o imóvel seu?", seo: "Saiba se pagar IPTU dá direito à propriedade e o que realmente conta para o usucapião de um imóvel.", pergunta: "Você acreditava que pagar IPTU por anos já te tornava dono? De onde veio essa ideia? 👇" },
+  CARROSSEL_001_RECRIADO_INTEGRADO: { abertura: "Você pode pagar por um imóvel e, por um detalhe, não conseguir registrar no seu nome.", pergunta: "Isso já te tirou o sono? Desabafa aqui 👇" },
+  CARROSSEL_002_FINAL_INTEGRADO_APROVADO: { abertura: "Pedir a matrícula no cartório errado faz você perder tempo e dinheiro.", pergunta: "Você sabe qual cartório cuida do seu imóvel? 👇" },
+  CARROSSEL_003_RECRIADO_INTEGRADO: { abertura: "A certidão de matrícula que chega pelo WhatsApp pode não valer nada.", pergunta: "Você confia num documento só pelo print? 👇" },
+  CARROSSEL_004_RECRIADO_INTEGRADO: { abertura: "Pegar a chave emociona — mas, sem registro, a casa ainda pode não ser sua.", pergunta: "Você já achou que era dono só por ter a chave? 👇" },
+  CARROSSEL_005_RECRIADO_INTEGRADO: { abertura: "Pagar o IPTU não prova que o imóvel é seu.", pergunta: "Você achava que quem paga o IPTU é o dono? 👇" },
+  CARROSSEL_006_RECRIADO_INTEGRADO: { abertura: "Você mora nela há anos — mas na matrícula essa casa pode não existir.", pergunta: "Já conferiu se a sua construção está averbada? 👇" },
+  CARROSSEL_007_RECRIADO_INTEGRADO: { abertura: "Construiu no terreno dos pais? A casa pode não ser sua.", pergunta: "Você confiaria só na palavra da família? 👇" },
+  CARROSSEL_008_RECRIADO_INTEGRADO: { abertura: "O muro está aí há 30 anos — e a divisa ainda pode estar errada.", pergunta: "Já viu briga de divisa entre vizinhos? 👇" },
+  CARROSSEL_009_RECRIADO_INTEGRADO: { abertura: "Seu crédito foi aprovado. O imóvel ainda pode ser reprovado no financiamento.", pergunta: "Já teve um financiamento travado na última hora? 👇" },
+  CARROSSEL_010_RECRIADO_INTEGRADO: { abertura: "Você compra o apartamento — e a dívida de condomínio pode vir junto.", pergunta: "Sabia que a dívida gruda no imóvel, não na pessoa? 👇" },
+  CARROSSEL_011_RECRIADO_INTEGRADO: { abertura: "Duas casas, dois portões, uma única matrícula. Isso trava tudo.", pergunta: "Você conhece um imóvel 'dois em um'? 👇" },
+  CARROSSEL_012_RECRIADO_INTEGRADO: { abertura: "O Pix do sinal caiu — mas quem recebeu pode não poder vender.", pergunta: "Já deu sinal antes de conferir o dono? 👇" },
+  CARROSSEL_013_RECRIADO_INTEGRADO: { abertura: "A visita vende o sonho. A matrícula revela o problema.", pergunta: "Já se apaixonou por um imóvel antes de ler a matrícula? 👇" },
+  CARROSSEL_014_RECRIADO_INTEGRADO: { abertura: "Morar 20 anos não coloca, sozinho, seu nome na matrícula (usucapião).", pergunta: "Conhece alguém que mora há décadas num imóvel que não é dele? 👇" },
+  CARROSSEL_017_RECRIADO_INTEGRADO: { abertura: "A matrícula é verdadeira — mas pode estar velha demais.", pergunta: "De quando é a última atualização da sua? 👇" },
+  CARROSSEL_018: { abertura: "'Falta escritura' pode ser o diagnóstico errado na regularização.", pergunta: "Já te disseram que o seu problema era esse? 👇" },
+  CARROSSEL_019: { abertura: "O imóvel existe, mas o endereço pode sumir do mapa.", pergunta: "O seu endereço bate em todos os documentos? 👇" },
+  CARROSSEL_020: { abertura: "Um papel velho na gaveta pode guardar a matrícula do seu imóvel.", pergunta: "Você sabe onde estão os documentos antigos? 👇" },
+  CARROSSEL_021: { abertura: "Você comprou um lote — mas a matrícula pode ser de outra área.", pergunta: "Já conferiu se o lote é o mesmo do papel? 👇" },
+  CARROSSEL_022: { abertura: "Tem documento que, se você perde hoje, trava o imóvel amanhã.", pergunta: "Você guarda os seus em lugar seguro? 👇" },
+  CARROSSEL_023: { abertura: "O golpe imobiliário começa num anúncio bonito e num site perfeito.", pergunta: "Você ou alguém já quase caiu num golpe de imóvel? 👇" },
+  CARROSSEL_024: { abertura: "O primeiro nome da matrícula pode não ser o dono de hoje.", pergunta: "Você leria a matrícula até o último ato? 👇" },
+  CARROSSEL_025: { abertura: "Assinou a escritura? Ainda falta o registro pra o imóvel ser seu.", pergunta: "Você achava que a escritura já era o fim? 👇" },
+  CARROSSEL_026: { abertura: "IPTU diz 180 m². Matrícula diz 120. Qual área você comprou?", pergunta: "Já comparou o IPTU com a matrícula do seu imóvel? 👇" },
+  CARROSSEL_027: { abertura: "Seu contrato prova a compra — mas pode não provar a propriedade.", pergunta: "Você achava que contrato assinado já bastava? 👇" },
+  CARROSSEL_028: { abertura: "A casa está pronta — mas pode não existir nos documentos.", pergunta: "A sua construção já está regularizada? 👇" },
+  CARROSSEL_029: { abertura: "A planta mostra 2 quartos. A casa tem 4. E agora?", pergunta: "A sua casa é igual à planta aprovada? 👇" },
+  CARROSSEL_030: { abertura: "A planta diz uma coisa. O memorial pode dizer outra.", pergunta: "Sabia que os dois precisam bater? 👇" },
+  CARROSSEL_031: { abertura: "Assinatura na planta não é o mesmo que responsabilidade técnica (ART/RRT).", pergunta: "Você sabe quem assumiu a da sua obra? 👇" },
+  CARROSSEL_032: { abertura: "Morar 20 anos não coloca, sozinho, seu nome na matrícula (usucapião).", pergunta: "Conhece alguém nessa situação? 👇" },
+  CARROSSEL_033: { abertura: "Pagar IPTU por 15 anos faz o imóvel virar seu?", pergunta: "Você acreditava nisso? De onde veio a ideia? 👇" },
 };
 
 // Pega uma frase curta de valor a partir do apoio do roteiro.
@@ -154,23 +152,18 @@ function montar(info, fallback, key) {
   const t = info.titulo || fallback || GENERICOS[0];
   const conteudo = CONTEUDO[key] || {};
   const abertura = conteudo.abertura || fraseValor(info.apoio) || t;
-  const seo = conteudo.seo || "";                  // frase-chave evergreen (SEO/busca)
-  const pergunta = conteudo.pergunta || "Você já passou por algo parecido? Conta aqui nos comentários 👇";
+  const pergunta = conteudo.pergunta || "Você já passou por algo parecido? 👇";
   const site = info.site ? `🔗 ${info.site}` : "";
 
+  // Legenda ENXUTA: gancho (com palavra-chave) + pergunta + créditos numa linha + hashtags.
   function bloco(rede) {
     const c = CONTAS[rede];
     const p = [];
-    p.push(abertura);                              // conexão emocional (dor/sonho)
-    if (seo) p.push(seo);                          // palavra-chave que a pessoa PESQUISA (evergreen)
+    p.push(abertura);
     p.push("");
-    p.push(pergunta);                              // pergunta profunda → comentário/história
-    p.push("🔖 Salva pra não esquecer e marca quem vai comprar ou vender.");
-    if (site) { p.push(""); p.push(site); }
-    p.push("");
-    p.push(`🎤 Apresentador: ${c.apresentador}`);   // menção em créditos
-    p.push(`🤝 Apoio: ${c.apoio}`);
-    p.push("");
+    p.push(pergunta);
+    if (site) p.push(site);
+    p.push(`🎤 ${c.apresentador} · 🤝 ${c.apoio}`);
     p.push(TAGS[rede]);
     return p.join("\n");
   }
