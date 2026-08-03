@@ -21,6 +21,8 @@ const TRILHAS_DIR = path.join(RAIZ, "TRILHAS", "aprovadas");
 const SEG_POR_SLIDE = 3.2;
 const PROP = process.env.PROP === "4x5" ? "4x5" : "9x16";   // proporção do vídeo
 const W = 1080, H = PROP === "4x5" ? 1350 : 1920;
+const CRF = process.env.CRF || "18";        // qualidade (menor = melhor; 18 ~ visualmente sem perda)
+const PRESET = process.env.PRESET || "slow"; // compressão premium
 
 function trilhas() {
   return fs.readdirSync(TRILHAS_DIR).filter((f) => /\.mp3$/i.test(f)).sort()
@@ -67,7 +69,7 @@ function gerarUm(carr, faixa) {
     "-map", "0:v",
     "-t", String(dur),
     "-vf", vf,
-    "-c:v", "libx264", "-preset", "veryfast", "-crf", "23",
+    "-c:v", "libx264", "-preset", PRESET, "-crf", CRF, "-profile:v", "high", "-level", "4.2",
     "-movflags", "+faststart",
     out,
   ] : [
@@ -77,8 +79,8 @@ function gerarUm(carr, faixa) {
     "-map", "0:v", "-map", "1:a",
     "-t", String(dur),
     "-vf", vf,
-    "-c:v", "libx264", "-preset", "veryfast", "-crf", "23",
-    "-c:a", "aac", "-b:a", "128k",
+    "-c:v", "libx264", "-preset", PRESET, "-crf", CRF, "-profile:v", "high", "-level", "4.2",
+    "-c:a", "aac", "-b:a", "192k",
     "-af", `afade=t=out:st=${fadeSt}:d=1.6`,
     "-movflags", "+faststart",
     out,
