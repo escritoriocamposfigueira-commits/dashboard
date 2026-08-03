@@ -2,11 +2,10 @@
   "versao": 1,
   "usos": [
     {
-      "trilha_id": "mixkit-823",
+      "modelo_id": "foco-central",
       "codigo": "CF-516",
-      "emocao": "urgencia",
       "chave_publicacao": "2026-08-03|venda|CF-516",
-      "usado_em": "2026-08-03T14:42:29.938Z"
+      "usado_em": "2026-08-03T14:42:29.939Z"
     }
   ]
 }
