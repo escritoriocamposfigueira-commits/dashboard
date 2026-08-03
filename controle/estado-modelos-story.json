@@ -6,6 +6,12 @@
       "codigo": "CF-516",
       "chave_publicacao": "2026-08-03|venda|CF-516",
       "usado_em": "2026-08-03T14:42:29.939Z"
+    },
+    {
+      "modelo_id": "subida-cinematografica",
+      "codigo": "CF-584",
+      "chave_publicacao": "2026-08-03|locacao|CF-584",
+      "usado_em": "2026-08-03T20:21:39.389Z"
     }
   ]
 }
