@@ -14,6 +14,13 @@
       "emocao": "urgencia",
       "chave_publicacao": "2026-08-03|locacao|CF-584",
       "usado_em": "2026-08-03T20:21:39.388Z"
+    },
+    {
+      "trilha_id": "mixkit-697",
+      "codigo": "CF-607",
+      "emocao": "urgencia",
+      "chave_publicacao": "2026-08-03|locacao|CF-607",
+      "usado_em": "2026-08-03T22:13:08.892Z"
     }
   ]
 }

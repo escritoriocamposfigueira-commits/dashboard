@@ -1,5 +1,5 @@
 {
-  "indice": 79,
+  "indice": 80,
   "publicados": [
     {
       "codigo": "429",
@@ -843,6 +843,20 @@
       "ig_story": "✅ 18093725999536381",
       "ig_reel": "✅ 18082440452283736",
       "youtube": "✅ jm7ybP5KcFk",
+      "tiktok": "— (TikTok pausado)"
+    },
+    {
+      "codigo": "607",
+      "data": "2026-08-03T22:13:11.644Z",
+      "trilha": "mixkit-697",
+      "modelo_video": "cascata",
+      "fb_feed": "✅ 512040582222121_1646137864188055",
+      "fb_story": "✅ 1365339928425560",
+      "fb_reel": "✅ 1646138204188021",
+      "ig_feed": "✅ (carrossel 5) 17871870285630081",
+      "ig_story": "✅ 18088283750540583",
+      "ig_reel": "✅ 18099761969341217",
+      "youtube": "✅ NYd_v6iupHs",
       "tiktok": "— (TikTok pausado)"
     }
   ],
