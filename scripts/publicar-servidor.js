@@ -729,7 +729,11 @@ function registroTeveSucesso(registro) {
 
 function registroPublicacaoCompleta(registro) {
   if (registro?.deduplicado) return true;
-  return ["fb_feed", "fb_story", "ig_feed", "ig_story"]
+  const canais = ["fb_feed", "fb_story", "ig_feed", "ig_story"];
+  if (typeof registro?.youtube === "string" && !registro.youtube.includes("sem chave YT")) {
+    canais.push("youtube");
+  }
+  return canais
     .every((canal) => typeof registro?.[canal] === "string" && registro[canal].startsWith("✅"));
 }
 
@@ -1158,6 +1162,7 @@ async function main() {
 
   // ── Avançar fila ──────────────────────────────────────────────────────────
   const canaisObrigatorios = ["fb_feed", "fb_story", "ig_feed", "ig_story"];
+  if (temChavesYouTube()) canaisObrigatorios.push("youtube");
   const publicacaoCompleta = canaisObrigatorios.every((canal) => reg[canal].startsWith("✅"));
   const tentativasAnteriores = retryPublicacao?.tentativas
     || retryLocacao?.tentativas

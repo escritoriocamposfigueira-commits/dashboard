@@ -59,6 +59,12 @@ test("locação só conta como concluída com Feed e Story nas duas redes", () =
   assert.equal(registroPublicacaoCompleta({
     fb_feed: "✅ ok", fb_story: "✅ ok", ig_feed: "❌ falhou", ig_story: "✅ ok",
   }), false);
+  assert.equal(registroPublicacaoCompleta({
+    fb_feed: "✅ ok", fb_story: "✅ ok", ig_feed: "✅ ok", ig_story: "✅ ok", youtube: "❌ falhou",
+  }), false);
+  assert.equal(registroPublicacaoCompleta({
+    fb_feed: "✅ ok", fb_story: "✅ ok", ig_feed: "✅ ok", ig_story: "✅ ok", youtube: "✅ short",
+  }), true);
 });
 
 test("locação incompleta continua pendente sem bloquear as ainda não tentadas", () => {
