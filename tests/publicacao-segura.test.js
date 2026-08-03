@@ -8,21 +8,25 @@ const {
   avancarPonteiros,
   escolherProximo,
   publicadoRecentementeNoEstado,
+  registroPublicacaoCompleta,
 } = require("../scripts/publicar-servidor");
 
 const ROOT = path.resolve(__dirname, "..");
 const manifest = JSON.parse(fs.readFileSync(path.join(ROOT, "src/content/imagens-urls.json"), "utf8"));
+const LOCACOES = new Set(["584", "607", "609", "609B", "619", "620", "CASA INDAIA BERTIOGA", "CASA JARDIM ARMENIA"]);
+const { filtrarCodigosAtivos } = require("../scripts/imoveis-inativos");
+const totalVendas = filtrarCodigosAtivos(manifest.ordem).filter((codigo) => !LOCACOES.has(String(codigo))).length;
 
-test("a fila de 76 vendas completa um ciclo sem repetir e volta ao início", () => {
+test("a fila de vendas completa um ciclo sem repetir e volta ao início", () => {
   const estado = { indiceVenda: 0, indice: 0, publicados: [] };
   const codigos = [];
-  for (let i = 0; i < 76; i += 1) {
+  for (let i = 0; i < totalVendas; i += 1) {
     const plano = escolherProximo(manifest, estado, "venda");
     codigos.push(plano.codigo);
     avancarPonteiros(estado, plano, manifest);
   }
-  assert.equal(codigos.length, 76);
-  assert.equal(new Set(codigos).size, 76);
+  assert.equal(codigos.length, totalVendas);
+  assert.equal(new Set(codigos).size, totalVendas);
   assert.equal(escolherProximo(manifest, estado, "venda").codigo, codigos[0]);
 });
 
@@ -46,4 +50,25 @@ test("registro que só contém falha não bloqueia uma tentativa válida", () =>
     publicados: [{ codigo: "547", data: "2026-08-03T10:00:00.000Z", fb_feed: "❌ falhou" }],
   };
   assert.equal(publicadoRecentementeNoEstado(estado, "547", agora), false);
+});
+
+test("locação só conta como concluída com Feed e Story nas duas redes", () => {
+  assert.equal(registroPublicacaoCompleta({
+    fb_feed: "✅ ok", fb_story: "✅ ok", ig_feed: "✅ ok", ig_story: "✅ ok",
+  }), true);
+  assert.equal(registroPublicacaoCompleta({
+    fb_feed: "✅ ok", fb_story: "✅ ok", ig_feed: "❌ falhou", ig_story: "✅ ok",
+  }), false);
+});
+
+test("locação incompleta continua pendente sem bloquear as ainda não tentadas", () => {
+  const agora = new Date();
+  const estado = {
+    publicados: [{
+      codigo: "584", data: agora.toISOString(),
+      fb_feed: "✅ ok", fb_story: "✅ ok", ig_feed: "❌ falhou", ig_story: "✅ ok",
+    }],
+  };
+  const plano = escolherProximo(manifest, estado, "locacao");
+  assert.equal(plano.codigo, "607");
 });

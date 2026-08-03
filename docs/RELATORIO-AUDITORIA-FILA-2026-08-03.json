@@ -1,11 +1,12 @@
 {
-  "gerado_em": "2026-08-03T10:56:49.485Z",
-  "fila_ativa": 84,
-  "vendas": 76,
+  "gerado_em": "2026-08-03T11:30:24.630Z",
+  "fila_ativa": 79,
+  "vendas": 71,
   "locacoes": 8,
-  "videos": 84,
+  "videos": 79,
+  "videos_biblioteca_total": 84,
   "erros": [],
-  "hash_ordem": "4ece8a843fb0c6915c845a6d5eca7b1e70f2eb3374138e2341b1b640b8c16d8e",
+  "hash_ordem": "c83a8996c63fa1e7ebb66cc64c9fb939f46a4baf9c6216b9ac40842e07e8c80b",
   "itens": [
     {
       "sequencia": 1,
@@ -163,22 +164,6 @@
     },
     {
       "sequencia": 11,
-      "codigo": "417",
-      "tipo": "venda",
-      "pontos": 42,
-      "faixa": "B — negociação facilitada",
-      "condicoes": [
-        "💰 Aceita financiamento bancário.",
-        "Também aceita 50% de entrada + parcelas com nota promissória diretamente com a imobiliária."
-      ],
-      "fotos_especificas": 9,
-      "url_feed": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios-feed/CF%20-%20417.png",
-      "url_story": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios/CF%20-%20417.png",
-      "video_modelo": "cascata",
-      "video_trilha": "mixkit-857"
-    },
-    {
-      "sequencia": 12,
       "codigo": "571",
       "tipo": "venda",
       "pontos": 69,
@@ -193,7 +178,7 @@
       "video_trilha": "mixkit-839"
     },
     {
-      "sequencia": 13,
+      "sequencia": 12,
       "codigo": "588",
       "tipo": "venda",
       "pontos": 32,
@@ -208,7 +193,7 @@
       "video_trilha": "mixkit-881"
     },
     {
-      "sequencia": 14,
+      "sequencia": 13,
       "codigo": "568",
       "tipo": "venda",
       "pontos": 32,
@@ -223,7 +208,7 @@
       "video_trilha": "mixkit-471"
     },
     {
-      "sequencia": 15,
+      "sequencia": 14,
       "codigo": "569",
       "tipo": "venda",
       "pontos": 32,
@@ -238,7 +223,7 @@
       "video_trilha": "mixkit-1012"
     },
     {
-      "sequencia": 16,
+      "sequencia": 15,
       "codigo": "572",
       "tipo": "venda",
       "pontos": 32,
@@ -253,7 +238,7 @@
       "video_trilha": "mixkit-927"
     },
     {
-      "sequencia": 17,
+      "sequencia": 16,
       "codigo": "558",
       "tipo": "venda",
       "pontos": 27,
@@ -268,7 +253,7 @@
       "video_trilha": "mixkit-1147"
     },
     {
-      "sequencia": 18,
+      "sequencia": 17,
       "codigo": "593B",
       "tipo": "venda",
       "pontos": 10,
@@ -283,7 +268,7 @@
       "video_trilha": "mixkit-701"
     },
     {
-      "sequencia": 19,
+      "sequencia": 18,
       "codigo": "604",
       "tipo": "venda",
       "pontos": 0,
@@ -298,22 +283,7 @@
       "video_trilha": "mixkit-634"
     },
     {
-      "sequencia": 20,
-      "codigo": "610",
-      "tipo": "venda",
-      "pontos": 10,
-      "faixa": "C — aceita troca/permuta",
-      "condicoes": [
-        "💰 ACEITA PERMUTA em apartamento até R$ 350 mil + financiamento."
-      ],
-      "fotos_especificas": 9,
-      "url_feed": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios-feed/CF%20-%20610.png",
-      "url_story": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios/CF%20-%20610.png",
-      "video_modelo": "topo-cinematografico",
-      "video_trilha": "mixkit-173"
-    },
-    {
-      "sequencia": 21,
+      "sequencia": 19,
       "codigo": "TARLITORAL",
       "tipo": "venda",
       "pontos": 10,
@@ -328,7 +298,7 @@
       "video_trilha": "mixkit-780"
     },
     {
-      "sequencia": 22,
+      "sequencia": 20,
       "codigo": "513",
       "tipo": "venda",
       "pontos": 10,
@@ -343,7 +313,7 @@
       "video_trilha": "mixkit-1134"
     },
     {
-      "sequencia": 23,
+      "sequencia": 21,
       "codigo": "515",
       "tipo": "venda",
       "pontos": 10,
@@ -358,7 +328,7 @@
       "video_trilha": "mixkit-371"
     },
     {
-      "sequencia": 24,
+      "sequencia": 22,
       "codigo": "520",
       "tipo": "venda",
       "pontos": 10,
@@ -373,7 +343,7 @@
       "video_trilha": "mixkit-623"
     },
     {
-      "sequencia": 25,
+      "sequencia": 23,
       "codigo": "528",
       "tipo": "venda",
       "pontos": 15,
@@ -388,7 +358,7 @@
       "video_trilha": "mixkit-228"
     },
     {
-      "sequencia": 26,
+      "sequencia": 24,
       "codigo": "547",
       "tipo": "venda",
       "pontos": 10,
@@ -403,7 +373,7 @@
       "video_trilha": "mixkit-33"
     },
     {
-      "sequencia": 27,
+      "sequencia": 25,
       "codigo": "561",
       "tipo": "venda",
       "pontos": 10,
@@ -418,7 +388,7 @@
       "video_trilha": "mixkit-165"
     },
     {
-      "sequencia": 28,
+      "sequencia": 26,
       "codigo": "594",
       "tipo": "venda",
       "pontos": 10,
@@ -433,7 +403,7 @@
       "video_trilha": "mixkit-479"
     },
     {
-      "sequencia": 29,
+      "sequencia": 27,
       "codigo": "429",
       "tipo": "venda",
       "pontos": 0,
@@ -446,22 +416,7 @@
       "video_trilha": "mixkit-1131"
     },
     {
-      "sequencia": 30,
-      "codigo": "458",
-      "tipo": "venda",
-      "pontos": 0,
-      "faixa": "D — condição convencional",
-      "condicoes": [
-        "✅ Suporte completo na documentação e financiamento"
-      ],
-      "fotos_especificas": 9,
-      "url_feed": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios-feed/CF%20-%20458.png",
-      "url_story": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios/CF%20-%20458.png",
-      "video_modelo": "subida-cinematografica",
-      "video_trilha": "mixkit-1024"
-    },
-    {
-      "sequencia": 31,
+      "sequencia": 28,
       "codigo": "476",
       "tipo": "venda",
       "pontos": 0,
@@ -474,7 +429,7 @@
       "video_trilha": "mixkit-288"
     },
     {
-      "sequencia": 32,
+      "sequencia": 29,
       "codigo": "485",
       "tipo": "venda",
       "pontos": 0,
@@ -487,7 +442,7 @@
       "video_trilha": "mixkit-801"
     },
     {
-      "sequencia": 33,
+      "sequencia": 30,
       "codigo": "493",
       "tipo": "venda",
       "pontos": 0,
@@ -500,7 +455,7 @@
       "video_trilha": "mixkit-1167"
     },
     {
-      "sequencia": 34,
+      "sequencia": 31,
       "codigo": "509",
       "tipo": "venda",
       "pontos": 0,
@@ -513,7 +468,7 @@
       "video_trilha": "mixkit-158"
     },
     {
-      "sequencia": 35,
+      "sequencia": 32,
       "codigo": "518",
       "tipo": "venda",
       "pontos": 0,
@@ -526,7 +481,7 @@
       "video_trilha": "mixkit-480"
     },
     {
-      "sequencia": 36,
+      "sequencia": 33,
       "codigo": "526",
       "tipo": "venda",
       "pontos": 0,
@@ -539,22 +494,7 @@
       "video_trilha": "mixkit-813"
     },
     {
-      "sequencia": 37,
-      "codigo": "527",
-      "tipo": "venda",
-      "pontos": 47,
-      "faixa": "B — negociação facilitada",
-      "condicoes": [
-        "💰 50% DE ENTRADA + parcelas direto com a imobiliária."
-      ],
-      "fotos_especificas": 9,
-      "url_feed": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios-feed/CF%20-%20527.png",
-      "url_story": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios/CF%20-%20527.png",
-      "video_modelo": "topo-cinematografico",
-      "video_trilha": "mixkit-154"
-    },
-    {
-      "sequencia": 38,
+      "sequencia": 34,
       "codigo": "530",
       "tipo": "venda",
       "pontos": 0,
@@ -567,7 +507,7 @@
       "video_trilha": "mixkit-852"
     },
     {
-      "sequencia": 39,
+      "sequencia": 35,
       "codigo": "535",
       "tipo": "venda",
       "pontos": 3,
@@ -582,7 +522,7 @@
       "video_trilha": "mixkit-1002"
     },
     {
-      "sequencia": 40,
+      "sequencia": 36,
       "codigo": "541",
       "tipo": "venda",
       "pontos": 3,
@@ -597,20 +537,7 @@
       "video_trilha": "mixkit-1140"
     },
     {
-      "sequencia": 41,
-      "codigo": "550",
-      "tipo": "venda",
-      "pontos": 0,
-      "faixa": "D — condição convencional",
-      "condicoes": [],
-      "fotos_especificas": 9,
-      "url_feed": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios-feed/CF%20-%20550.png",
-      "url_story": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/refs/heads/claude/campos-figueira-growth-qmjsux/public/anuncios/CF%20-%20550.png",
-      "video_modelo": "cascata",
-      "video_trilha": "mixkit-1141"
-    },
-    {
-      "sequencia": 42,
+      "sequencia": 37,
       "codigo": "551",
       "tipo": "venda",
       "pontos": 3,
@@ -625,7 +552,7 @@
       "video_trilha": "mixkit-1117"
     },
     {
-      "sequencia": 43,
+      "sequencia": 38,
       "codigo": "552",
       "tipo": "venda",
       "pontos": 10,
@@ -640,7 +567,7 @@
       "video_trilha": "mixkit-815"
     },
     {
-      "sequencia": 44,
+      "sequencia": 39,
       "codigo": "555",
       "tipo": "venda",
       "pontos": 3,
@@ -655,7 +582,7 @@
       "video_trilha": "mixkit-13"
     },
     {
-      "sequencia": 45,
+      "sequencia": 40,
       "codigo": "564",
       "tipo": "venda",
       "pontos": 3,
@@ -670,7 +597,7 @@
       "video_trilha": "mixkit-200"
     },
     {
-      "sequencia": 46,
+      "sequencia": 41,
       "codigo": "566",
       "tipo": "venda",
       "pontos": 5,
@@ -685,7 +612,7 @@
       "video_trilha": "mixkit-190"
     },
     {
-      "sequencia": 47,
+      "sequencia": 42,
       "codigo": "566B",
       "tipo": "venda",
       "pontos": 0,
@@ -698,7 +625,7 @@
       "video_trilha": "mixkit-724"
     },
     {
-      "sequencia": 48,
+      "sequencia": 43,
       "codigo": "570",
       "tipo": "venda",
       "pontos": 0,
@@ -711,7 +638,7 @@
       "video_trilha": "mixkit-729"
     },
     {
-      "sequencia": 49,
+      "sequencia": 44,
       "codigo": "573",
       "tipo": "venda",
       "pontos": 5,
@@ -726,7 +653,7 @@
       "video_trilha": "mixkit-697"
     },
     {
-      "sequencia": 50,
+      "sequencia": 45,
       "codigo": "575",
       "tipo": "venda",
       "pontos": 0,
@@ -739,7 +666,7 @@
       "video_trilha": "mixkit-635"
     },
     {
-      "sequencia": 51,
+      "sequencia": 46,
       "codigo": "576",
       "tipo": "venda",
       "pontos": 5,
@@ -754,7 +681,7 @@
       "video_trilha": "mixkit-77"
     },
     {
-      "sequencia": 52,
+      "sequencia": 47,
       "codigo": "578",
       "tipo": "venda",
       "pontos": 0,
@@ -767,7 +694,7 @@
       "video_trilha": "mixkit-349"
     },
     {
-      "sequencia": 53,
+      "sequencia": 48,
       "codigo": "581",
       "tipo": "venda",
       "pontos": 8,
@@ -782,7 +709,7 @@
       "video_trilha": "mixkit-827"
     },
     {
-      "sequencia": 54,
+      "sequencia": 49,
       "codigo": "582",
       "tipo": "venda",
       "pontos": 0,
@@ -795,7 +722,7 @@
       "video_trilha": "mixkit-70"
     },
     {
-      "sequencia": 55,
+      "sequencia": 50,
       "codigo": "585",
       "tipo": "venda",
       "pontos": 10,
@@ -808,7 +735,7 @@
       "video_trilha": "mixkit-900"
     },
     {
-      "sequencia": 56,
+      "sequencia": 51,
       "codigo": "589",
       "tipo": "venda",
       "pontos": 3,
@@ -823,7 +750,7 @@
       "video_trilha": "mixkit-621"
     },
     {
-      "sequencia": 57,
+      "sequencia": 52,
       "codigo": "595",
       "tipo": "venda",
       "pontos": 3,
@@ -838,7 +765,7 @@
       "video_trilha": "mixkit-1210"
     },
     {
-      "sequencia": 58,
+      "sequencia": 53,
       "codigo": "597",
       "tipo": "venda",
       "pontos": 0,
@@ -851,7 +778,7 @@
       "video_trilha": "mixkit-857"
     },
     {
-      "sequencia": 59,
+      "sequencia": 54,
       "codigo": "599",
       "tipo": "venda",
       "pontos": 3,
@@ -866,7 +793,7 @@
       "video_trilha": "mixkit-1131"
     },
     {
-      "sequencia": 60,
+      "sequencia": 55,
       "codigo": "608",
       "tipo": "venda",
       "pontos": 5,
@@ -881,7 +808,7 @@
       "video_trilha": "mixkit-288"
     },
     {
-      "sequencia": 61,
+      "sequencia": 56,
       "codigo": "611",
       "tipo": "venda",
       "pontos": 3,
@@ -896,7 +823,7 @@
       "video_trilha": "mixkit-158"
     },
     {
-      "sequencia": 62,
+      "sequencia": 57,
       "codigo": "612",
       "tipo": "venda",
       "pontos": 3,
@@ -911,7 +838,7 @@
       "video_trilha": "mixkit-1134"
     },
     {
-      "sequencia": 63,
+      "sequencia": 58,
       "codigo": "613",
       "tipo": "venda",
       "pontos": 5,
@@ -926,7 +853,7 @@
       "video_trilha": "mixkit-371"
     },
     {
-      "sequencia": 64,
+      "sequencia": 59,
       "codigo": "614",
       "tipo": "venda",
       "pontos": 8,
@@ -941,7 +868,7 @@
       "video_trilha": "mixkit-199"
     },
     {
-      "sequencia": 65,
+      "sequencia": 60,
       "codigo": "615",
       "tipo": "venda",
       "pontos": 8,
@@ -956,7 +883,7 @@
       "video_trilha": "mixkit-480"
     },
     {
-      "sequencia": 66,
+      "sequencia": 61,
       "codigo": "616",
       "tipo": "venda",
       "pontos": 5,
@@ -971,7 +898,7 @@
       "video_trilha": "mixkit-623"
     },
     {
-      "sequencia": 67,
+      "sequencia": 62,
       "codigo": "617",
       "tipo": "venda",
       "pontos": 0,
@@ -984,7 +911,7 @@
       "video_trilha": "mixkit-813"
     },
     {
-      "sequencia": 68,
+      "sequencia": 63,
       "codigo": "CASA VILA JUNDIAI",
       "tipo": "venda",
       "pontos": 5,
@@ -999,7 +926,7 @@
       "video_trilha": "mixkit-1140"
     },
     {
-      "sequencia": 69,
+      "sequencia": 64,
       "codigo": "590",
       "tipo": "venda",
       "pontos": 3,
@@ -1014,7 +941,7 @@
       "video_trilha": "mixkit-33"
     },
     {
-      "sequencia": 70,
+      "sequencia": 65,
       "codigo": "593",
       "tipo": "venda",
       "pontos": 13,
@@ -1029,7 +956,7 @@
       "video_trilha": "mixkit-1141"
     },
     {
-      "sequencia": 71,
+      "sequencia": 66,
       "codigo": "560",
       "tipo": "venda",
       "pontos": 8,
@@ -1044,7 +971,7 @@
       "video_trilha": "mixkit-815"
     },
     {
-      "sequencia": 72,
+      "sequencia": 67,
       "codigo": "577",
       "tipo": "venda",
       "pontos": 8,
@@ -1059,7 +986,7 @@
       "video_trilha": "mixkit-872"
     },
     {
-      "sequencia": 73,
+      "sequencia": 68,
       "codigo": "421",
       "tipo": "venda",
       "pontos": 5,
@@ -1074,7 +1001,7 @@
       "video_trilha": "mixkit-3"
     },
     {
-      "sequencia": 74,
+      "sequencia": 69,
       "codigo": "440",
       "tipo": "venda",
       "pontos": 15,
@@ -1089,7 +1016,7 @@
       "video_trilha": "mixkit-634"
     },
     {
-      "sequencia": 75,
+      "sequencia": 70,
       "codigo": "459",
       "tipo": "venda",
       "pontos": 5,
@@ -1104,7 +1031,7 @@
       "video_trilha": "mixkit-1166"
     },
     {
-      "sequencia": 76,
+      "sequencia": 71,
       "codigo": "574",
       "tipo": "venda",
       "pontos": 5,
@@ -1119,7 +1046,7 @@
       "video_trilha": "mixkit-821"
     },
     {
-      "sequencia": 77,
+      "sequencia": 72,
       "codigo": "584",
       "tipo": "locação",
       "pontos": 0,
@@ -1134,7 +1061,7 @@
       "video_trilha": "mixkit-823"
     },
     {
-      "sequencia": 78,
+      "sequencia": 73,
       "codigo": "607",
       "tipo": "locação",
       "pontos": 0,
@@ -1147,7 +1074,7 @@
       "video_trilha": "mixkit-1166"
     },
     {
-      "sequencia": 79,
+      "sequencia": 74,
       "codigo": "609",
       "tipo": "locação",
       "pontos": 0,
@@ -1162,7 +1089,7 @@
       "video_trilha": "mixkit-801"
     },
     {
-      "sequencia": 80,
+      "sequencia": 75,
       "codigo": "609B",
       "tipo": "locação",
       "pontos": 0,
@@ -1175,7 +1102,7 @@
       "video_trilha": "mixkit-1167"
     },
     {
-      "sequencia": 81,
+      "sequencia": 76,
       "codigo": "CASA INDAIA BERTIOGA",
       "tipo": "locação",
       "pontos": 0,
@@ -1188,7 +1115,7 @@
       "video_trilha": "mixkit-852"
     },
     {
-      "sequencia": 82,
+      "sequencia": 77,
       "codigo": "CASA JARDIM ARMENIA",
       "tipo": "locação",
       "pontos": 0,
@@ -1201,7 +1128,7 @@
       "video_trilha": "mixkit-1002"
     },
     {
-      "sequencia": 83,
+      "sequencia": 78,
       "codigo": "619",
       "tipo": "locação",
       "pontos": 0,
@@ -1214,7 +1141,7 @@
       "video_trilha": "mixkit-154"
     },
     {
-      "sequencia": 84,
+      "sequencia": 79,
       "codigo": "620",
       "tipo": "locação",
       "pontos": 0,

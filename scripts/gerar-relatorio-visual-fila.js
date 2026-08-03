@@ -51,8 +51,8 @@ const itens = RELATORIO.itens.map((item) => {
   };
 });
 
-if (itens.length !== 84 || videoPorCodigo.size !== 84) {
-  throw new Error(`Esperado 84 imóveis e 84 vídeos; encontrados ${itens.length} e ${videoPorCodigo.size}.`);
+if (itens.length !== RELATORIO.fila_ativa || itens.some((item) => !item.video_url)) {
+  throw new Error(`Fila visual incompleta: ${itens.length} de ${RELATORIO.fila_ativa} imóveis ativos.`);
 }
 
 const dados = JSON.stringify(itens).replaceAll("</script", "<\\/script");
@@ -62,7 +62,7 @@ const html = `<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#080808">
-<title>Fila visual dos 84 imóveis — Campos Figueira</title>
+<title>Fila visual dos ${itens.length} imóveis ativos — Campos Figueira</title>
 <style>
 :root{--bg:#080808;--card:#121212;--line:#302711;--gold:#d8ab43;--gold2:#ffe29a;--text:#f6f2e8;--muted:#aaa397;--green:#25d366;--red:#ff766b}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 50% -10%,#302307 0,#0b0b0b 35%,var(--bg) 70%);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif}
@@ -75,10 +75,10 @@ main{max-width:1180px;margin:22px auto;padding:0 16px 50px}.grid{display:grid;gr
 </style>
 </head>
 <body>
-<header><h1>Fila visual dos <span class="gold">84 imóveis</span></h1><p class="sub">Sequência efetiva do robô, com arte, condições comerciais e o vídeo vertical aprovado para Story, Reel e YouTube Short. Os imóveis com entrada, parcelas ou veículo aparecem primeiro.</p></header>
-<section class="status"><div class="stat"><strong>84</strong><span>imóveis ativos</span></div><div class="stat"><strong>76</strong><span>vendas na rotação</span></div><div class="stat"><strong>8</strong><span>locações semanais</span></div><div class="stat"><strong>84/84</strong><span>vídeos validados</span></div></section>
+<header><h1>Fila visual dos <span class="gold">${itens.length} imóveis ativos</span></h1><p class="sub">Sequência efetiva do robô, com arte, condições comerciais e o vídeo vertical aprovado para Story, Reel e YouTube Short. Os imóveis com entrada, parcelas ou veículo aparecem primeiro.</p></header>
+<section class="status"><div class="stat"><strong>${itens.length}</strong><span>imóveis ativos</span></div><div class="stat"><strong>${RELATORIO.vendas}</strong><span>vendas na rotação</span></div><div class="stat"><strong>${RELATORIO.locacoes}</strong><span>locações semanais</span></div><div class="stat"><strong>${itens.length}/${itens.length}</strong><span>vídeos vinculados</span></div></section>
 <div class="ok">✅ Correções publicadas no GitHub: antirrepetição de 30 horas, estado persistente, fotos específicas obrigatórias e erro visível quando imagem ou vídeo falhar.</div>
-<div class="ok alert">⚠️ CF-527 permanece no robô, mas não foi localizado no catálogo ativo do site. Ele foi retirado da prioridade até confirmação.</div>
+<div class="ok">🚫 Fora da fila: CF-001, CF-413, CF-417, CF-458, CF-527, CF-550 e CF-610.</div>
 <div class="bar"><div class="controls"><input id="busca" placeholder="Buscar código, condição ou modelo..."><button class="active" data-filter="todos">Todos</button><button data-filter="prioridade">Prioridade comercial</button><button data-filter="venda">Vendas</button><button data-filter="locação">Locações</button></div></div>
 <main><div id="grid" class="grid"></div><div id="empty" class="empty" hidden>Nenhum imóvel encontrado.</div></main>
 <footer class="foot">Escritório Campos Figueira · Relatório gerado em 03/08/2026 · Vídeos com áudio incorporado e proporção 9:16</footer>

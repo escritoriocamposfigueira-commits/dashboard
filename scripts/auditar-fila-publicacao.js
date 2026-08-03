@@ -113,7 +113,7 @@ function main() {
     });
 
   const erros = [];
-  if (ordem.length !== 84) erros.push(`Fila ativa tem ${ordem.length}, esperado 84.`);
+  if (!ordem.length) erros.push("Fila ativa está vazia.");
   for (const item of itens) {
     if (!captionPorCodigo[item.codigo]) erros.push(`CF-${item.codigo}: legenda ausente.`);
     if (!item.url_feed) erros.push(`CF-${item.codigo}: arte feed ausente.`);
@@ -134,7 +134,8 @@ function main() {
     fila_ativa: ordem.length,
     vendas: vendas.length,
     locacoes: locacoes.length,
-    videos: videos.length,
+    videos: itens.filter((item) => item.video_modelo).length,
+    videos_biblioteca_total: videos.length,
     erros,
     hash_ordem: crypto.createHash("sha256").update(JSON.stringify(itens.map((item) => item.codigo))).digest("hex"),
     itens,
@@ -163,7 +164,7 @@ function main() {
   fs.mkdirSync(path.dirname(RELATORIO), { recursive: true });
   fs.writeFileSync(RELATORIO, linhas.join("\n"), "utf8");
   fs.writeFileSync(JSON_SAIDA, `${JSON.stringify(resultado, null, 2)}\n`, "utf8");
-  console.log(JSON.stringify({ fila: ordem.length, vendas: vendas.length, locacoes: locacoes.length, videos: videos.length, erros: erros.length }));
+  console.log(JSON.stringify({ fila: ordem.length, vendas: vendas.length, locacoes: locacoes.length, videos: resultado.videos, erros: erros.length }));
   if (erros.length) process.exitCode = 1;
 }
 

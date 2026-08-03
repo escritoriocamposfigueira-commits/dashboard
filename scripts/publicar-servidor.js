@@ -727,6 +727,12 @@ function registroTeveSucesso(registro) {
     .some((valor) => typeof valor === "string" && valor.startsWith("✅"));
 }
 
+function registroPublicacaoCompleta(registro) {
+  if (registro?.deduplicado) return true;
+  return ["fb_feed", "fb_story", "ig_feed", "ig_story"]
+    .every((canal) => typeof registro?.[canal] === "string" && registro[canal].startsWith("✅"));
+}
+
 function publicadoRecentementeNoEstado(estado, codigo, agora = new Date(), janelaHoras = JANELA_DUPLICIDADE_HORAS) {
   const limite = agora.getTime() - janelaHoras * 3600 * 1000;
   return (estado.publicados || []).some((registro) => {
@@ -797,10 +803,21 @@ function escolherProximo(manifest, estado, tipoForcado = "auto") {
   const vendas = ordenarVendasPorPrioridade(ordem.filter((c) => !LOCACAO_CODES.has(c)));
   const brt = new Date(Date.now() - 3 * 3600 * 1000);
   const semana = semanaISO(brt);
-  const pubSemana = (estado.publicados || [])
-    .filter((p) => { try { return semanaISO(new Date(new Date(p.data).getTime() - 3 * 3600 * 1000)) === semana; } catch { return false; } })
+  const registrosSemana = (estado.publicados || [])
+    .filter((p) => { try { return semanaISO(new Date(new Date(p.data).getTime() - 3 * 3600 * 1000)) === semana; } catch { return false; } });
+  const pubSemana = registrosSemana
+    .filter(registroPublicacaoCompleta)
     .map((p) => String(p.codigo));
-  const locPendentes = locacoes.filter((c) => !pubSemana.includes(c));
+  const falhasSemana = new Map();
+  for (const registro of registrosSemana.filter((p) => !registroPublicacaoCompleta(p))) {
+    const codigo = String(registro.codigo);
+    falhasSemana.set(codigo, (falhasSemana.get(codigo) || 0) + 1);
+  }
+  // Primeiro passam as locações ainda não tentadas; falhas antigas voltam ao fim
+  // da fila e continuam pendentes, sem bloquear todos os outros imóveis.
+  const locPendentes = locacoes
+    .filter((c) => !pubSemana.includes(c))
+    .sort((a, b) => (falhasSemana.get(a) || 0) - (falhasSemana.get(b) || 0));
 
   if (tipoForcado === "recuperar_locacao") {
     const retry = estado.retryLocacao;
@@ -1213,6 +1230,7 @@ module.exports = {
   normalizarLegenda,
   ordenarVendasPorPrioridade,
   publicadoRecentementeNoEstado,
+  registroPublicacaoCompleta,
   registroTeveSucesso,
   semanaISO,
   tipoAgendado,

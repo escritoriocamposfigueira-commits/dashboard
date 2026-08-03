@@ -16,26 +16,29 @@ test("normaliza variações do código CF-001", () => {
   assert.equal(normalizarCodigo("001"), "1");
 });
 
-test("bloqueia CF-001 e CF-413", () => {
+test("bloqueia todos os imóveis retirados de circulação", () => {
   const inativos = carregarCodigosInativos();
   assert.equal(codigoInativo("CF-001", inativos), true);
   assert.equal(codigoInativo("413", inativos), true);
+  for (const codigo of ["417", "458", "527", "550", "610"]) {
+    assert.equal(codigoInativo(`CF-${codigo}`, inativos), true);
+  }
   assert.equal(codigoInativo("537", inativos), false);
 });
 
 test("remove imóveis inativos de qualquer fila", () => {
   const inativos = carregarCodigosInativos();
   assert.deepEqual(
-    filtrarCodigosAtivos(["001", "413", "527", "537"], inativos),
-    ["527", "537"],
+    filtrarCodigosAtivos(["001", "413", "417", "458", "527", "550", "610", "537"], inativos),
+    ["537"],
   );
 });
 
 test("a rotação do robô nunca escolhe um imóvel inativo", () => {
   const plano = escolherProximo(
-    { ordem: ["001", "413", "527"] },
+    { ordem: ["001", "413", "417", "458", "527", "550", "610", "537"] },
     { indiceVenda: 0, publicados: [] },
     "venda",
   );
-  assert.equal(plano.codigo, "527");
+  assert.equal(plano.codigo, "537");
 });

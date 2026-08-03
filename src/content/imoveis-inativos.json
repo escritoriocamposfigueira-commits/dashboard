@@ -8,5 +8,30 @@
     "codigo": "413",
     "motivo": "Proprietário desistiu da venda",
     "inativado_em": "2026-07-29"
+  },
+  {
+    "codigo": "417",
+    "motivo": "Imóvel não está mais disponível",
+    "inativado_em": "2026-08-03"
+  },
+  {
+    "codigo": "458",
+    "motivo": "Imóvel não está mais disponível",
+    "inativado_em": "2026-08-03"
+  },
+  {
+    "codigo": "527",
+    "motivo": "Imóvel não está mais disponível",
+    "inativado_em": "2026-08-03"
+  },
+  {
+    "codigo": "550",
+    "motivo": "Imóvel não está mais disponível",
+    "inativado_em": "2026-08-03"
+  },
+  {
+    "codigo": "610",
+    "motivo": "Imóvel não está mais disponível",
+    "inativado_em": "2026-08-03"
   }
 ]
