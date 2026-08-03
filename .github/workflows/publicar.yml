@@ -10,7 +10,13 @@ on:
     - cron: "0 21 * * 1"      # Locação extra — segunda, 18:00 BRT
     - cron: "10 21 * * 3,6"   # Captação — quarta e sábado, 18:10 BRT
     - cron: "30 22 * * *"     # Recuperação de canal da locação — 19:30 BRT
-  workflow_dispatch: {}     # botão "Run workflow" para disparo manual
+  workflow_dispatch:
+    inputs:
+      forcar_republicacao:
+        description: "Republicar mesmo se o imóvel já saiu nas últimas 30 horas"
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -51,6 +57,7 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_REF_NAME: ${{ github.ref_name }}
           GITHUB_SCHEDULE: ${{ github.event.schedule }}
+          PUBLICACAO_FORCAR: ${{ inputs.forcar_republicacao || 'false' }}
           # Opcionais: robô só posta no YouTube/TikTok quando estes Secrets existirem.
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
@@ -68,7 +75,7 @@ jobs:
       - name: Salvar estado da fila no repositório
         run: |
           git add controle/estado-publicacao.json controle/estado-trilhas.json public/videos/
-          test ! -f controle/estado-modelos-story.json || git add controle/estado-modelos-story.json
+          test ! -f controle/estado-modelos-story.json || git add -f controle/estado-modelos-story.json
           git diff --staged --quiet || git commit -m "estado: publicação automática [skip ci]"
           for tentativa in 1 2 3; do
             echo "Sincronização do estado: tentativa ${tentativa}/3"

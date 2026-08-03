@@ -50,4 +50,5 @@ controle/*.json
 # exceção: estado da fila do servidor 24h precisa ser versionado
 !controle/estado-publicacao.json
 !controle/estado-trilhas.json
+!controle/estado-modelos-story.json
 logs/

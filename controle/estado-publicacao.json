@@ -833,8 +833,8 @@
     }
   ],
   "tentativas": 0,
-  "observacao": "CF-526 voltou para a fila — foi pulado por token inválido em 30/06. Novo token ativo em 02/07/2026.",
-  "indiceVenda": 19,
+  "observacao": "Fila de vendas reiniciada em 03/08/2026 para aplicar a prioridade comercial; deduplicação de 30 horas protege reruns e falhas.",
+  "indiceVenda": 0,
   "contadorNaoLoc": 36,
   "indiceCapt": 1
 }

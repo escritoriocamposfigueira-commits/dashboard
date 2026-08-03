@@ -43,7 +43,9 @@ const CAPTIONS  = path.join(RAIZ, "src/content/captions-imoveis.json");
 const ESTADO    = path.join(RAIZ, "controle/estado-publicacao.json");
 const VIDEOS    = path.join(RAIZ, "public/videos");
 const TMP       = path.join(RAIZ, ".tmp-videos");
+const PRIORIDADE_VENDAS_ARQUIVO = path.join(RAIZ, "src/content/prioridade-vendas.json");
 const CODIGOS_INATIVOS = carregarCodigosInativos();
+const JANELA_DUPLICIDADE_HORAS = 30;
 
 // ── Constantes Meta ───────────────────────────────────────────────────────────
 const BASE_HOST = "graph.facebook.com";
@@ -125,15 +127,15 @@ async function githubRequest(method, apiPath, ghToken, bodyObj) {
 
 async function subirVideoGitHub(videoPath, nomeArquivo) {
   const ghToken = process.env.GITHUB_TOKEN;
-  if (!ghToken) { console.log("  [GH] GITHUB_TOKEN ausente — URL de fallback usada."); return null; }
+  if (!ghToken) { console.log("  [GH] GITHUB_TOKEN ausente — o vídeo não pode ser hospedado."); return null; }
 
   const [owner, repo] = GH_REPO.split("/");
   const filePath = `public/videos/${nomeArquivo}`;
+  const filePathApi = filePath.split("/").map(encodeURIComponent).join("/");
   const content = fs.readFileSync(videoPath).toString("base64");
-  const apiPath = `/repos/${owner}/${repo}/contents/${encodeURIComponent(filePath)}?ref=${encodeURIComponent(GH_BRANCH)}`;
 
   // Buscar SHA atual (necessário se arquivo já existir)
-  const existing = await githubRequest("GET", `/repos/${owner}/${repo}/contents/${filePath}?ref=${encodeURIComponent(GH_BRANCH)}`, ghToken);
+  const existing = await githubRequest("GET", `/repos/${owner}/${repo}/contents/${filePathApi}?ref=${encodeURIComponent(GH_BRANCH)}`, ghToken);
 
   const body = {
     message: `vídeo story: ${nomeArquivo} [skip ci]`,
@@ -143,7 +145,7 @@ async function subirVideoGitHub(videoPath, nomeArquivo) {
   };
 
   console.log(`  [GH] Uploading ${nomeArquivo} (${Math.round(fs.statSync(videoPath).size / 1024)}KB)...`);
-  const result = await githubRequest("PUT", `/repos/${owner}/${repo}/contents/${filePath}`, ghToken, body);
+  const result = await githubRequest("PUT", `/repos/${owner}/${repo}/contents/${filePathApi}`, ghToken, body);
 
   if (result.content && result.content.download_url) {
     const rawUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${GH_BRANCH}/${filePath}`;
@@ -201,18 +203,77 @@ function dataBrasiliaISO(data = new Date()) {
 
 async function baixarImagem(url, destino) {
   return new Promise((resolve, reject) => {
-    const arquivo = fs.createWriteStream(destino);
-    const fazer = (u) => {
+    const fazer = (u, redirecionamentos = 0) => {
+      if (redirecionamentos > 5) return reject(new Error("Imagem excedeu o limite de redirecionamentos."));
       https.get(u, { headers: { "User-Agent": "campos-figueira-bot/1.0" } }, (res) => {
-        if (res.statusCode === 301 || res.statusCode === 302) {
-          arquivo.close();
-          return fazer(res.headers.location);
+        if ([301, 302, 307, 308].includes(res.statusCode) && res.headers.location) {
+          res.resume();
+          return fazer(new URL(res.headers.location, u).toString(), redirecionamentos + 1);
         }
+        const contentType = String(res.headers["content-type"] || "").toLowerCase();
+        if (res.statusCode < 200 || res.statusCode >= 300) {
+          res.resume();
+          return reject(new Error(`Imagem respondeu HTTP ${res.statusCode}: ${u}`));
+        }
+        if (!contentType.startsWith("image/")) {
+          res.resume();
+          return reject(new Error(`URL não retornou imagem (${contentType || "sem Content-Type"}): ${u}`));
+        }
+        const arquivo = fs.createWriteStream(destino);
         res.pipe(arquivo);
-        arquivo.on("finish", () => { arquivo.close(); resolve(); });
+        arquivo.on("finish", () => {
+          arquivo.close();
+          if (!fs.existsSync(destino) || fs.statSync(destino).size < 10_000) {
+            return reject(new Error(`Imagem vazia ou pequena demais: ${u}`));
+          }
+          resolve();
+        });
+        arquivo.on("error", reject);
       }).on("error", reject);
     };
     fazer(url);
+  });
+}
+
+function validarImagemRemota(url, rotulo, redirecionamentos = 0, metodo = "HEAD") {
+  return new Promise((resolve, reject) => {
+    if (!/^https:\/\//i.test(String(url || ""))) {
+      return reject(new Error(`${rotulo}: URL ausente ou inválida.`));
+    }
+    if (redirecionamentos > 5) return reject(new Error(`${rotulo}: redirecionamentos demais.`));
+    const req = https.request(url, {
+      method: metodo,
+      headers: {
+        "User-Agent": "campos-figueira-bot/1.0",
+        ...(metodo === "GET" ? { Range: "bytes=0-1023" } : {}),
+      },
+    }, (res) => {
+      if ([301, 302, 307, 308].includes(res.statusCode) && res.headers.location) {
+        res.resume();
+        return validarImagemRemota(
+          new URL(res.headers.location, url).toString(),
+          rotulo,
+          redirecionamentos + 1,
+          metodo,
+        ).then(resolve, reject);
+      }
+      const tipo = String(res.headers["content-type"] || "").toLowerCase();
+      res.resume();
+      // Alguns CDNs (especialmente Wix) recusam HEAD apesar de servirem a imagem.
+      // Um GET parcial valida o conteúdo sem baixar o arquivo inteiro.
+      if (metodo === "HEAD" && [403, 405].includes(res.statusCode)) {
+        return validarImagemRemota(url, rotulo, redirecionamentos, "GET").then(resolve, reject);
+      }
+      if (res.statusCode < 200 || res.statusCode >= 400) {
+        return reject(new Error(`${rotulo}: HTTP ${res.statusCode}.`));
+      }
+      if (!tipo.startsWith("image/")) {
+        return reject(new Error(`${rotulo}: conteúdo não é imagem (${tipo || "sem Content-Type"}).`));
+      }
+      resolve(true);
+    });
+    req.on("error", (erro) => reject(new Error(`${rotulo}: ${erro.message}`)));
+    req.end();
   });
 }
 
@@ -311,12 +372,18 @@ async function publicarFeedInstagram(token, urlFeed, caption) {
 // IG Carrossel: arte premium (slide 1) + fotos reais do imóvel (slides 2..10)
 async function publicarCarrosselInstagram(token, urls, caption) {
   const childIds = [];
-  for (const u of urls.slice(0, 10)) {
+  for (const [indice, u] of urls.slice(0, 10).entries()) {
     const c = await apiPost(`${IG_ID}/media`, { image_url: u, is_carousel_item: true, access_token: token });
-    if (c.error) { console.log("  [carrossel] foto ignorada:", (c.error.message || "").slice(0, 60)); continue; }
+    if (c.error) throw new Error(`IG Carrossel foto ${indice + 1}: ${c.error.message}`);
     let ok = false;
-    for (let i = 0; i < 6; i++) { await sleep(1500); const st = await apiGet(`${c.id}?fields=status_code&access_token=${encodeURIComponent(token)}`); if (st.status_code === "FINISHED") { ok = true; break; } if (st.status_code === "ERROR") break; }
-    if (ok) childIds.push(c.id);
+    for (let i = 0; i < 6; i++) {
+      await sleep(1500);
+      const st = await apiGet(`${c.id}?fields=status_code&access_token=${encodeURIComponent(token)}`);
+      if (st.status_code === "FINISHED") { ok = true; break; }
+      if (st.status_code === "ERROR") throw new Error(`IG Carrossel foto ${indice + 1}: processamento ERROR`);
+    }
+    if (!ok) throw new Error(`IG Carrossel foto ${indice + 1}: processamento não concluiu no prazo`);
+    childIds.push(c.id);
   }
   if (childIds.length < 2) throw new Error("carrossel: menos de 2 fotos válidas");
   const cont = await apiPost(`${IG_ID}/media`, { media_type: "CAROUSEL", children: childIds.join(","), caption, access_token: token });
@@ -463,23 +530,6 @@ async function publicarVideoStoryInstagram(token, videoUrl) {
   const pub = await apiPost(`${IG_ID}/media_publish`, { creation_id: cont.id, access_token: token });
   if (pub.error) throw new Error("IG Story publish: " + pub.error.message);
   return pub.id;
-}
-
-// IG Story: fallback para imagem se vídeo falhar
-async function publicarStoryInstagramImagem(token, urlImagem) {
-  const cont = await apiPost(`${IG_ID}/media`, {
-    image_url: urlImagem, media_type: "STORIES", access_token: token,
-  });
-  if (cont.error) throw new Error("IG Story img container: " + cont.error.message);
-  for (let i = 0; i < 12; i++) {
-    await sleep(2500);
-    const st = await apiGet(`${cont.id}?fields=status_code&access_token=${encodeURIComponent(token)}`);
-    if (st.status_code === "FINISHED") break;
-    if (st.status_code === "ERROR") throw new Error("IG Story img ERROR");
-  }
-  const pub = await apiPost(`${IG_ID}/media_publish`, { creation_id: cont.id, access_token: token });
-  if (pub.error) throw new Error("IG Story img publish: " + pub.error.message);
-  return pub.id + " (imagem)";
 }
 
 // ════════════════════════════════════════════════════════════════════════════
@@ -649,10 +699,75 @@ function enviarAlerta(titulo, mensagem, prioridade = 3) {
 // ROTAÇÃO — vendas diárias, todas as locações 1x/semana e 2 captações/semana
 // ════════════════════════════════════════════════════════════════════════════
 const LOCACAO_CODES = new Set(["584", "607", "609", "609B", "619", "620", "CASA INDAIA BERTIOGA", "CASA JARDIM ARMENIA"]);
+let PRIORIDADE_VENDAS = [];
+try { PRIORIDADE_VENDAS = JSON.parse(fs.readFileSync(PRIORIDADE_VENDAS_ARQUIVO, "utf-8")).map(String); } catch {}
 let CAPTACAO = [];
 try { CAPTACAO = JSON.parse(fs.readFileSync(path.join(RAIZ, "src/content/captacao.json"), "utf-8")); } catch {}
 let FOTOS = {};
 try { FOTOS = JSON.parse(fs.readFileSync(path.join(RAIZ, "src/content/fotos-imoveis.json"), "utf-8")); } catch {}
+const ALIASES_FOTOS = {
+  "CASA INDAIA BERTIOGA": "1F",
+  "CASA JARDIM ARMENIA": "57D",
+  "CASA VILA JUNDIAI": "8F",
+  TARLITORAL: "6F",
+};
+for (const [codigo, alias] of Object.entries(ALIASES_FOTOS)) {
+  if (!FOTOS[codigo] && FOTOS[alias]) FOTOS[codigo] = FOTOS[alias];
+}
+
+function ordenarVendasPorPrioridade(codigos) {
+  const disponiveis = new Set((codigos || []).map(String));
+  const prioritarios = PRIORIDADE_VENDAS.filter((codigo) => disponiveis.has(codigo));
+  const priorizados = new Set(prioritarios);
+  return [...prioritarios, ...(codigos || []).map(String).filter((codigo) => !priorizados.has(codigo))];
+}
+
+function registroTeveSucesso(registro) {
+  return Boolean(registro?.deduplicado) || Object.values(registro || {})
+    .some((valor) => typeof valor === "string" && valor.startsWith("✅"));
+}
+
+function publicadoRecentementeNoEstado(estado, codigo, agora = new Date(), janelaHoras = JANELA_DUPLICIDADE_HORAS) {
+  const limite = agora.getTime() - janelaHoras * 3600 * 1000;
+  return (estado.publicados || []).some((registro) => {
+    const data = new Date(registro.data).getTime();
+    return String(registro.codigo) === String(codigo)
+      && Number.isFinite(data)
+      && data >= limite
+      && registroTeveSucesso(registro);
+  });
+}
+
+function normalizarLegenda(texto) {
+  return String(texto || "").replace(/\r/g, "").replace(/[ \t]+/g, " ").trim();
+}
+
+async function localizarPublicacaoRecenteFacebook(token, caption, janelaHoras = JANELA_DUPLICIDADE_HORAS) {
+  const desde = Math.floor((Date.now() - janelaHoras * 3600 * 1000) / 1000);
+  const campos = encodeURIComponent("id,message,created_time");
+  const resposta = await apiGet(
+    `${PAGE_ID}/published_posts?fields=${campos}&since=${desde}&limit=100&access_token=${encodeURIComponent(token)}`,
+  );
+  if (resposta.error) throw new Error(`Verificação antirrepetição no Facebook: ${resposta.error.message}`);
+  const alvo = normalizarLegenda(caption);
+  return (resposta.data || []).find((post) => normalizarLegenda(post.message) === alvo) || null;
+}
+
+function avancarPonteiros(estado, plano, manifest) {
+  if (plano.tipo === "venda" && plano.vendaIdx !== null) {
+    const vendasTot = ordenarVendasPorPrioridade(
+      filtrarCodigosAtivos(manifest.ordem, CODIGOS_INATIVOS)
+        .map(String)
+        .filter((codigo) => !LOCACAO_CODES.has(codigo)),
+    ).length;
+    estado.indiceVenda = vendasTot ? (plano.vendaIdx + 1) % vendasTot : 0;
+  }
+  if (plano.tipo === "captacao") {
+    estado.indiceCapt = (plano.captIdx + 1) % (CAPTACAO.length || 1);
+  }
+  if (plano.tipo !== "locacao") estado.contadorNaoLoc = (estado.contadorNaoLoc || 0) + 1;
+  estado.indice = (estado.indice || 0) + 1;
+}
 
 function semanaISO(d) {
   const dt = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
@@ -679,7 +794,7 @@ function tipoAgendado() {
 function escolherProximo(manifest, estado, tipoForcado = "auto") {
   const ordem = filtrarCodigosAtivos(manifest.ordem, CODIGOS_INATIVOS).map(String);
   const locacoes = ordem.filter((c) => LOCACAO_CODES.has(c));
-  const vendas = ordem.filter((c) => !LOCACAO_CODES.has(c));
+  const vendas = ordenarVendasPorPrioridade(ordem.filter((c) => !LOCACAO_CODES.has(c)));
   const brt = new Date(Date.now() - 3 * 3600 * 1000);
   const semana = semanaISO(brt);
   const pubSemana = (estado.publicados || [])
@@ -798,9 +913,64 @@ async function main() {
     caption = art.caption;
   } else {
     urlStory = manifest.urls[codigo];
-    urlFeed = manifest.urls_feed?.[codigo] || manifest.urls_quadrada?.[codigo] || urlStory;
-    caption = mapaCap[codigo] || `CF-${codigo} — Escritório Campos Figueira\n\n📲 WhatsApp: (11) 2378-5643`;
+    urlFeed = manifest.urls_feed?.[codigo];
+    caption = mapaCap[codigo];
   }
+
+  if (!caption) throw new Error(`CF-${codigo}: legenda específica ausente. Publicação bloqueada.`);
+
+  const semanaAtual = semanaISO(new Date(Date.now() - 3 * 3600 * 1000));
+  const retryPublicacao = estado.retryPublicacao?.codigo === codigo
+    && estado.retryPublicacao?.tipo === plano.tipo
+      ? estado.retryPublicacao
+      : null;
+  const retryLocacao = plano.tipo === "locacao"
+    && estado.retryLocacao?.codigo === codigo
+    && estado.retryLocacao?.semana === semanaAtual
+      ? estado.retryLocacao
+      : null;
+  const retryAnterior = retryPublicacao?.reg || retryLocacao?.reg || null;
+
+  const forcarRepublicacao = /^(1|true|sim|yes)$/i.test(String(process.env.PUBLICACAO_FORCAR || ""));
+  if (!forcarRepublicacao && !retryAnterior) {
+    const duplicadoEstado = publicadoRecentementeNoEstado(estado, codigo);
+    const postFacebook = duplicadoEstado
+      ? null
+      : await localizarPublicacaoRecenteFacebook(token, caption);
+    if (duplicadoEstado || postFacebook) {
+      const origem = duplicadoEstado ? "estado versionado" : `Facebook (${postFacebook.id})`;
+      const registroDeduplicado = {
+        codigo,
+        data: new Date().toISOString(),
+        deduplicado: true,
+        observacao: `não republicado: publicação equivalente encontrada no ${origem}`,
+      };
+      estado.publicados = estado.publicados || [];
+      estado.publicados.push(registroDeduplicado);
+      avancarPonteiros(estado, plano, manifest);
+      estado.tentativas = 0;
+      delete estado.retryPublicacao;
+      if (plano.tipo === "locacao") delete estado.retryLocacao;
+      fs.mkdirSync(path.dirname(ESTADO), { recursive: true });
+      fs.writeFileSync(ESTADO, JSON.stringify(estado, null, 2), "utf-8");
+      console.log(`  🛑 CF-${codigo} não republicado: duplicidade detectada no ${origem}.`);
+      enviarAlerta(`🛑 CF-${codigo} não duplicado`, registroDeduplicado.observacao);
+      return;
+    }
+  } else if (forcarRepublicacao) {
+    console.log("  ⚠️  Republicação forçada manualmente; trava de 30 horas ignorada.");
+  }
+
+  const fotosEspecificas = plano.tipo === "captacao" ? [] : (FOTOS[String(codigo)] || []);
+  if (plano.tipo !== "captacao" && fotosEspecificas.length === 0) {
+    throw new Error(`CF-${codigo}: nenhuma foto específica cadastrada. Publicação bloqueada para não usar arte genérica.`);
+  }
+  await Promise.all([
+    validarImagemRemota(urlFeed, `CF-${codigo} feed 4:5`),
+    validarImagemRemota(urlStory, `CF-${codigo} story 9:16`),
+    ...fotosEspecificas.slice(0, 9).map((url, indice) =>
+      validarImagemRemota(url, `CF-${codigo} foto específica ${indice + 1}`)),
+  ]);
 
   // LOOP INFINITO: nunca termina. Ao esgotar a lista, recomeça sozinho.
   // A lista cresce automaticamente: basta adicionar o imóvel em imagens-urls.json
@@ -814,7 +984,8 @@ async function main() {
   const ffmpeg = encontrarFFmpeg();
   const dataPublicacao = dataBrasiliaISO();
   let videoPath = null;
-  let videoUrl  = urlStory; // fallback = imagem se vídeo falhar
+  let videoUrl  = null;
+  let erroVideo = null;
   let trilhaSelecionada = null;
   let modeloSelecionado = null;
 
@@ -846,15 +1017,18 @@ async function main() {
 
       // Hospedar no GitHub para que o IG possa acessar a URL
       const ghUrl = await subirVideoGitHub(videoPath, nomeVideo);
-      const alvo = ghUrl || `https://raw.githubusercontent.com/${GH_REPO}/${GH_BRANCH}/public/videos/${nomeVideo}`;
-      const pronta = await aguardarUrl(alvo, 12); // espera o CDN liberar o vídeo (até ~36s) p/ o IG conseguir buscar
-      videoUrl = alvo;
-      console.log(`  URL vídeo: ${videoUrl} ${pronta ? "(pronta ✅)" : "(sem confirmação)"}`);
+      if (!ghUrl) throw new Error("Upload do vídeo no GitHub não retornou URL pública.");
+      const pronta = await aguardarUrl(ghUrl, 12); // espera o CDN liberar o vídeo (até ~36s) p/ o IG conseguir buscar
+      if (!pronta) throw new Error("Vídeo não ficou acessível no CDN após 12 verificações.");
+      videoUrl = ghUrl;
+      console.log(`  URL vídeo: ${videoUrl} (pronta ✅)`);
     } catch (e) {
-      console.log(`  ⚠️  Geração de vídeo falhou: ${e.message}. Usando imagem como fallback.`);
+      erroVideo = e.message;
+      console.log(`  ❌ Geração de vídeo falhou: ${erroVideo}. Stories/Reels serão marcados como erro.`);
     }
   } else {
-    console.log("  ⚠️  FFmpeg não encontrado. Stories publicados como imagem.");
+    erroVideo = "FFmpeg não encontrado";
+    console.log("  ❌ FFmpeg não encontrado. Stories/Reels serão marcados como erro.");
   }
 
   // ── Publicar ─────────────────────────────────────────────────────────────
@@ -872,12 +1046,6 @@ async function main() {
     youtube: "—",
     tiktok: "—",
   };
-  const semanaAtual = semanaISO(new Date(Date.now() - 3 * 3600 * 1000));
-  const retryAnterior = plano.tipo === "locacao"
-    && estado.retryLocacao?.codigo === codigo
-    && estado.retryLocacao?.semana === semanaAtual
-      ? estado.retryLocacao.reg
-      : null;
   const manterCanalConcluido = (canal) => {
     const valor = retryAnterior?.[canal];
     if (typeof valor === "string" && valor.startsWith("✅")) {
@@ -897,16 +1065,8 @@ async function main() {
 
   if (!manterCanalConcluido("fb_story")) {
     try {
-      if (videoPath) {
-        reg.fb_story = "✅ " + await publicarVideoStoryFacebook(token, videoPath);
-      } else {
-        // Fallback imagem para FB story
-        const foto = await apiPost(`${PAGE_ID}/photos`, { url: urlStory, published: false, access_token: token });
-        if (foto.error) throw new Error(foto.error.message);
-        const s = await apiPost(`${PAGE_ID}/photo_stories`, { photo_id: foto.id, access_token: token });
-        if (s.error) throw new Error(s.error.message);
-        reg.fb_story = "✅ " + (s.post_id || s.id || foto.id) + " (imagem)";
-      }
+      if (!videoPath) throw new Error(`Vídeo obrigatório indisponível: ${erroVideo || "motivo desconhecido"}`);
+      reg.fb_story = "✅ " + await publicarVideoStoryFacebook(token, videoPath);
     } catch (e) { reg.fb_story = "❌ " + e.message; }
   }
   console.log("  FB Story:", reg.fb_story);
@@ -914,43 +1074,32 @@ async function main() {
   // FB Reel (feed permanente + alcança quem não curte a página) — só quando há vídeo
   if (!manterCanalConcluido("fb_reel")) {
     try {
-      if (videoPath) {
-        reg.fb_reel = "✅ " + await publicarReelFacebook(token, videoPath, caption);
-      } else {
-        reg.fb_reel = "— (sem vídeo)";
-      }
+      if (!videoPath) throw new Error(`Vídeo obrigatório indisponível: ${erroVideo || "motivo desconhecido"}`);
+      reg.fb_reel = "✅ " + await publicarReelFacebook(token, videoPath, caption);
     } catch (e) { reg.fb_reel = "❌ " + e.message; }
   }
   console.log("  FB Reel :", reg.fb_reel);
 
   if (!manterCanalConcluido("ig_feed")) {
     try {
-      const fotos = (plano.tipo !== "captacao" && FOTOS[String(codigo)]) ? FOTOS[String(codigo)] : [];
-      if (fotos.length >= 1) {
-        const slides = [urlFeed, ...fotos].slice(0, 10); // arte premium + fotos reais
+      if (plano.tipo !== "captacao") {
+        const slides = [urlFeed, ...fotosEspecificas].slice(0, 10); // arte premium + fotos reais
         reg.ig_feed = `✅ (carrossel ${slides.length}) ` + await publicarCarrosselInstagram(token, slides, caption);
       } else {
         reg.ig_feed = "✅ " + await publicarFeedInstagram(token, urlFeed, caption);
       }
     } catch (e) {
-      try { reg.ig_feed = "✅ " + await publicarFeedInstagram(token, urlFeed, caption); }
-      catch (e2) { reg.ig_feed = "❌ " + e2.message; }
+      reg.ig_feed = "❌ " + e.message;
     }
   }
   console.log("  IG Feed :", reg.ig_feed);
 
   if (!manterCanalConcluido("ig_story")) {
     try {
-      if (videoPath && videoUrl !== urlStory) {
-        reg.ig_story = "✅ " + await publicarVideoStoryInstagram(token, videoUrl);
-      } else {
-        reg.ig_story = "✅ " + await publicarStoryInstagramImagem(token, urlStory);
-      }
+      if (!videoPath || !videoUrl) throw new Error(`Vídeo obrigatório indisponível: ${erroVideo || "motivo desconhecido"}`);
+      reg.ig_story = "✅ " + await publicarVideoStoryInstagram(token, videoUrl);
     } catch (e) {
-      // Tentar fallback para imagem
-      try {
-        reg.ig_story = "✅ " + await publicarStoryInstagramImagem(token, urlStory);
-      } catch (e2) { reg.ig_story = "❌ " + e2.message; }
+      reg.ig_story = "❌ " + e.message;
     }
   }
   console.log("  IG Story:", reg.ig_story);
@@ -958,11 +1107,8 @@ async function main() {
   // IG Reel (feed permanente + alcança quem não segue) — só quando há vídeo público
   if (!manterCanalConcluido("ig_reel")) {
     try {
-      if (videoPath && videoUrl !== urlStory) {
-        reg.ig_reel = "✅ " + await publicarReelInstagram(token, videoUrl, caption);
-      } else {
-        reg.ig_reel = "— (sem vídeo)";
-      }
+      if (!videoPath || !videoUrl) throw new Error(`Vídeo obrigatório indisponível: ${erroVideo || "motivo desconhecido"}`);
+      reg.ig_reel = "✅ " + await publicarReelInstagram(token, videoUrl, caption);
     } catch (e) { reg.ig_reel = "❌ " + e.message; }
   }
   console.log("  IG Reel :", reg.ig_reel);
@@ -994,20 +1140,21 @@ async function main() {
   console.log("  TikTok  :", reg.tiktok);
 
   // ── Avançar fila ──────────────────────────────────────────────────────────
-  const algumOk = Object.values(reg).some((v) => typeof v === "string" && v.startsWith("✅"));
   const canaisObrigatorios = ["fb_feed", "fb_story", "ig_feed", "ig_story"];
-  const locacaoCompleta = canaisObrigatorios.every((canal) => reg[canal].startsWith("✅"));
-  const publicacaoCompleta = plano.tipo === "locacao" ? locacaoCompleta : algumOk;
-  const tentativasLocacao = retryAnterior ? (estado.retryLocacao?.tentativas || 0) : 0;
-  const atingiuLimite = plano.tipo === "locacao" ? tentativasLocacao >= 2 : (estado.tentativas || 0) >= 2;
+  const publicacaoCompleta = canaisObrigatorios.every((canal) => reg[canal].startsWith("✅"));
+  const tentativasAnteriores = retryPublicacao?.tentativas
+    || retryLocacao?.tentativas
+    || estado.tentativas
+    || 0;
+  const atingiuLimite = tentativasAnteriores >= 2;
   estado.tentativas = estado.tentativas || 0;
 
   if (publicacaoCompleta || atingiuLimite) {
     if (!publicacaoCompleta) {
-      const totalTentativas = plano.tipo === "locacao" ? tentativasLocacao + 1 : estado.tentativas + 1;
-      const canaisPendentes = plano.tipo === "locacao"
-        ? canaisObrigatorios.filter((canal) => !reg[canal].startsWith("✅")).join(", ")
-        : "todos os canais";
+      const totalTentativas = tentativasAnteriores + 1;
+      const canaisPendentes = canaisObrigatorios
+        .filter((canal) => !reg[canal].startsWith("✅"))
+        .join(", ");
       reg.observacao = `pulado após ${totalTentativas} tentativas; pendentes: ${canaisPendentes}`;
       enviarAlerta(`❌ CF-${codigo} FALHOU`, `Canais pendentes após ${totalTentativas} tentativas: ${canaisPendentes}.`, 5);
     } else {
@@ -1015,39 +1162,32 @@ async function main() {
       enviarAlerta(`✅ CF-${codigo} publicado`, `Publicado em: ${canaisOk}`);
     }
     estado.publicados.push(reg);
-    if (plano.tipo === "venda" && plano.vendaIdx !== null) {
-      const vendasTot = filtrarCodigosAtivos(manifest.ordem, CODIGOS_INATIVOS)
-        .map(String)
-        .filter((c) => !LOCACAO_CODES.has(c)).length;
-      estado.indiceVenda = (plano.vendaIdx + 1) % vendasTot;
-    }
-    if (plano.tipo === "captacao") {
-      estado.indiceCapt = (plano.captIdx + 1) % (CAPTACAO.length || 1);
-    }
-    if (plano.tipo !== "locacao") {
-      estado.contadorNaoLoc = (estado.contadorNaoLoc || 0) + 1;
-    }
-    estado.indice = (estado.indice || 0) + 1;
+    avancarPonteiros(estado, plano, manifest);
     estado.tentativas = 0;
     delete estado.ultimaFalha;
+    delete estado.retryPublicacao;
     if (plano.tipo === "locacao") delete estado.retryLocacao;
   } else {
+    const canaisPendentes = canaisObrigatorios.filter((canal) => !reg[canal].startsWith("✅"));
+    const tentativaAtual = tentativasAnteriores + 1;
+    estado.retryPublicacao = {
+      codigo,
+      tipo: plano.tipo,
+      tentativas: tentativaAtual,
+      reg,
+    };
+    estado.tentativas = tentativaAtual;
+    estado.ultimaFalha = reg;
     if (plano.tipo === "locacao") {
-      const canaisPendentes = canaisObrigatorios.filter((canal) => !reg[canal].startsWith("✅"));
       estado.retryLocacao = {
         codigo,
         semana: semanaAtual,
-        tentativas: tentativasLocacao + 1,
+        tentativas: tentativaAtual,
         reg,
       };
-      enviarAlerta(`⚠️ CF-${codigo}: recuperar locação`, `Tentativa ${tentativasLocacao + 1}/3. Pendentes: ${canaisPendentes.join(", ")}`, 4);
-      console.log(`\n⚠️  Locação incompleta. Tentativa ${tentativasLocacao + 1}/3; pendentes: ${canaisPendentes.join(", ")}.`);
-    } else {
-      estado.tentativas += 1;
-      estado.ultimaFalha = reg;
-      enviarAlerta(`⚠️ CF-${codigo} falhou (tentativa ${estado.tentativas}/3)`, JSON.stringify(reg).slice(0, 200), 4);
-      console.log(`\n⚠️  Nenhum canal publicou. Tentativa ${estado.tentativas}/3.`);
     }
+    enviarAlerta(`⚠️ CF-${codigo}: publicação incompleta`, `Tentativa ${tentativaAtual}/3. Pendentes: ${canaisPendentes.join(", ")}`, 4);
+    console.log(`\n⚠️  Publicação incompleta. Tentativa ${tentativaAtual}/3; pendentes: ${canaisPendentes.join(", ")}. Canais concluídos não serão repetidos.`);
   }
 
   // ── Salvar estado ─────────────────────────────────────────────────────────
@@ -1067,4 +1207,13 @@ if (require.main === module) {
   });
 }
 
-module.exports = { semanaISO, tipoAgendado, escolherProximo };
+module.exports = {
+  avancarPonteiros,
+  escolherProximo,
+  normalizarLegenda,
+  ordenarVendasPorPrioridade,
+  publicadoRecentementeNoEstado,
+  registroTeveSucesso,
+  semanaISO,
+  tipoAgendado,
+};
