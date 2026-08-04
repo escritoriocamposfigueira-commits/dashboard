@@ -18,6 +18,12 @@
       "codigo": "CF-607",
       "chave_publicacao": "2026-08-03|locacao|CF-607",
       "usado_em": "2026-08-03T22:13:08.892Z"
+    },
+    {
+      "modelo_id": "topo-cinematografico",
+      "codigo": "CF-609",
+      "chave_publicacao": "2026-08-04|locacao|CF-609",
+      "usado_em": "2026-08-04T19:43:59.436Z"
     }
   ]
 }
