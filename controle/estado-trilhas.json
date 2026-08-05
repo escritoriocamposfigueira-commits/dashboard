@@ -28,6 +28,13 @@
       "emocao": "urgencia",
       "chave_publicacao": "2026-08-04|locacao|CF-609",
       "usado_em": "2026-08-04T19:43:59.435Z"
+    },
+    {
+      "trilha_id": "mixkit-173",
+      "codigo": "CF-543",
+      "emocao": "urgencia",
+      "chave_publicacao": "2026-08-05|venda|CF-543",
+      "usado_em": "2026-08-05T14:11:38.007Z"
     }
   ]
 }
