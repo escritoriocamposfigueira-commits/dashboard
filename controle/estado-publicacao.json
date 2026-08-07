@@ -1,5 +1,5 @@
 {
-  "indice": 85,
+  "indice": 86,
   "publicados": [
     {
       "codigo": "429",
@@ -912,46 +912,27 @@
       "data": "2026-08-06T14:09:00.020Z",
       "deduplicado": true,
       "observacao": "não republicado: publicação equivalente encontrada no Facebook (512040582222121_1647771304024711)"
-    }
-  ],
-  "tentativas": 2,
-  "observacao": "Fila de vendas reiniciada em 03/08/2026 para aplicar a prioridade comercial; deduplicação de 30 horas protege reruns e falhas.",
-  "indiceVenda": 2,
-  "contadorNaoLoc": 39,
-  "indiceCapt": 2,
-  "retryPublicacao": {
-    "codigo": "CASA INDAIA BERTIOGA",
-    "tipo": "locacao",
-    "tentativas": 2,
-    "reg": {
-      "codigo": "CASA INDAIA BERTIOGA",
-      "data": "2026-08-07T01:38:46.675Z",
-      "trilha": "mixkit-165",
-      "modelo_video": "subida-cinematografica",
-      "fb_feed": "✅ 512040582222121_1649247917210383",
-      "fb_story": "✅ 2413448189182330",
-      "fb_reel": "✅ 1649248260543682",
-      "ig_feed": "❌ IG Carrossel foto 3: Only photo or video can be accepted as media type.",
-      "ig_story": "✅ 17901199875473479",
-      "ig_reel": "✅ 18107570828515713",
-      "youtube": "✅ rD5c89_TQd0",
+    },
+    {
+      "codigo": "554",
+      "data": "2026-08-07T13:03:11.218Z",
+      "trilha": "mixkit-288",
+      "modelo_video": "cascata",
+      "fb_feed": "✅ 512040582222121_1649826070485901",
+      "fb_story": "✅ 1072364171990575",
+      "fb_reel": "✅ 1649826587152516",
+      "ig_feed": "✅ (carrossel 6) 18021213269909566",
+      "ig_story": "✅ 18075742934700714",
+      "ig_reel": "✅ 17882156688678649",
+      "youtube": "✅ BCc7-tSAbGk",
       "tiktok": "— (TikTok pausado)"
     }
-  },
-  "ultimaFalha": {
-    "codigo": "CASA INDAIA BERTIOGA",
-    "data": "2026-08-07T01:38:46.675Z",
-    "trilha": "mixkit-165",
-    "modelo_video": "subida-cinematografica",
-    "fb_feed": "✅ 512040582222121_1649247917210383",
-    "fb_story": "✅ 2413448189182330",
-    "fb_reel": "✅ 1649248260543682",
-    "ig_feed": "❌ IG Carrossel foto 3: Only photo or video can be accepted as media type.",
-    "ig_story": "✅ 17901199875473479",
-    "ig_reel": "✅ 18107570828515713",
-    "youtube": "✅ rD5c89_TQd0",
-    "tiktok": "— (TikTok pausado)"
-  },
+  ],
+  "tentativas": 0,
+  "observacao": "Fila de vendas reiniciada em 03/08/2026 para aplicar a prioridade comercial; deduplicação de 30 horas protege reruns e falhas.",
+  "indiceVenda": 3,
+  "contadorNaoLoc": 40,
+  "indiceCapt": 2,
   "retryLocacao": {
     "codigo": "CASA INDAIA BERTIOGA",
     "semana": "2026-W32",
