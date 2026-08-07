@@ -54,6 +54,12 @@
       "codigo": "CF-554",
       "chave_publicacao": "2026-08-07|venda|CF-554",
       "usado_em": "2026-08-07T13:03:08.949Z"
+    },
+    {
+      "modelo_id": "topo-cinematografico",
+      "codigo": "CF-CASA INDAIA BERTIOGA",
+      "chave_publicacao": "2026-08-07|locacao|CF-CASA INDAIA BERTIOGA",
+      "usado_em": "2026-08-07T19:00:11.789Z"
     }
   ]
 }

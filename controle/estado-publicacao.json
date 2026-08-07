@@ -1,5 +1,5 @@
 {
-  "indice": 86,
+  "indice": 87,
   "publicados": [
     {
       "codigo": "429",
@@ -926,30 +926,25 @@
       "ig_reel": "✅ 17882156688678649",
       "youtube": "✅ BCc7-tSAbGk",
       "tiktok": "— (TikTok pausado)"
+    },
+    {
+      "codigo": "CASA INDAIA BERTIOGA",
+      "data": "2026-08-07T19:00:14.246Z",
+      "trilha": "mixkit-190",
+      "modelo_video": "topo-cinematografico",
+      "fb_feed": "✅ 512040582222121_1649247917210383",
+      "fb_story": "✅ 2413448189182330",
+      "fb_reel": "✅ 1649248260543682",
+      "ig_feed": "✅ (carrossel 10) 18120276412889566",
+      "ig_story": "✅ 17901199875473479",
+      "ig_reel": "✅ 18107570828515713",
+      "youtube": "✅ rD5c89_TQd0",
+      "tiktok": "— (TikTok pausado)"
     }
   ],
   "tentativas": 0,
   "observacao": "Fila de vendas reiniciada em 03/08/2026 para aplicar a prioridade comercial; deduplicação de 30 horas protege reruns e falhas.",
   "indiceVenda": 3,
   "contadorNaoLoc": 40,
-  "indiceCapt": 2,
-  "retryLocacao": {
-    "codigo": "CASA INDAIA BERTIOGA",
-    "semana": "2026-W32",
-    "tentativas": 2,
-    "reg": {
-      "codigo": "CASA INDAIA BERTIOGA",
-      "data": "2026-08-07T01:38:46.675Z",
-      "trilha": "mixkit-165",
-      "modelo_video": "subida-cinematografica",
-      "fb_feed": "✅ 512040582222121_1649247917210383",
-      "fb_story": "✅ 2413448189182330",
-      "fb_reel": "✅ 1649248260543682",
-      "ig_feed": "❌ IG Carrossel foto 3: Only photo or video can be accepted as media type.",
-      "ig_story": "✅ 17901199875473479",
-      "ig_reel": "✅ 18107570828515713",
-      "youtube": "✅ rD5c89_TQd0",
-      "tiktok": "— (TikTok pausado)"
-    }
-  }
+  "indiceCapt": 2
 }
