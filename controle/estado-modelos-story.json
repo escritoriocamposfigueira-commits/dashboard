@@ -42,6 +42,12 @@
       "codigo": "CF-CAPT-2",
       "chave_publicacao": "2026-08-05|captacao|CF-CAPT-2",
       "usado_em": "2026-08-05T22:21:38.189Z"
+    },
+    {
+      "modelo_id": "subida-cinematografica",
+      "codigo": "CF-CASA INDAIA BERTIOGA",
+      "chave_publicacao": "2026-08-06|locacao|CF-CASA INDAIA BERTIOGA",
+      "usado_em": "2026-08-07T00:04:12.772Z"
     }
   ]
 }
