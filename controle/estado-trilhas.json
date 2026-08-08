@@ -84,6 +84,13 @@
       "emocao": "urgencia",
       "chave_publicacao": "2026-08-08|locacao|CF-CASA JARDIM ARMENIA",
       "usado_em": "2026-08-08T18:39:40.116Z"
+    },
+    {
+      "trilha_id": "mixkit-154",
+      "codigo": "CF-CAPT-3",
+      "emocao": "urgencia",
+      "chave_publicacao": "2026-08-08|captacao|CF-CAPT-3",
+      "usado_em": "2026-08-08T21:45:37.996Z"
     }
   ]
 }

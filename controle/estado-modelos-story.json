@@ -72,6 +72,12 @@
       "codigo": "CF-CASA JARDIM ARMENIA",
       "chave_publicacao": "2026-08-08|locacao|CF-CASA JARDIM ARMENIA",
       "usado_em": "2026-08-08T18:39:40.117Z"
+    },
+    {
+      "modelo_id": "foco-central",
+      "codigo": "CF-CAPT-3",
+      "chave_publicacao": "2026-08-08|captacao|CF-CAPT-3",
+      "usado_em": "2026-08-08T21:45:37.997Z"
     }
   ]
 }
