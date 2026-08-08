@@ -66,6 +66,12 @@
       "codigo": "CF-521",
       "chave_publicacao": "2026-08-08|venda|CF-521",
       "usado_em": "2026-08-08T12:48:11.856Z"
+    },
+    {
+      "modelo_id": "iluminacao-dourada",
+      "codigo": "CF-CASA JARDIM ARMENIA",
+      "chave_publicacao": "2026-08-08|locacao|CF-CASA JARDIM ARMENIA",
+      "usado_em": "2026-08-08T18:39:40.117Z"
     }
   ]
 }
