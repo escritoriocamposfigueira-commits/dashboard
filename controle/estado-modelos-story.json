@@ -84,6 +84,12 @@
       "codigo": "CF-559",
       "chave_publicacao": "2026-08-09|venda|CF-559",
       "usado_em": "2026-08-09T12:50:33.654Z"
+    },
+    {
+      "modelo_id": "cascata",
+      "codigo": "CF-619",
+      "chave_publicacao": "2026-08-09|locacao|CF-619",
+      "usado_em": "2026-08-09T18:43:04.812Z"
     }
   ]
 }
