@@ -91,6 +91,13 @@
       "emocao": "urgencia",
       "chave_publicacao": "2026-08-08|captacao|CF-CAPT-3",
       "usado_em": "2026-08-08T21:45:37.996Z"
+    },
+    {
+      "trilha_id": "mixkit-852",
+      "codigo": "CF-559",
+      "emocao": "urgencia",
+      "chave_publicacao": "2026-08-09|venda|CF-559",
+      "usado_em": "2026-08-09T12:50:33.653Z"
     }
   ]
 }
