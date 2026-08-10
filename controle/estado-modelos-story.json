@@ -108,6 +108,12 @@
       "codigo": "CF-584",
       "chave_publicacao": "2026-08-10|locacao|CF-584",
       "usado_em": "2026-08-10T19:00:17.039Z"
+    },
+    {
+      "modelo_id": "foco-central",
+      "codigo": "CF-607",
+      "chave_publicacao": "2026-08-10|locacao|CF-607",
+      "usado_em": "2026-08-10T21:47:22.878Z"
     }
   ]
 }
