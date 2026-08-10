@@ -119,6 +119,13 @@
       "emocao": "urgencia",
       "chave_publicacao": "2026-08-10|venda|CF-596",
       "usado_em": "2026-08-10T13:09:54.912Z"
+    },
+    {
+      "trilha_id": "mixkit-480",
+      "codigo": "CF-584",
+      "emocao": "urgencia",
+      "chave_publicacao": "2026-08-10|locacao|CF-584",
+      "usado_em": "2026-08-10T19:00:17.038Z"
     }
   ]
 }
