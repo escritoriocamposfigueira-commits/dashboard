@@ -112,6 +112,13 @@
       "emocao": "familiar",
       "chave_publicacao": "2026-08-09|locacao|CF-620",
       "usado_em": "2026-08-09T23:02:54.788Z"
+    },
+    {
+      "trilha_id": "mixkit-900",
+      "codigo": "CF-596",
+      "emocao": "urgencia",
+      "chave_publicacao": "2026-08-10|venda|CF-596",
+      "usado_em": "2026-08-10T13:09:54.912Z"
     }
   ]
 }
