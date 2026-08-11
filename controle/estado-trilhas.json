@@ -133,6 +133,13 @@
       "emocao": "urgencia",
       "chave_publicacao": "2026-08-10|locacao|CF-607",
       "usado_em": "2026-08-10T21:47:22.878Z"
+    },
+    {
+      "trilha_id": "mixkit-927",
+      "codigo": "CF-598",
+      "emocao": "confianca",
+      "chave_publicacao": "2026-08-11|venda|CF-598",
+      "usado_em": "2026-08-11T13:05:03.717Z"
     }
   ]
 }
