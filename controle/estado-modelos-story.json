@@ -132,6 +132,12 @@
       "codigo": "CF-556",
       "chave_publicacao": "2026-08-12|venda|CF-556",
       "usado_em": "2026-08-12T13:09:19.821Z"
+    },
+    {
+      "modelo_id": "laterais-alternadas",
+      "codigo": "CF-609B",
+      "chave_publicacao": "2026-08-12|locacao|CF-609B",
+      "usado_em": "2026-08-12T19:04:43.305Z"
     }
   ]
 }
