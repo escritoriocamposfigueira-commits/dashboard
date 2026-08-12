@@ -138,6 +138,12 @@
       "codigo": "CF-609B",
       "chave_publicacao": "2026-08-12|locacao|CF-609B",
       "usado_em": "2026-08-12T19:04:43.305Z"
+    },
+    {
+      "modelo_id": "iluminacao-dourada",
+      "codigo": "CF-CAPT-4",
+      "chave_publicacao": "2026-08-12|captacao|CF-CAPT-4",
+      "usado_em": "2026-08-12T22:02:10.228Z"
     }
   ]
 }
