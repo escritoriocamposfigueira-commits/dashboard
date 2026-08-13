@@ -168,6 +168,13 @@
       "emocao": "confianca",
       "chave_publicacao": "2026-08-12|captacao|CF-CAPT-4",
       "usado_em": "2026-08-12T22:02:10.228Z"
+    },
+    {
+      "trilha_id": "mixkit-371",
+      "codigo": "CF-CASA INDAIA BERTIOGA",
+      "emocao": "urgencia",
+      "chave_publicacao": "2026-08-13|locacao|CF-CASA INDAIA BERTIOGA",
+      "usado_em": "2026-08-13T19:05:58.407Z"
     }
   ]
 }

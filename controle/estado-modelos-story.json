@@ -144,6 +144,12 @@
       "codigo": "CF-CAPT-4",
       "chave_publicacao": "2026-08-12|captacao|CF-CAPT-4",
       "usado_em": "2026-08-12T22:02:10.228Z"
+    },
+    {
+      "modelo_id": "foco-central",
+      "codigo": "CF-CASA INDAIA BERTIOGA",
+      "chave_publicacao": "2026-08-13|locacao|CF-CASA INDAIA BERTIOGA",
+      "usado_em": "2026-08-13T19:05:58.408Z"
     }
   ]
 }

@@ -1,5 +1,5 @@
 {
-  "indice": 101,
+  "indice": 102,
   "publicados": [
     {
       "codigo": "429",
@@ -1128,6 +1128,20 @@
       "data": "2026-08-13T13:09:44.309Z",
       "deduplicado": true,
       "observacao": "não republicado: publicação equivalente encontrada no Facebook (512040582222121_1654659703335871)"
+    },
+    {
+      "codigo": "CASA INDAIA BERTIOGA",
+      "data": "2026-08-13T19:06:01.497Z",
+      "trilha": "mixkit-371",
+      "modelo_video": "foco-central",
+      "fb_feed": "✅ 512040582222121_1655937933208048",
+      "fb_story": "✅ 1067436282342269",
+      "fb_reel": "✅ 1655938353208006",
+      "ig_feed": "✅ (carrossel 10) 18111046886049267",
+      "ig_story": "✅ 17880142431621947",
+      "ig_reel": "✅ 18135642598610349",
+      "youtube": "✅ VBXgqO38Y80",
+      "tiktok": "— (TikTok pausado)"
     }
   ],
   "tentativas": 0,
