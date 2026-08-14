@@ -156,6 +156,12 @@
       "codigo": "CF-605",
       "chave_publicacao": "2026-08-14|venda|CF-605",
       "usado_em": "2026-08-14T13:06:29.946Z"
+    },
+    {
+      "modelo_id": "cascata",
+      "codigo": "CF-CASA JARDIM ARMENIA",
+      "chave_publicacao": "2026-08-14|locacao|CF-CASA JARDIM ARMENIA",
+      "usado_em": "2026-08-14T18:56:53.706Z"
     }
   ]
 }

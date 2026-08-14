@@ -182,6 +182,13 @@
       "emocao": "urgencia",
       "chave_publicacao": "2026-08-14|venda|CF-605",
       "usado_em": "2026-08-14T13:06:29.946Z"
+    },
+    {
+      "trilha_id": "mixkit-729",
+      "codigo": "CF-CASA JARDIM ARMENIA",
+      "emocao": "urgencia",
+      "chave_publicacao": "2026-08-14|locacao|CF-CASA JARDIM ARMENIA",
+      "usado_em": "2026-08-14T18:56:53.705Z"
     }
   ]
 }
