@@ -168,6 +168,12 @@
       "codigo": "CF-502",
       "chave_publicacao": "2026-08-15|venda|CF-502",
       "usado_em": "2026-08-15T12:37:47.687Z"
+    },
+    {
+      "modelo_id": "laterais-alternadas",
+      "codigo": "CF-619",
+      "chave_publicacao": "2026-08-15|locacao|CF-619",
+      "usado_em": "2026-08-15T18:32:25.719Z"
     }
   ]
 }
