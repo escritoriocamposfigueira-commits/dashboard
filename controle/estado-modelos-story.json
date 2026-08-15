@@ -162,6 +162,12 @@
       "codigo": "CF-CASA JARDIM ARMENIA",
       "chave_publicacao": "2026-08-14|locacao|CF-CASA JARDIM ARMENIA",
       "usado_em": "2026-08-14T18:56:53.706Z"
+    },
+    {
+      "modelo_id": "topo-cinematografico",
+      "codigo": "CF-502",
+      "chave_publicacao": "2026-08-15|venda|CF-502",
+      "usado_em": "2026-08-15T12:37:47.687Z"
     }
   ]
 }
