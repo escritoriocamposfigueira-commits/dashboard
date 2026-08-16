@@ -1,5 +1,5 @@
 {
-  "indice": 107,
+  "indice": 108,
   "publicados": [
     {
       "codigo": "429",
@@ -1211,6 +1211,20 @@
       "ig_story": "✅ 18452771632190755",
       "ig_reel": "✅ 18112834726987943",
       "youtube": "✅ QbNdL6k2rjE",
+      "tiktok": "— (TikTok pausado)"
+    },
+    {
+      "codigo": "620",
+      "data": "2026-08-16T18:32:08.069Z",
+      "trilha": "mixkit-1140",
+      "modelo_video": "subida-cinematografica",
+      "fb_feed": "✅ 512040582222121_1658915009577007",
+      "fb_story": "✅ 1618670833305988",
+      "fb_reel": "✅ 1658915529576955",
+      "ig_feed": "✅ (carrossel 10) 18609937420053115",
+      "ig_story": "✅ 18104208839210210",
+      "ig_reel": "✅ 18142930624516726",
+      "youtube": "✅ EYEtvYloFas",
       "tiktok": "— (TikTok pausado)"
     }
   ],

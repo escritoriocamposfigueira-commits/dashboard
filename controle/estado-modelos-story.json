@@ -186,6 +186,12 @@
       "codigo": "CF-571",
       "chave_publicacao": "2026-08-16|venda|CF-571",
       "usado_em": "2026-08-16T12:38:59.456Z"
+    },
+    {
+      "modelo_id": "subida-cinematografica",
+      "codigo": "CF-620",
+      "chave_publicacao": "2026-08-16|locacao|CF-620",
+      "usado_em": "2026-08-16T18:32:04.838Z"
     }
   ]
 }
