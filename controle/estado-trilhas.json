@@ -210,6 +210,13 @@
       "emocao": "urgencia",
       "chave_publicacao": "2026-08-15|captacao|CF-CAPT-1",
       "usado_em": "2026-08-15T21:35:09.185Z"
+    },
+    {
+      "trilha_id": "mixkit-813",
+      "codigo": "CF-571",
+      "emocao": "urgencia",
+      "chave_publicacao": "2026-08-16|venda|CF-571",
+      "usado_em": "2026-08-16T12:38:59.455Z"
     }
   ]
 }
