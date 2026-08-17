@@ -192,6 +192,12 @@
       "codigo": "CF-620",
       "chave_publicacao": "2026-08-16|locacao|CF-620",
       "usado_em": "2026-08-16T18:32:04.838Z"
+    },
+    {
+      "modelo_id": "cascata",
+      "codigo": "CF-588",
+      "chave_publicacao": "2026-08-17|venda|CF-588",
+      "usado_em": "2026-08-17T12:44:46.361Z"
     }
   ]
 }
