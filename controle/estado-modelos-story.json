@@ -204,6 +204,12 @@
       "codigo": "CF-584",
       "chave_publicacao": "2026-08-17|locacao|CF-584",
       "usado_em": "2026-08-17T18:41:59.144Z"
+    },
+    {
+      "modelo_id": "laterais-alternadas",
+      "codigo": "CF-607",
+      "chave_publicacao": "2026-08-17|locacao|CF-607",
+      "usado_em": "2026-08-17T21:31:20.032Z"
     }
   ]
 }
