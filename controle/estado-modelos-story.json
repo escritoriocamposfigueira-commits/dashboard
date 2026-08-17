@@ -198,6 +198,12 @@
       "codigo": "CF-588",
       "chave_publicacao": "2026-08-17|venda|CF-588",
       "usado_em": "2026-08-17T12:44:46.361Z"
+    },
+    {
+      "modelo_id": "topo-cinematografico",
+      "codigo": "CF-584",
+      "chave_publicacao": "2026-08-17|locacao|CF-584",
+      "usado_em": "2026-08-17T18:41:59.144Z"
     }
   ]
 }
