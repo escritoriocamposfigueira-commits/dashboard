@@ -216,6 +216,12 @@
       "codigo": "CF-568",
       "chave_publicacao": "2026-08-18|venda|CF-568",
       "usado_em": "2026-08-18T12:45:53.944Z"
+    },
+    {
+      "modelo_id": "foco-central",
+      "codigo": "CF-609",
+      "chave_publicacao": "2026-08-18|locacao|CF-609",
+      "usado_em": "2026-08-18T18:43:25.358Z"
     }
   ]
 }
