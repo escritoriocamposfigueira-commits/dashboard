@@ -1340,9 +1340,42 @@
       "tiktok": "— (TikTok pausado)"
     }
   ],
-  "tentativas": 0,
+  "tentativas": 1,
   "observacao": "Fila de vendas reiniciada em 03/08/2026 para aplicar a prioridade comercial; deduplicação de 30 horas protege reruns e falhas.",
   "indiceVenda": 14,
   "contadorNaoLoc": 54,
-  "indiceCapt": 1
+  "indiceCapt": 1,
+  "retryPublicacao": {
+    "codigo": "572",
+    "tipo": "venda",
+    "tentativas": 1,
+    "reg": {
+      "codigo": "572",
+      "data": "2026-08-20T12:49:44.073Z",
+      "trilha": "mixkit-158",
+      "modelo_video": "laterais-alternadas",
+      "fb_feed": "✅ 512040582222121_1662652242536617",
+      "fb_story": "✅ 1398808418878901",
+      "fb_reel": "✅ 1662652855869889",
+      "ig_feed": "❌ IG Carrossel foto 6: The aspect ratio is not supported.",
+      "ig_story": "✅ 18091404488148954",
+      "ig_reel": "✅ 17970537965940238",
+      "youtube": "✅ GPrKwaP4Od4",
+      "tiktok": "— (TikTok pausado)"
+    }
+  },
+  "ultimaFalha": {
+    "codigo": "572",
+    "data": "2026-08-20T12:49:44.073Z",
+    "trilha": "mixkit-158",
+    "modelo_video": "laterais-alternadas",
+    "fb_feed": "✅ 512040582222121_1662652242536617",
+    "fb_story": "✅ 1398808418878901",
+    "fb_reel": "✅ 1662652855869889",
+    "ig_feed": "❌ IG Carrossel foto 6: The aspect ratio is not supported.",
+    "ig_story": "✅ 18091404488148954",
+    "ig_reel": "✅ 17970537965940238",
+    "youtube": "✅ GPrKwaP4Od4",
+    "tiktok": "— (TikTok pausado)"
+  }
 }
