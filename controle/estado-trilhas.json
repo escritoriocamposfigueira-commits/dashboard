@@ -287,6 +287,13 @@
       "emocao": "urgencia",
       "chave_publicacao": "2026-08-20|venda|CF-572",
       "usado_em": "2026-08-20T12:49:41.310Z"
+    },
+    {
+      "trilha_id": "mixkit-200",
+      "codigo": "CF-CASA INDAIA BERTIOGA",
+      "emocao": "urgencia",
+      "chave_publicacao": "2026-08-20|locacao|CF-CASA INDAIA BERTIOGA",
+      "usado_em": "2026-08-20T18:44:17.142Z"
     }
   ]
 }

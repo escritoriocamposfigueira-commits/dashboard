@@ -246,6 +246,12 @@
       "codigo": "CF-572",
       "chave_publicacao": "2026-08-20|venda|CF-572",
       "usado_em": "2026-08-20T12:49:41.311Z"
+    },
+    {
+      "modelo_id": "iluminacao-dourada",
+      "codigo": "CF-CASA INDAIA BERTIOGA",
+      "chave_publicacao": "2026-08-20|locacao|CF-CASA INDAIA BERTIOGA",
+      "usado_em": "2026-08-20T18:44:17.143Z"
     }
   ]
 }
