@@ -1,5 +1,5 @@
 {
-  "indice": 118,
+  "indice": 119,
   "publicados": [
     {
       "codigo": "429",
@@ -1358,6 +1358,20 @@
       "data": "2026-08-21T12:46:02.045Z",
       "deduplicado": true,
       "observacao": "não republicado: publicação equivalente encontrada no Facebook (512040582222121_1662652855869889)"
+    },
+    {
+      "codigo": "CASA JARDIM ARMENIA",
+      "data": "2026-08-21T18:38:58.659Z",
+      "trilha": "mixkit-77",
+      "modelo_video": "foco-central",
+      "fb_feed": "✅ 512040582222121_1663944135740761",
+      "fb_story": "✅ 1400971648817251",
+      "fb_reel": "✅ 1663944512407390",
+      "ig_feed": "✅ (carrossel 10) 18187006447403856",
+      "ig_story": "✅ 18156223597495655",
+      "ig_reel": "✅ 18103903274615140",
+      "youtube": "✅ 2aE5pSDPxJg",
+      "tiktok": "— (TikTok pausado)"
     }
   ],
   "tentativas": 0,
