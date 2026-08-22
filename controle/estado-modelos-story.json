@@ -270,6 +270,12 @@
       "codigo": "CF-619",
       "chave_publicacao": "2026-08-22|locacao|CF-619",
       "usado_em": "2026-08-22T18:33:00.883Z"
+    },
+    {
+      "modelo_id": "topo-cinematografico",
+      "codigo": "CF-CAPT-2",
+      "chave_publicacao": "2026-08-22|captacao|CF-CAPT-2",
+      "usado_em": "2026-08-22T21:35:34.417Z"
     }
   ]
 }
