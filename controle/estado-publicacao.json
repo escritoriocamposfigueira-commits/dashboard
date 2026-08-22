@@ -1,5 +1,5 @@
 {
-  "indice": 119,
+  "indice": 120,
   "publicados": [
     {
       "codigo": "429",
@@ -1372,11 +1372,25 @@
       "ig_reel": "✅ 18103903274615140",
       "youtube": "✅ 2aE5pSDPxJg",
       "tiktok": "— (TikTok pausado)"
+    },
+    {
+      "codigo": "558",
+      "data": "2026-08-22T12:38:38.841Z",
+      "trilha": "mixkit-349",
+      "modelo_video": "subida-cinematografica",
+      "fb_feed": "✅ 512040582222121_1664629175672257",
+      "fb_story": "✅ 1080965857817515",
+      "fb_reel": "✅ 1664629492338892",
+      "ig_feed": "✅ (carrossel 10) 17866543368645430",
+      "ig_story": "✅ 18100756709625859",
+      "ig_reel": "✅ 17902516122489540",
+      "youtube": "✅ w8iVvzptY5c",
+      "tiktok": "— (TikTok pausado)"
     }
   ],
   "tentativas": 0,
   "observacao": "Fila de vendas reiniciada em 03/08/2026 para aplicar a prioridade comercial; deduplicação de 30 horas protege reruns e falhas.",
-  "indiceVenda": 15,
-  "contadorNaoLoc": 55,
+  "indiceVenda": 16,
+  "contadorNaoLoc": 56,
   "indiceCapt": 1
 }
