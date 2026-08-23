@@ -1,5 +1,5 @@
 {
-  "indice": 123,
+  "indice": 124,
   "publicados": [
     {
       "codigo": "429",
@@ -1427,6 +1427,20 @@
       "ig_story": "✅ 17891315499671948",
       "ig_reel": "✅ 18101697707608459",
       "youtube": "✅ GgezKwCouvI",
+      "tiktok": "— (TikTok pausado)"
+    },
+    {
+      "codigo": "620",
+      "data": "2026-08-23T18:32:17.849Z",
+      "trilha": "mixkit-479",
+      "modelo_video": "iluminacao-dourada",
+      "fb_feed": "✅ 512040582222121_1665824298886078",
+      "fb_story": "✅ 3220338161688417",
+      "fb_reel": "✅ 1665824662219375",
+      "ig_feed": "✅ (carrossel 10) 18102846166944894",
+      "ig_story": "✅ 18104676605266765",
+      "ig_reel": "✅ 18224372614335192",
+      "youtube": "✅ 9rWtOKF393A",
       "tiktok": "— (TikTok pausado)"
     }
   ],
