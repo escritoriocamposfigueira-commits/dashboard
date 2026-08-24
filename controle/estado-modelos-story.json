@@ -300,6 +300,12 @@
       "codigo": "CF-584",
       "chave_publicacao": "2026-08-24|locacao|CF-584",
       "usado_em": "2026-08-24T18:42:25.793Z"
+    },
+    {
+      "modelo_id": "cascata",
+      "codigo": "CF-607",
+      "chave_publicacao": "2026-08-24|locacao|CF-607",
+      "usado_em": "2026-08-24T21:35:00.959Z"
     }
   ]
 }
