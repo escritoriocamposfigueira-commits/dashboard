@@ -364,6 +364,13 @@
       "emocao": "urgencia",
       "chave_publicacao": "2026-08-25|venda|CF-TARLITORAL",
       "usado_em": "2026-08-25T12:48:49.410Z"
+    },
+    {
+      "trilha_id": "mixkit-839",
+      "codigo": "CF-609",
+      "emocao": "urgencia",
+      "chave_publicacao": "2026-08-25|locacao|CF-609",
+      "usado_em": "2026-08-25T19:02:20.379Z"
     }
   ]
 }

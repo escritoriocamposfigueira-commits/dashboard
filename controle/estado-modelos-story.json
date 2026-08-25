@@ -312,6 +312,12 @@
       "codigo": "CF-TARLITORAL",
       "chave_publicacao": "2026-08-25|venda|CF-TARLITORAL",
       "usado_em": "2026-08-25T12:48:49.411Z"
+    },
+    {
+      "modelo_id": "laterais-alternadas",
+      "codigo": "CF-609",
+      "chave_publicacao": "2026-08-25|locacao|CF-609",
+      "usado_em": "2026-08-25T19:02:20.380Z"
     }
   ]
 }
