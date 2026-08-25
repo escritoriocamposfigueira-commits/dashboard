@@ -1,5 +1,5 @@
 {
-  "indice": 127,
+  "indice": 128,
   "publicados": [
     {
       "codigo": "429",
@@ -1484,11 +1484,25 @@
       "ig_reel": "✅ 17932064133378057",
       "youtube": "✅ YAeVkTdxjBU",
       "tiktok": "— (TikTok pausado)"
+    },
+    {
+      "codigo": "TARLITORAL",
+      "data": "2026-08-25T12:48:53.246Z",
+      "trilha": "mixkit-815",
+      "modelo_video": "topo-cinematografico",
+      "fb_feed": "✅ 512040582222121_1667609602040881",
+      "fb_story": "✅ 2174209270171593",
+      "fb_reel": "✅ 1667609902040851",
+      "ig_feed": "✅ (carrossel 10) 18622047400021673",
+      "ig_story": "✅ 17975335839104738",
+      "ig_reel": "✅ 17952561450247154",
+      "youtube": "✅ jjm9TUSGdQQ",
+      "tiktok": "— (TikTok pausado)"
     }
   ],
   "tentativas": 0,
   "observacao": "Fila de vendas reiniciada em 03/08/2026 para aplicar a prioridade comercial; deduplicação de 30 horas protege reruns e falhas.",
-  "indiceVenda": 18,
-  "contadorNaoLoc": 59,
+  "indiceVenda": 19,
+  "contadorNaoLoc": 60,
   "indiceCapt": 2
 }

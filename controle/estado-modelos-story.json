@@ -306,6 +306,12 @@
       "codigo": "CF-607",
       "chave_publicacao": "2026-08-24|locacao|CF-607",
       "usado_em": "2026-08-24T21:35:00.959Z"
+    },
+    {
+      "modelo_id": "topo-cinematografico",
+      "codigo": "CF-TARLITORAL",
+      "chave_publicacao": "2026-08-25|venda|CF-TARLITORAL",
+      "usado_em": "2026-08-25T12:48:49.411Z"
     }
   ]
 }
