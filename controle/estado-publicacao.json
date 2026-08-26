@@ -1,5 +1,5 @@
 {
-  "indice": 130,
+  "indice": 131,
   "publicados": [
     {
       "codigo": "429",
@@ -1525,6 +1525,20 @@
       "ig_story": "✅ 17978744507903656",
       "ig_reel": "✅ 18160246252492386",
       "youtube": "✅ qHs-a9F-HBI",
+      "tiktok": "— (TikTok pausado)"
+    },
+    {
+      "codigo": "609B",
+      "data": "2026-08-26T19:52:55.916Z",
+      "trilha": "mixkit-1117",
+      "modelo_video": "foco-central",
+      "fb_feed": "✅ 512040582222121_1668914468577061",
+      "fb_story": "✅ 1073988564970602",
+      "fb_reel": "✅ 1668914871910354",
+      "ig_feed": "✅ (carrossel 10) 17955053028236121",
+      "ig_story": "✅ 18390306481163655",
+      "ig_reel": "✅ 18092638844388025",
+      "youtube": "✅ Xx8YkDWZ654",
       "tiktok": "— (TikTok pausado)"
     }
   ],

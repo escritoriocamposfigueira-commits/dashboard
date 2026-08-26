@@ -324,6 +324,12 @@
       "codigo": "CF-513",
       "chave_publicacao": "2026-08-26|venda|CF-513",
       "usado_em": "2026-08-26T12:52:28.495Z"
+    },
+    {
+      "modelo_id": "foco-central",
+      "codigo": "CF-609B",
+      "chave_publicacao": "2026-08-26|locacao|CF-609B",
+      "usado_em": "2026-08-26T19:52:52.157Z"
     }
   ]
 }
