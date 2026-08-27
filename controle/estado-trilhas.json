@@ -385,6 +385,13 @@
       "emocao": "urgencia",
       "chave_publicacao": "2026-08-26|locacao|CF-609B",
       "usado_em": "2026-08-26T19:52:52.156Z"
+    },
+    {
+      "trilha_id": "mixkit-621",
+      "codigo": "CF-CAPT-3",
+      "emocao": "urgencia",
+      "chave_publicacao": "2026-08-26|captacao|CF-CAPT-3",
+      "usado_em": "2026-08-27T00:48:12.713Z"
     }
   ]
 }

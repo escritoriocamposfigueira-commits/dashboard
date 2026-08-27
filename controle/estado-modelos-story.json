@@ -330,6 +330,12 @@
       "codigo": "CF-609B",
       "chave_publicacao": "2026-08-26|locacao|CF-609B",
       "usado_em": "2026-08-26T19:52:52.157Z"
+    },
+    {
+      "modelo_id": "subida-cinematografica",
+      "codigo": "CF-CAPT-3",
+      "chave_publicacao": "2026-08-26|captacao|CF-CAPT-3",
+      "usado_em": "2026-08-27T00:48:12.714Z"
     }
   ]
 }
