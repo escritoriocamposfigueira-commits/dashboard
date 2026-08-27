@@ -1,5 +1,5 @@
 {
-  "indice": 131,
+  "indice": 132,
   "publicados": [
     {
       "codigo": "429",
@@ -1540,44 +1540,25 @@
       "ig_reel": "✅ 18092638844388025",
       "youtube": "✅ Xx8YkDWZ654",
       "tiktok": "— (TikTok pausado)"
-    }
-  ],
-  "tentativas": 1,
-  "observacao": "Fila de vendas reiniciada em 03/08/2026 para aplicar a prioridade comercial; deduplicação de 30 horas protege reruns e falhas.",
-  "indiceVenda": 20,
-  "contadorNaoLoc": 61,
-  "indiceCapt": 2,
-  "retryPublicacao": {
-    "codigo": "CAPT-3",
-    "tipo": "captacao",
-    "tentativas": 1,
-    "reg": {
-      "codigo": "CAPT-3",
-      "data": "2026-08-27T00:48:15.455Z",
-      "trilha": "mixkit-621",
-      "modelo_video": "subida-cinematografica",
-      "fb_feed": "✅ 512040582222121_1669077251894116",
-      "fb_story": "✅ 1074682428825410",
-      "fb_reel": "✅ 1669077491894092",
-      "ig_feed": "✅ 18094182656086420",
-      "ig_story": "❌ IG Story publish: Media ID is not available",
-      "ig_reel": "✅ 18139637764591458",
-      "youtube": "✅ 0PhQJjKcOYU",
+    },
+    {
+      "codigo": "515",
+      "data": "2026-08-27T21:52:14.072Z",
+      "trilha": "mixkit-823",
+      "modelo_video": "cascata",
+      "fb_feed": "✅ 512040582222121_1670024358466072",
+      "fb_story": "✅ 2243915566407468",
+      "fb_reel": "✅ 1670024538466054",
+      "ig_feed": "✅ (carrossel 10) 17906189190497586",
+      "ig_story": "✅ 18091697507411805",
+      "ig_reel": "✅ 18086790110457014",
+      "youtube": "✅ VeXaw5Hujvk",
       "tiktok": "— (TikTok pausado)"
     }
-  },
-  "ultimaFalha": {
-    "codigo": "CAPT-3",
-    "data": "2026-08-27T00:48:15.455Z",
-    "trilha": "mixkit-621",
-    "modelo_video": "subida-cinematografica",
-    "fb_feed": "✅ 512040582222121_1669077251894116",
-    "fb_story": "✅ 1074682428825410",
-    "fb_reel": "✅ 1669077491894092",
-    "ig_feed": "✅ 18094182656086420",
-    "ig_story": "❌ IG Story publish: Media ID is not available",
-    "ig_reel": "✅ 18139637764591458",
-    "youtube": "✅ 0PhQJjKcOYU",
-    "tiktok": "— (TikTok pausado)"
-  }
+  ],
+  "tentativas": 0,
+  "observacao": "Fila de vendas reiniciada em 03/08/2026 para aplicar a prioridade comercial; deduplicação de 30 horas protege reruns e falhas.",
+  "indiceVenda": 21,
+  "contadorNaoLoc": 62,
+  "indiceCapt": 2
 }
