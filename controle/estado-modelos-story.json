@@ -342,6 +342,12 @@
       "codigo": "CF-515",
       "chave_publicacao": "2026-08-27|venda|CF-515",
       "usado_em": "2026-08-27T21:52:11.295Z"
+    },
+    {
+      "modelo_id": "topo-cinematografico",
+      "codigo": "CF-CASA INDAIA BERTIOGA",
+      "chave_publicacao": "2026-08-27|locacao|CF-CASA INDAIA BERTIOGA",
+      "usado_em": "2026-08-28T02:06:05.524Z"
     }
   ]
 }
