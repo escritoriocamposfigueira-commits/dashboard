@@ -372,6 +372,12 @@
       "codigo": "CF-619",
       "chave_publicacao": "2026-08-29|locacao|CF-619",
       "usado_em": "2026-08-29T20:33:13.831Z"
+    },
+    {
+      "modelo_id": "cascata",
+      "codigo": "CF-CAPT-3",
+      "chave_publicacao": "2026-08-29|captacao|CF-CAPT-3",
+      "usado_em": "2026-08-29T23:18:04.849Z"
     }
   ]
 }
