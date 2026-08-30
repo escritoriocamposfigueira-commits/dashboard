@@ -384,6 +384,12 @@
       "codigo": "CF-547",
       "chave_publicacao": "2026-08-30|venda|CF-547",
       "usado_em": "2026-08-30T16:09:42.731Z"
+    },
+    {
+      "modelo_id": "laterais-alternadas",
+      "codigo": "CF-620",
+      "chave_publicacao": "2026-08-30|locacao|CF-620",
+      "usado_em": "2026-08-30T20:42:43.893Z"
     }
   ]
 }
