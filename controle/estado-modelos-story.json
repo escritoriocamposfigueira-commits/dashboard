@@ -402,6 +402,12 @@
       "codigo": "CF-584",
       "chave_publicacao": "2026-08-31|locacao|CF-584",
       "usado_em": "2026-08-31T22:36:47.567Z"
+    },
+    {
+      "modelo_id": "subida-cinematografica",
+      "codigo": "CF-607",
+      "chave_publicacao": "2026-08-31|locacao|CF-607",
+      "usado_em": "2026-09-01T00:29:33.327Z"
     }
   ]
 }
