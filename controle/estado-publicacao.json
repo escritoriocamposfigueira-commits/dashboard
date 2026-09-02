@@ -1,5 +1,5 @@
 {
-  "indice": 145,
+  "indice": 146,
   "publicados": [
     {
       "codigo": "429",
@@ -1736,46 +1736,28 @@
       "ig_reel": "✅ 18093916202452537",
       "youtube": "✅ 3qEOujKp2JA",
       "tiktok": "— (TikTok pausado)"
+    },
+    {
+      "codigo": "CAPT-4",
+      "data": "2026-09-02T23:19:59.460Z",
+      "trilha": "mixkit-900",
+      "modelo_video": "foco-central",
+      "fb_feed": "✅ 512040582222121_1675948827873625",
+      "fb_story": "✅ 1632407945154345",
+      "fb_reel": "✅ 1675949037873604",
+      "ig_feed": "✅ 18223415392326948",
+      "ig_story": "❌ IG Story publish: Media ID is not available",
+      "ig_reel": "✅ 18153148510512672",
+      "youtube": "✅ Ehga4G22ykI",
+      "tiktok": "— (TikTok pausado)",
+      "observacao": "pulado após 3 tentativas; pendentes: ig_story"
     }
   ],
-  "tentativas": 2,
+  "tentativas": 0,
   "observacao": "Fila de vendas reiniciada em 03/08/2026 para aplicar a prioridade comercial; deduplicação de 30 horas protege reruns e falhas.",
   "indiceVenda": 26,
-  "contadorNaoLoc": 68,
-  "indiceCapt": 3,
-  "retryPublicacao": {
-    "codigo": "609B",
-    "tipo": "locacao",
-    "tentativas": 2,
-    "reg": {
-      "codigo": "609B",
-      "data": "2026-09-02T20:40:03.306Z",
-      "trilha": "mixkit-33",
-      "modelo_video": "iluminacao-dourada",
-      "fb_feed": "✅ 512040582222121_1675863134548861",
-      "fb_story": "✅ 27552606014418233",
-      "fb_reel": "✅ 1675863481215493",
-      "ig_feed": "✅ (carrossel 10) 18135884815621285",
-      "ig_story": "❌ IG Story publish: Media ID is not available",
-      "ig_reel": "✅ 18011266388959297",
-      "youtube": "✅ WOZ17Kq7Dck",
-      "tiktok": "— (TikTok pausado)"
-    }
-  },
-  "ultimaFalha": {
-    "codigo": "609B",
-    "data": "2026-09-02T20:40:03.306Z",
-    "trilha": "mixkit-33",
-    "modelo_video": "iluminacao-dourada",
-    "fb_feed": "✅ 512040582222121_1675863134548861",
-    "fb_story": "✅ 27552606014418233",
-    "fb_reel": "✅ 1675863481215493",
-    "ig_feed": "✅ (carrossel 10) 18135884815621285",
-    "ig_story": "❌ IG Story publish: Media ID is not available",
-    "ig_reel": "✅ 18011266388959297",
-    "youtube": "✅ WOZ17Kq7Dck",
-    "tiktok": "— (TikTok pausado)"
-  },
+  "contadorNaoLoc": 69,
+  "indiceCapt": 0,
   "retryLocacao": {
     "codigo": "609B",
     "semana": "2026-W36",

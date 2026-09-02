@@ -432,6 +432,12 @@
       "codigo": "CF-609B",
       "chave_publicacao": "2026-09-02|locacao|CF-609B",
       "usado_em": "2026-09-02T20:39:59.767Z"
+    },
+    {
+      "modelo_id": "foco-central",
+      "codigo": "CF-CAPT-4",
+      "chave_publicacao": "2026-09-02|captacao|CF-CAPT-4",
+      "usado_em": "2026-09-02T23:19:56.707Z"
     }
   ]
 }
