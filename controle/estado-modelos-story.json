@@ -426,6 +426,12 @@
       "codigo": "CF-429",
       "chave_publicacao": "2026-09-02|venda|CF-429",
       "usado_em": "2026-09-02T16:06:15.855Z"
+    },
+    {
+      "modelo_id": "iluminacao-dourada",
+      "codigo": "CF-609B",
+      "chave_publicacao": "2026-09-02|locacao|CF-609B",
+      "usado_em": "2026-09-02T20:39:59.767Z"
     }
   ]
 }
