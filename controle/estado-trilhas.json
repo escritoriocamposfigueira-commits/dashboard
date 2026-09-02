@@ -490,6 +490,13 @@
       "emocao": "urgencia",
       "chave_publicacao": "2026-09-01|locacao|CF-609",
       "usado_em": "2026-09-01T20:43:42.557Z"
+    },
+    {
+      "trilha_id": "mixkit-1024",
+      "codigo": "CF-429",
+      "emocao": "urgencia",
+      "chave_publicacao": "2026-09-02|venda|CF-429",
+      "usado_em": "2026-09-02T16:06:15.854Z"
     }
   ]
 }
