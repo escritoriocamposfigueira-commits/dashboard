@@ -1,5 +1,5 @@
 {
-  "indice": 146,
+  "indice": 147,
   "publicados": [
     {
       "codigo": "429",
@@ -1751,30 +1751,25 @@
       "youtube": "✅ Ehga4G22ykI",
       "tiktok": "— (TikTok pausado)",
       "observacao": "pulado após 3 tentativas; pendentes: ig_story"
-    }
-  ],
-  "tentativas": 0,
-  "observacao": "Fila de vendas reiniciada em 03/08/2026 para aplicar a prioridade comercial; deduplicação de 30 horas protege reruns e falhas.",
-  "indiceVenda": 26,
-  "contadorNaoLoc": 69,
-  "indiceCapt": 0,
-  "retryLocacao": {
-    "codigo": "609B",
-    "semana": "2026-W36",
-    "tentativas": 2,
-    "reg": {
+    },
+    {
       "codigo": "609B",
-      "data": "2026-09-02T20:40:03.306Z",
+      "data": "2026-09-03T00:33:39.234Z",
       "trilha": "mixkit-33",
       "modelo_video": "iluminacao-dourada",
       "fb_feed": "✅ 512040582222121_1675863134548861",
       "fb_story": "✅ 27552606014418233",
       "fb_reel": "✅ 1675863481215493",
       "ig_feed": "✅ (carrossel 10) 18135884815621285",
-      "ig_story": "❌ IG Story publish: Media ID is not available",
+      "ig_story": "✅ 17995429481821713",
       "ig_reel": "✅ 18011266388959297",
       "youtube": "✅ WOZ17Kq7Dck",
       "tiktok": "— (TikTok pausado)"
     }
-  }
+  ],
+  "tentativas": 0,
+  "observacao": "Fila de vendas reiniciada em 03/08/2026 para aplicar a prioridade comercial; deduplicação de 30 horas protege reruns e falhas.",
+  "indiceVenda": 26,
+  "contadorNaoLoc": 69,
+  "indiceCapt": 0
 }
