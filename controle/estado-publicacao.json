@@ -1,5 +1,5 @@
 {
-  "indice": 149,
+  "indice": 150,
   "publicados": [
     {
       "codigo": "429",
@@ -1785,44 +1785,25 @@
       "ig_reel": "✅ 18390910093202414",
       "youtube": "✅ MnNYSVSv0uU",
       "tiktok": "— (TikTok pausado)"
+    },
+    {
+      "codigo": "CASA JARDIM ARMENIA",
+      "data": "2026-09-04T20:25:15.843Z",
+      "trilha": "mixkit-927",
+      "modelo_video": "topo-cinematografico",
+      "fb_feed": "✅ 512040582222121_1677895131012328",
+      "fb_story": "✅ 1055660800415579",
+      "fb_reel": "✅ 1677895361012305",
+      "ig_feed": "✅ (carrossel 10) 17903789751546026",
+      "ig_story": "✅ 17972079434938470",
+      "ig_reel": "✅ 17940943485343639",
+      "youtube": "✅ ke0EKtxXBCc",
+      "tiktok": "— (TikTok pausado)"
     }
   ],
-  "tentativas": 1,
+  "tentativas": 0,
   "observacao": "Fila de vendas reiniciada em 03/08/2026 para aplicar a prioridade comercial; deduplicação de 30 horas protege reruns e falhas.",
   "indiceVenda": 27,
   "contadorNaoLoc": 70,
-  "indiceCapt": 0,
-  "retryPublicacao": {
-    "codigo": "476",
-    "tipo": "venda",
-    "tentativas": 1,
-    "reg": {
-      "codigo": "476",
-      "data": "2026-09-04T15:51:50.849Z",
-      "trilha": "mixkit-13",
-      "modelo_video": "cascata",
-      "fb_feed": "✅ 512040582222121_1677637047704803",
-      "fb_story": "✅ 3086519131554704",
-      "fb_reel": "✅ 1677637394371435",
-      "ig_feed": "✅ (carrossel 10) 18029921303903748",
-      "ig_story": "❌ IG Story publish: Media ID is not available",
-      "ig_reel": "✅ 18081041270339281",
-      "youtube": "✅ rD_cDUzmW1Y",
-      "tiktok": "— (TikTok pausado)"
-    }
-  },
-  "ultimaFalha": {
-    "codigo": "476",
-    "data": "2026-09-04T15:51:50.849Z",
-    "trilha": "mixkit-13",
-    "modelo_video": "cascata",
-    "fb_feed": "✅ 512040582222121_1677637047704803",
-    "fb_story": "✅ 3086519131554704",
-    "fb_reel": "✅ 1677637394371435",
-    "ig_feed": "✅ (carrossel 10) 18029921303903748",
-    "ig_story": "❌ IG Story publish: Media ID is not available",
-    "ig_reel": "✅ 18081041270339281",
-    "youtube": "✅ rD_cDUzmW1Y",
-    "tiktok": "— (TikTok pausado)"
-  }
+  "indiceCapt": 0
 }

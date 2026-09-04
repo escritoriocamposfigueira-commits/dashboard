@@ -450,6 +450,12 @@
       "codigo": "CF-476",
       "chave_publicacao": "2026-09-04|venda|CF-476",
       "usado_em": "2026-09-04T15:51:48.032Z"
+    },
+    {
+      "modelo_id": "topo-cinematografico",
+      "codigo": "CF-CASA JARDIM ARMENIA",
+      "chave_publicacao": "2026-09-04|locacao|CF-CASA JARDIM ARMENIA",
+      "usado_em": "2026-09-04T20:25:12.791Z"
     }
   ]
 }
