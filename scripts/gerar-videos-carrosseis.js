@@ -5,6 +5,12 @@
  * Música: rotação das trilhas aprovadas (livres de direitos) sem repetir em sequência.
  * Saída: public/carrosseis-videos/<CARROSSEL>.mp4 + manifest.json
  *
+ * Cada imagem entra como input próprio (-framerate 30 -loop 1 -t SEG) e é
+ * concatenada via filtro "concat" — isso evita o corte da 1ª/última imagem que
+ * acontecia com o demuxer "concat" + diretiva "duration" (o cálculo de duração
+ * dali depende do frame SEGUINTE pra saber quanto duplicar o frame atual, e o
+ * primeiro/último slide nem sempre tem essa referência de forma confiável).
+ *
  * Uso: node scripts/gerar-videos-carrosseis.js [NOME_DO_CARROSSEL]   (sem arg = todos)
  */
 const fs = require("fs");
@@ -19,6 +25,7 @@ const REL = (process.env.SAIDA_DIR || "public/carrosseis-videos").replace(/\\/g,
 const SAIDA = path.join(RAIZ, REL);
 const TRILHAS_DIR = path.join(RAIZ, "TRILHAS", "aprovadas");
 const SEG_POR_SLIDE = 3.2;
+const FPS = 30;
 const PROP = process.env.PROP === "4x5" ? "4x5" : "9x16";   // proporção do vídeo
 const W = 1080, H = PROP === "4x5" ? 1350 : 1920;
 const CRF = process.env.CRF || "18";        // qualidade (menor = melhor; 18 ~ visualmente sem perda)
@@ -50,35 +57,37 @@ function gerarUm(carr, faixa) {
 
   const dur = +(imgs.length * SEG_POR_SLIDE).toFixed(2);
   const fadeSt = Math.max(0, dur - 1.6);
-
-  // lista do concat demuxer (repete o último frame p/ ele aparecer)
-  const listaPath = path.join(SAIDA, "._" + carr + ".txt");
-  let lista = "";
-  for (const img of imgs) {
-    lista += `file '${img.replace(/'/g, "'\\''")}'\n`;
-    lista += `duration ${SEG_POR_SLIDE}\n`;
-  }
-  lista += `file '${imgs[imgs.length - 1].replace(/'/g, "'\\''")}'\n`;
-  fs.writeFileSync(listaPath, lista);
-
   const out = path.join(SAIDA, carr + ".mp4");
-  const vf = `scale=${W}:${H}:force_original_aspect_ratio=decrease,pad=${W}:${H}:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,fps=30,format=yuv420p`;
+
+  // cada slide = 1 input independente, já travado em SEG_POR_SLIDE * FPS frames exatos
+  const inputArgs = [];
+  imgs.forEach((img) => {
+    inputArgs.push("-framerate", String(FPS), "-loop", "1", "-t", String(SEG_POR_SLIDE), "-i", img);
+  });
+  const audioIdx = imgs.length; // índice do input de áudio (entra depois das imagens)
+
+  const vfSlide = `scale=${W}:${H}:force_original_aspect_ratio=decrease,pad=${W}:${H}:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv420p`;
+  const filtros = imgs.map((_, i) => `[${i}:v]${vfSlide}[v${i}]`).join(";");
+  const concatIn = imgs.map((_, i) => `[v${i}]`).join("");
+  const filterComplex = `${filtros};${concatIn}concat=n=${imgs.length}:v=1:a=0[vout]`;
+
   const args = SILENCIO ? [
     "-y",
-    "-f", "concat", "-safe", "0", "-i", listaPath,
-    "-map", "0:v",
-    "-t", String(dur),
-    "-vf", vf,
+    ...inputArgs,
+    "-filter_complex", filterComplex,
+    "-map", "[vout]",
+    "-r", String(FPS),
     "-c:v", "libx264", "-preset", PRESET, "-crf", CRF, "-profile:v", "high", "-level", "4.2",
     "-movflags", "+faststart",
     out,
   ] : [
     "-y",
-    "-f", "concat", "-safe", "0", "-i", listaPath,
+    ...inputArgs,
     "-stream_loop", "-1", "-i", faixa,
-    "-map", "0:v", "-map", "1:a",
+    "-filter_complex", filterComplex,
+    "-map", "[vout]", "-map", `${audioIdx}:a`,
     "-t", String(dur),
-    "-vf", vf,
+    "-r", String(FPS),
     "-c:v", "libx264", "-preset", PRESET, "-crf", CRF, "-profile:v", "high", "-level", "4.2",
     "-c:a", "aac", "-b:a", "192k",
     "-af", `afade=t=out:st=${fadeSt}:d=1.6`,
@@ -86,7 +95,6 @@ function gerarUm(carr, faixa) {
     out,
   ];
   const r = spawnSync(FF, args, { stdio: ["ignore", "ignore", "pipe"] });
-  try { fs.unlinkSync(listaPath); } catch (e) {}
   if (r.status !== 0) {
     console.log("  ERRO", carr, (r.stderr || "").toString().split("\n").slice(-6).join("\n"));
     return false;
