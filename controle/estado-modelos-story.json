@@ -444,6 +444,12 @@
       "codigo": "CF-CASA INDAIA BERTIOGA",
       "chave_publicacao": "2026-09-03|locacao|CF-CASA INDAIA BERTIOGA",
       "usado_em": "2026-09-03T20:39:16.660Z"
+    },
+    {
+      "modelo_id": "cascata",
+      "codigo": "CF-476",
+      "chave_publicacao": "2026-09-04|venda|CF-476",
+      "usado_em": "2026-09-04T15:51:48.032Z"
     }
   ]
 }
