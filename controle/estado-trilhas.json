@@ -532,6 +532,13 @@
       "emocao": "urgencia",
       "chave_publicacao": "2026-09-04|locacao|CF-CASA JARDIM ARMENIA",
       "usado_em": "2026-09-04T20:25:12.790Z"
+    },
+    {
+      "trilha_id": "mixkit-199",
+      "codigo": "CF-619",
+      "emocao": "familiar",
+      "chave_publicacao": "2026-09-05|locacao|CF-619",
+      "usado_em": "2026-09-05T20:02:55.779Z"
     }
   ]
 }

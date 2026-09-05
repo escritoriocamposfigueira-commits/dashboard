@@ -1,5 +1,5 @@
 {
-  "indice": 151,
+  "indice": 152,
   "publicados": [
     {
       "codigo": "429",
@@ -1805,6 +1805,20 @@
       "data": "2026-09-05T14:41:43.712Z",
       "deduplicado": true,
       "observacao": "não republicado: publicação equivalente encontrada no Facebook (512040582222121_1677637394371435)"
+    },
+    {
+      "codigo": "619",
+      "data": "2026-09-05T20:02:58.948Z",
+      "trilha": "mixkit-199",
+      "modelo_video": "laterais-alternadas",
+      "fb_feed": "✅ 512040582222121_1678847777583730",
+      "fb_story": "✅ 1737233107530037",
+      "fb_reel": "✅ 1678848197583688",
+      "ig_feed": "✅ (carrossel 10) 18129066646668559",
+      "ig_story": "✅ 17994398133037680",
+      "ig_reel": "✅ 17906534181542772",
+      "youtube": "✅ UDjz92EE0Os",
+      "tiktok": "— (TikTok pausado)"
     }
   ],
   "tentativas": 0,
