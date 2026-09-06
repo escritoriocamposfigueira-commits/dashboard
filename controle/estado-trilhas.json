@@ -553,6 +553,13 @@
       "emocao": "urgencia",
       "chave_publicacao": "2026-09-06|venda|CF-485",
       "usado_em": "2026-09-06T15:00:58.597Z"
+    },
+    {
+      "trilha_id": "mixkit-724",
+      "codigo": "CF-620",
+      "emocao": "familiar",
+      "chave_publicacao": "2026-09-06|locacao|CF-620",
+      "usado_em": "2026-09-06T20:06:44.115Z"
     }
   ]
 }

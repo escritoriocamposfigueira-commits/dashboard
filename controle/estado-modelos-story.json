@@ -474,6 +474,12 @@
       "codigo": "CF-485",
       "chave_publicacao": "2026-09-06|venda|CF-485",
       "usado_em": "2026-09-06T15:00:58.597Z"
+    },
+    {
+      "modelo_id": "subida-cinematografica",
+      "codigo": "CF-620",
+      "chave_publicacao": "2026-09-06|locacao|CF-620",
+      "usado_em": "2026-09-06T20:06:44.116Z"
     }
   ]
 }
