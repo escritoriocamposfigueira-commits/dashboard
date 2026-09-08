@@ -492,6 +492,12 @@
       "codigo": "CF-493",
       "chave_publicacao": "2026-09-08|venda|CF-493",
       "usado_em": "2026-09-08T16:05:57.737Z"
+    },
+    {
+      "modelo_id": "laterais-alternadas",
+      "codigo": "CF-607",
+      "chave_publicacao": "2026-09-08|locacao|CF-607",
+      "usado_em": "2026-09-08T20:51:06.259Z"
     }
   ]
 }
