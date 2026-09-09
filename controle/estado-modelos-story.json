@@ -504,6 +504,12 @@
       "codigo": "CF-609",
       "chave_publicacao": "2026-09-09|locacao|CF-609",
       "usado_em": "2026-09-09T20:36:03.744Z"
+    },
+    {
+      "modelo_id": "foco-central",
+      "codigo": "CF-CAPT-2",
+      "chave_publicacao": "2026-09-09|captacao|CF-CAPT-2",
+      "usado_em": "2026-09-09T23:15:00.860Z"
     }
   ]
 }
