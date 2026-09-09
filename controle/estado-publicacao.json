@@ -1,5 +1,5 @@
 {
-  "indice": 158,
+  "indice": 159,
   "publicados": [
     {
       "codigo": "429",
@@ -1887,6 +1887,20 @@
       "data": "2026-09-09T16:02:37.219Z",
       "deduplicado": true,
       "observacao": "não republicado: publicação equivalente encontrada no Facebook (512040582222121_1681663630635478)"
+    },
+    {
+      "codigo": "609",
+      "data": "2026-09-09T20:36:06.500Z",
+      "trilha": "mixkit-1210",
+      "modelo_video": "iluminacao-dourada",
+      "fb_feed": "✅ 512040582222121_1682881423847032",
+      "fb_story": "✅ 1855642502090947",
+      "fb_reel": "✅ 1682881940513647",
+      "ig_feed": "✅ (carrossel 5) 18126645109703316",
+      "ig_story": "✅ 17900112663576410",
+      "ig_reel": "✅ 18077622173345047",
+      "youtube": "✅ xBdArqsRCfg",
+      "tiktok": "— (TikTok pausado)"
     }
   ],
   "tentativas": 0,
