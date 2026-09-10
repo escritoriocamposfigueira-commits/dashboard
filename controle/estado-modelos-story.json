@@ -516,6 +516,12 @@
       "codigo": "CF-509",
       "chave_publicacao": "2026-09-10|venda|CF-509",
       "usado_em": "2026-09-10T15:55:53.280Z"
+    },
+    {
+      "modelo_id": "cascata",
+      "codigo": "CF-609B",
+      "chave_publicacao": "2026-09-10|locacao|CF-609B",
+      "usado_em": "2026-09-10T20:31:56.822Z"
     }
   ]
 }
