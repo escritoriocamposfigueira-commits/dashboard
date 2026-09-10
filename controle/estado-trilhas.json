@@ -595,6 +595,13 @@
       "emocao": "urgencia",
       "chave_publicacao": "2026-09-09|captacao|CF-CAPT-2",
       "usado_em": "2026-09-09T23:15:00.859Z"
+    },
+    {
+      "trilha_id": "mixkit-872",
+      "codigo": "CF-509",
+      "emocao": "urgencia",
+      "chave_publicacao": "2026-09-10|venda|CF-509",
+      "usado_em": "2026-09-10T15:55:53.280Z"
     }
   ]
 }
