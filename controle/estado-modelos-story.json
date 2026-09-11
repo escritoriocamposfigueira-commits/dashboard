@@ -522,6 +522,12 @@
       "codigo": "CF-609B",
       "chave_publicacao": "2026-09-10|locacao|CF-609B",
       "usado_em": "2026-09-10T20:31:56.822Z"
+    },
+    {
+      "modelo_id": "topo-cinematografico",
+      "codigo": "CF-CASA INDAIA BERTIOGA",
+      "chave_publicacao": "2026-09-11|locacao|CF-CASA INDAIA BERTIOGA",
+      "usado_em": "2026-09-11T20:37:17.931Z"
     }
   ]
 }
