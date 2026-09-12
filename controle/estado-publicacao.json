@@ -1,5 +1,5 @@
 {
-  "indice": 163,
+  "indice": 164,
   "publicados": [
     {
       "codigo": "429",
@@ -1950,22 +1950,12 @@
       "youtube": "✅ sARI3q19D34",
       "tiktok": "— (TikTok pausado)",
       "observacao": "pulado após 3 tentativas; pendentes: ig_feed"
-    }
-  ],
-  "tentativas": 0,
-  "observacao": "Fila de vendas reiniciada em 03/08/2026 para aplicar a prioridade comercial; deduplicação de 30 horas protege reruns e falhas.",
-  "indiceVenda": 32,
-  "contadorNaoLoc": 77,
-  "indiceCapt": 2,
-  "retryLocacao": {
-    "codigo": "CASA INDAIA BERTIOGA",
-    "semana": "2026-W37",
-    "tentativas": 2,
-    "reg": {
+    },
+    {
       "codigo": "CASA INDAIA BERTIOGA",
-      "data": "2026-09-12T00:31:59.926Z",
-      "trilha": "mixkit-1140",
-      "modelo_video": "topo-cinematografico",
+      "data": "2026-09-12T20:18:17.125Z",
+      "trilha": "mixkit-634",
+      "modelo_video": "iluminacao-dourada",
       "fb_feed": "✅ 512040582222121_1684953110306530",
       "fb_story": "✅ 1139984792358075",
       "fb_reel": "✅ 1684953346973173",
@@ -1973,7 +1963,13 @@
       "ig_story": "✅ 17891162913439840",
       "ig_reel": "✅ 18128600839703240",
       "youtube": "✅ hBykyqWgrDA",
-      "tiktok": "— (TikTok pausado)"
+      "tiktok": "— (TikTok pausado)",
+      "observacao": "pulado após 3 tentativas; pendentes: ig_feed"
     }
-  }
+  ],
+  "tentativas": 0,
+  "observacao": "Fila de vendas reiniciada em 03/08/2026 para aplicar a prioridade comercial; deduplicação de 30 horas protege reruns e falhas.",
+  "indiceVenda": 32,
+  "contadorNaoLoc": 77,
+  "indiceCapt": 2
 }

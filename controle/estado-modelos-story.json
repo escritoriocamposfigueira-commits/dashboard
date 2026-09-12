@@ -534,6 +534,12 @@
       "codigo": "CF-518",
       "chave_publicacao": "2026-09-12|venda|CF-518",
       "usado_em": "2026-09-12T15:06:01.646Z"
+    },
+    {
+      "modelo_id": "iluminacao-dourada",
+      "codigo": "CF-CASA INDAIA BERTIOGA",
+      "chave_publicacao": "2026-09-12|locacao|CF-CASA INDAIA BERTIOGA",
+      "usado_em": "2026-09-12T20:18:14.779Z"
     }
   ]
 }
