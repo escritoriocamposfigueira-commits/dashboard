@@ -1,5 +1,5 @@
 {
-  "indice": 162,
+  "indice": 163,
   "publicados": [
     {
       "codigo": "429",
@@ -1935,46 +1935,28 @@
       "data": "2026-09-11T15:58:11.010Z",
       "deduplicado": true,
       "observacao": "não republicado: publicação equivalente encontrada no Facebook (512040582222121_1683709373764237)"
+    },
+    {
+      "codigo": "518",
+      "data": "2026-09-12T15:06:04.512Z",
+      "trilha": "mixkit-471",
+      "modelo_video": "laterais-alternadas",
+      "fb_feed": "✅ 512040582222121_1685705383564636",
+      "fb_story": "✅ 1693800245643726",
+      "fb_reel": "✅ 1685705696897938",
+      "ig_feed": "❌ IG Carrossel foto 3: Only photo or video can be accepted as media type.",
+      "ig_story": "✅ 18092412335127241",
+      "ig_reel": "✅ 17877651606626951",
+      "youtube": "✅ sARI3q19D34",
+      "tiktok": "— (TikTok pausado)",
+      "observacao": "pulado após 3 tentativas; pendentes: ig_feed"
     }
   ],
-  "tentativas": 2,
+  "tentativas": 0,
   "observacao": "Fila de vendas reiniciada em 03/08/2026 para aplicar a prioridade comercial; deduplicação de 30 horas protege reruns e falhas.",
-  "indiceVenda": 31,
-  "contadorNaoLoc": 76,
+  "indiceVenda": 32,
+  "contadorNaoLoc": 77,
   "indiceCapt": 2,
-  "retryPublicacao": {
-    "codigo": "CASA INDAIA BERTIOGA",
-    "tipo": "locacao",
-    "tentativas": 2,
-    "reg": {
-      "codigo": "CASA INDAIA BERTIOGA",
-      "data": "2026-09-12T00:31:59.926Z",
-      "trilha": "mixkit-1140",
-      "modelo_video": "topo-cinematografico",
-      "fb_feed": "✅ 512040582222121_1684953110306530",
-      "fb_story": "✅ 1139984792358075",
-      "fb_reel": "✅ 1684953346973173",
-      "ig_feed": "❌ IG Carrossel foto 2: Only photo or video can be accepted as media type.",
-      "ig_story": "✅ 17891162913439840",
-      "ig_reel": "✅ 18128600839703240",
-      "youtube": "✅ hBykyqWgrDA",
-      "tiktok": "— (TikTok pausado)"
-    }
-  },
-  "ultimaFalha": {
-    "codigo": "CASA INDAIA BERTIOGA",
-    "data": "2026-09-12T00:31:59.926Z",
-    "trilha": "mixkit-1140",
-    "modelo_video": "topo-cinematografico",
-    "fb_feed": "✅ 512040582222121_1684953110306530",
-    "fb_story": "✅ 1139984792358075",
-    "fb_reel": "✅ 1684953346973173",
-    "ig_feed": "❌ IG Carrossel foto 2: Only photo or video can be accepted as media type.",
-    "ig_story": "✅ 17891162913439840",
-    "ig_reel": "✅ 18128600839703240",
-    "youtube": "✅ hBykyqWgrDA",
-    "tiktok": "— (TikTok pausado)"
-  },
   "retryLocacao": {
     "codigo": "CASA INDAIA BERTIOGA",
     "semana": "2026-W37",
