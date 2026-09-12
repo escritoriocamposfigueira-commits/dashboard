@@ -630,6 +630,13 @@
       "emocao": "urgencia",
       "chave_publicacao": "2026-09-12|locacao|CF-CASA INDAIA BERTIOGA",
       "usado_em": "2026-09-12T20:18:14.778Z"
+    },
+    {
+      "trilha_id": "mixkit-1134",
+      "codigo": "CF-CAPT-3",
+      "emocao": "urgencia",
+      "chave_publicacao": "2026-09-12|captacao|CF-CAPT-3",
+      "usado_em": "2026-09-12T23:03:32.365Z"
     }
   ]
 }
