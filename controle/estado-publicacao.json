@@ -1,5 +1,5 @@
 {
-  "indice": 164,
+  "indice": 165,
   "publicados": [
     {
       "codigo": "429",
@@ -1965,44 +1965,26 @@
       "youtube": "✅ hBykyqWgrDA",
       "tiktok": "— (TikTok pausado)",
       "observacao": "pulado após 3 tentativas; pendentes: ig_feed"
+    },
+    {
+      "codigo": "CASA JARDIM ARMENIA",
+      "data": "2026-09-13T20:27:38.169Z",
+      "trilha": "mixkit-1147",
+      "modelo_video": "cascata",
+      "fb_feed": "✅ 512040582222121_1686875970114244",
+      "fb_story": "✅ 2492125741289372",
+      "fb_reel": "✅ 1686876216780886",
+      "ig_feed": "❌ IG Carrossel foto 2: Only photo or video can be accepted as media type.",
+      "ig_story": "✅ 18149387113487157",
+      "ig_reel": "✅ 18126404353868075",
+      "youtube": "✅ PoEi2L4Xkno",
+      "tiktok": "— (TikTok pausado)",
+      "observacao": "pulado após 3 tentativas; pendentes: ig_feed"
     }
   ],
-  "tentativas": 2,
+  "tentativas": 0,
   "observacao": "Fila de vendas reiniciada em 03/08/2026 para aplicar a prioridade comercial; deduplicação de 30 horas protege reruns e falhas.",
   "indiceVenda": 32,
   "contadorNaoLoc": 77,
-  "indiceCapt": 2,
-  "retryPublicacao": {
-    "codigo": "526",
-    "tipo": "venda",
-    "tentativas": 2,
-    "reg": {
-      "codigo": "526",
-      "data": "2026-09-13T15:42:58.166Z",
-      "trilha": "mixkit-228",
-      "modelo_video": "subida-cinematografica",
-      "fb_feed": "✅ 512040582222121_1686679340133907",
-      "fb_story": "✅ 1554600995878729",
-      "fb_reel": "✅ 1686679540133887",
-      "ig_feed": "❌ IG Carrossel foto 3: Only photo or video can be accepted as media type.",
-      "ig_story": "✅ 18034841834834346",
-      "ig_reel": "✅ 18078330977358045",
-      "youtube": "✅ HyPKV7NRc1I",
-      "tiktok": "— (TikTok pausado)"
-    }
-  },
-  "ultimaFalha": {
-    "codigo": "526",
-    "data": "2026-09-13T15:42:58.166Z",
-    "trilha": "mixkit-228",
-    "modelo_video": "subida-cinematografica",
-    "fb_feed": "✅ 512040582222121_1686679340133907",
-    "fb_story": "✅ 1554600995878729",
-    "fb_reel": "✅ 1686679540133887",
-    "ig_feed": "❌ IG Carrossel foto 3: Only photo or video can be accepted as media type.",
-    "ig_story": "✅ 18034841834834346",
-    "ig_reel": "✅ 18078330977358045",
-    "youtube": "✅ HyPKV7NRc1I",
-    "tiktok": "— (TikTok pausado)"
-  }
+  "indiceCapt": 2
 }

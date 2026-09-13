@@ -552,6 +552,12 @@
       "codigo": "CF-526",
       "chave_publicacao": "2026-09-13|venda|CF-526",
       "usado_em": "2026-09-13T15:42:55.849Z"
+    },
+    {
+      "modelo_id": "cascata",
+      "codigo": "CF-CASA JARDIM ARMENIA",
+      "chave_publicacao": "2026-09-13|locacao|CF-CASA JARDIM ARMENIA",
+      "usado_em": "2026-09-13T20:27:35.720Z"
     }
   ]
 }
