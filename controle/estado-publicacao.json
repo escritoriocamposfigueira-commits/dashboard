@@ -2002,7 +2002,7 @@
       "observacao": "não republicado: publicação equivalente encontrada no Facebook (512040582222121_1686679540133887)"
     }
   ],
-  "tentativas": 1,
+  "tentativas": 2,
   "observacao": "Fila de vendas reiniciada em 03/08/2026 para aplicar a prioridade comercial; deduplicação de 30 horas protege reruns e falhas.",
   "indiceVenda": 33,
   "contadorNaoLoc": 78,
@@ -2010,10 +2010,10 @@
   "retryPublicacao": {
     "codigo": "584",
     "tipo": "locacao",
-    "tentativas": 1,
+    "tentativas": 2,
     "reg": {
       "codigo": "584",
-      "data": "2026-09-14T21:36:36.837Z",
+      "data": "2026-09-14T23:45:57.263Z",
       "trilha": "mixkit-1167",
       "modelo_video": "laterais-alternadas",
       "fb_feed": "✅ 512040582222121_1687903086678199",
@@ -2028,7 +2028,7 @@
   },
   "ultimaFalha": {
     "codigo": "584",
-    "data": "2026-09-14T21:36:36.837Z",
+    "data": "2026-09-14T23:45:57.263Z",
     "trilha": "mixkit-1167",
     "modelo_video": "laterais-alternadas",
     "fb_feed": "✅ 512040582222121_1687903086678199",
@@ -2043,10 +2043,10 @@
   "retryLocacao": {
     "codigo": "584",
     "semana": "2026-W38",
-    "tentativas": 1,
+    "tentativas": 2,
     "reg": {
       "codigo": "584",
-      "data": "2026-09-14T21:36:36.837Z",
+      "data": "2026-09-14T23:45:57.263Z",
       "trilha": "mixkit-1167",
       "modelo_video": "laterais-alternadas",
       "fb_feed": "✅ 512040582222121_1687903086678199",
