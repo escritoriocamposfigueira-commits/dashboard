@@ -658,6 +658,13 @@
       "emocao": "familiar",
       "chave_publicacao": "2026-09-13|locacao|CF-619",
       "usado_em": "2026-09-14T00:23:28.409Z"
+    },
+    {
+      "trilha_id": "mixkit-1167",
+      "codigo": "CF-584",
+      "emocao": "urgencia",
+      "chave_publicacao": "2026-09-14|locacao|CF-584",
+      "usado_em": "2026-09-14T21:36:33.945Z"
     }
   ]
 }
