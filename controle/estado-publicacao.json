@@ -1,5 +1,5 @@
 {
-  "indice": 165,
+  "indice": 166,
   "publicados": [
     {
       "codigo": "429",
@@ -1980,6 +1980,20 @@
       "youtube": "✅ PoEi2L4Xkno",
       "tiktok": "— (TikTok pausado)",
       "observacao": "pulado após 3 tentativas; pendentes: ig_feed"
+    },
+    {
+      "codigo": "619",
+      "data": "2026-09-14T00:23:31.260Z",
+      "trilha": "mixkit-1002",
+      "modelo_video": "topo-cinematografico",
+      "fb_feed": "✅ 512040582222121_1687007773434397",
+      "fb_story": "✅ 2213531969206528",
+      "fb_reel": "✅ 1687007983434376",
+      "ig_feed": "✅ (carrossel 10) 18380153170227535",
+      "ig_story": "✅ 18124729721306396",
+      "ig_reel": "✅ 18126664756838708",
+      "youtube": "✅ 2ekYFMnFtj0",
+      "tiktok": "— (TikTok pausado)"
     }
   ],
   "tentativas": 0,
