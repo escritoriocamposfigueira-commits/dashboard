@@ -1,5 +1,5 @@
 {
-  "indice": 167,
+  "indice": 168,
   "publicados": [
     {
       "codigo": "429",
@@ -2000,63 +2000,26 @@
       "data": "2026-09-14T17:49:02.006Z",
       "deduplicado": true,
       "observacao": "não republicado: publicação equivalente encontrada no Facebook (512040582222121_1686679540133887)"
+    },
+    {
+      "codigo": "584",
+      "data": "2026-09-15T00:51:45.836Z",
+      "trilha": "mixkit-1167",
+      "modelo_video": "laterais-alternadas",
+      "fb_feed": "✅ 512040582222121_1687903086678199",
+      "fb_story": "✅ 3628931433980222",
+      "fb_reel": "✅ 1687903360011505",
+      "ig_feed": "❌ IG Carrossel foto 2: Only photo or video can be accepted as media type.",
+      "ig_story": "✅ 18126758503745446",
+      "ig_reel": "✅ 17915003013451288",
+      "youtube": "✅ ODUELpH53CE",
+      "tiktok": "— (TikTok pausado)",
+      "observacao": "pulado após 3 tentativas; pendentes: ig_feed"
     }
   ],
-  "tentativas": 2,
+  "tentativas": 0,
   "observacao": "Fila de vendas reiniciada em 03/08/2026 para aplicar a prioridade comercial; deduplicação de 30 horas protege reruns e falhas.",
   "indiceVenda": 33,
   "contadorNaoLoc": 78,
-  "indiceCapt": 2,
-  "retryPublicacao": {
-    "codigo": "584",
-    "tipo": "locacao",
-    "tentativas": 2,
-    "reg": {
-      "codigo": "584",
-      "data": "2026-09-14T23:45:57.263Z",
-      "trilha": "mixkit-1167",
-      "modelo_video": "laterais-alternadas",
-      "fb_feed": "✅ 512040582222121_1687903086678199",
-      "fb_story": "✅ 3628931433980222",
-      "fb_reel": "✅ 1687903360011505",
-      "ig_feed": "❌ IG Carrossel foto 2: Only photo or video can be accepted as media type.",
-      "ig_story": "✅ 18126758503745446",
-      "ig_reel": "✅ 17915003013451288",
-      "youtube": "✅ ODUELpH53CE",
-      "tiktok": "— (TikTok pausado)"
-    }
-  },
-  "ultimaFalha": {
-    "codigo": "584",
-    "data": "2026-09-14T23:45:57.263Z",
-    "trilha": "mixkit-1167",
-    "modelo_video": "laterais-alternadas",
-    "fb_feed": "✅ 512040582222121_1687903086678199",
-    "fb_story": "✅ 3628931433980222",
-    "fb_reel": "✅ 1687903360011505",
-    "ig_feed": "❌ IG Carrossel foto 2: Only photo or video can be accepted as media type.",
-    "ig_story": "✅ 18126758503745446",
-    "ig_reel": "✅ 17915003013451288",
-    "youtube": "✅ ODUELpH53CE",
-    "tiktok": "— (TikTok pausado)"
-  },
-  "retryLocacao": {
-    "codigo": "584",
-    "semana": "2026-W38",
-    "tentativas": 2,
-    "reg": {
-      "codigo": "584",
-      "data": "2026-09-14T23:45:57.263Z",
-      "trilha": "mixkit-1167",
-      "modelo_video": "laterais-alternadas",
-      "fb_feed": "✅ 512040582222121_1687903086678199",
-      "fb_story": "✅ 3628931433980222",
-      "fb_reel": "✅ 1687903360011505",
-      "ig_feed": "❌ IG Carrossel foto 2: Only photo or video can be accepted as media type.",
-      "ig_story": "✅ 18126758503745446",
-      "ig_reel": "✅ 17915003013451288",
-      "youtube": "✅ ODUELpH53CE",
-      "tiktok": "— (TikTok pausado)"
-    }
-  }
+  "indiceCapt": 2
 }
