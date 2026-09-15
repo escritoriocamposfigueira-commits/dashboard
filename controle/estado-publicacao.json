@@ -1,5 +1,5 @@
 {
-  "indice": 168,
+  "indice": 169,
   "publicados": [
     {
       "codigo": "429",
@@ -2015,44 +2015,25 @@
       "youtube": "✅ ODUELpH53CE",
       "tiktok": "— (TikTok pausado)",
       "observacao": "pulado após 3 tentativas; pendentes: ig_feed"
+    },
+    {
+      "codigo": "607",
+      "data": "2026-09-15T20:58:08.358Z",
+      "trilha": "mixkit-158",
+      "modelo_video": "foco-central",
+      "fb_feed": "✅ 512040582222121_1688937593241415",
+      "fb_story": "✅ 1123804600335559",
+      "fb_reel": "✅ 1688937843241390",
+      "ig_feed": "✅ (carrossel 5) 17960882982203271",
+      "ig_story": "✅ 18136580995610327",
+      "ig_reel": "✅ 17906907750558213",
+      "youtube": "✅ Dt-1B2DSBI0",
+      "tiktok": "— (TikTok pausado)"
     }
   ],
-  "tentativas": 1,
+  "tentativas": 0,
   "observacao": "Fila de vendas reiniciada em 03/08/2026 para aplicar a prioridade comercial; deduplicação de 30 horas protege reruns e falhas.",
   "indiceVenda": 33,
   "contadorNaoLoc": 78,
-  "indiceCapt": 2,
-  "retryPublicacao": {
-    "codigo": "530",
-    "tipo": "venda",
-    "tentativas": 1,
-    "reg": {
-      "codigo": "530",
-      "data": "2026-09-15T16:23:50.151Z",
-      "trilha": "mixkit-70",
-      "modelo_video": "iluminacao-dourada",
-      "fb_feed": "✅ 512040582222121_1688746486593859",
-      "fb_story": "✅ 1830441301449521",
-      "fb_reel": "✅ 1688746786593829",
-      "ig_feed": "❌ IG Carrossel foto 4: Only photo or video can be accepted as media type.",
-      "ig_story": "✅ 18377598400232944",
-      "ig_reel": "✅ 18108224084596251",
-      "youtube": "✅ 04oQqsWzbOE",
-      "tiktok": "— (TikTok pausado)"
-    }
-  },
-  "ultimaFalha": {
-    "codigo": "530",
-    "data": "2026-09-15T16:23:50.151Z",
-    "trilha": "mixkit-70",
-    "modelo_video": "iluminacao-dourada",
-    "fb_feed": "✅ 512040582222121_1688746486593859",
-    "fb_story": "✅ 1830441301449521",
-    "fb_reel": "✅ 1688746786593829",
-    "ig_feed": "❌ IG Carrossel foto 4: Only photo or video can be accepted as media type.",
-    "ig_story": "✅ 18377598400232944",
-    "ig_reel": "✅ 18108224084596251",
-    "youtube": "✅ 04oQqsWzbOE",
-    "tiktok": "— (TikTok pausado)"
-  }
+  "indiceCapt": 2
 }
