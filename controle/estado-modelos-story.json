@@ -594,6 +594,12 @@
       "codigo": "CF-CAPT-3",
       "chave_publicacao": "2026-09-16|captacao|CF-CAPT-3",
       "usado_em": "2026-09-16T23:39:59.105Z"
+    },
+    {
+      "modelo_id": "topo-cinematografico",
+      "codigo": "CF-535",
+      "chave_publicacao": "2026-09-17|venda|CF-535",
+      "usado_em": "2026-09-17T16:21:34.340Z"
     }
   ]
 }
