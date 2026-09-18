@@ -700,6 +700,13 @@
       "emocao": "urgencia",
       "chave_publicacao": "2026-09-17|venda|CF-535",
       "usado_em": "2026-09-17T16:21:34.339Z"
+    },
+    {
+      "trilha_id": "mixkit-879",
+      "codigo": "CF-535",
+      "emocao": "urgencia",
+      "chave_publicacao": "2026-09-18|venda|CF-535",
+      "usado_em": "2026-09-18T15:56:20.879Z"
     }
   ]
 }

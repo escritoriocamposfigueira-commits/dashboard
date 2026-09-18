@@ -600,6 +600,12 @@
       "codigo": "CF-535",
       "chave_publicacao": "2026-09-17|venda|CF-535",
       "usado_em": "2026-09-17T16:21:34.340Z"
+    },
+    {
+      "modelo_id": "laterais-alternadas",
+      "codigo": "CF-535",
+      "chave_publicacao": "2026-09-18|venda|CF-535",
+      "usado_em": "2026-09-18T15:56:20.879Z"
     }
   ]
 }
