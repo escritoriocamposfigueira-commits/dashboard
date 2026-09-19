@@ -612,6 +612,12 @@
       "codigo": "CF-541",
       "chave_publicacao": "2026-09-19|venda|CF-541",
       "usado_em": "2026-09-19T15:28:29.350Z"
+    },
+    {
+      "modelo_id": "foco-central",
+      "codigo": "CF-CAPT-4",
+      "chave_publicacao": "2026-09-19|captacao|CF-CAPT-4",
+      "usado_em": "2026-09-19T23:00:32.100Z"
     }
   ]
 }
