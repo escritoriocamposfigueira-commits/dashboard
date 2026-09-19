@@ -707,6 +707,13 @@
       "emocao": "urgencia",
       "chave_publicacao": "2026-09-18|venda|CF-535",
       "usado_em": "2026-09-18T15:56:20.879Z"
+    },
+    {
+      "trilha_id": "mixkit-821",
+      "codigo": "CF-541",
+      "emocao": "urgencia",
+      "chave_publicacao": "2026-09-19|venda|CF-541",
+      "usado_em": "2026-09-19T15:28:29.349Z"
     }
   ]
 }
