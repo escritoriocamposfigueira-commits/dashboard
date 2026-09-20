@@ -1,5 +1,5 @@
 {
-  "indice": 174,
+  "indice": 175,
   "publicados": [
     {
       "codigo": "429",
@@ -2091,11 +2091,17 @@
       "ig_reel": "✅ 18116033267291200",
       "youtube": "✅ DL40BbN0mZg",
       "tiktok": "— (TikTok pausado)"
+    },
+    {
+      "codigo": "541",
+      "data": "2026-09-20T15:32:53.373Z",
+      "deduplicado": true,
+      "observacao": "não republicado: publicação equivalente encontrada no Facebook (512040582222121_1692810506187457)"
     }
   ],
   "tentativas": 0,
   "observacao": "Fila de vendas reiniciada em 03/08/2026 para aplicar a prioridade comercial; deduplicação de 30 horas protege reruns e falhas.",
-  "indiceVenda": 35,
-  "contadorNaoLoc": 82,
+  "indiceVenda": 36,
+  "contadorNaoLoc": 83,
   "indiceCapt": 0
 }
