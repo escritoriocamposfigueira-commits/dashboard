@@ -618,6 +618,12 @@
       "codigo": "CF-CAPT-4",
       "chave_publicacao": "2026-09-19|captacao|CF-CAPT-4",
       "usado_em": "2026-09-19T23:00:32.100Z"
+    },
+    {
+      "modelo_id": "subida-cinematografica",
+      "codigo": "CF-551",
+      "chave_publicacao": "2026-09-21|venda|CF-551",
+      "usado_em": "2026-09-21T17:56:35.592Z"
     }
   ]
 }

@@ -721,6 +721,13 @@
       "emocao": "confianca",
       "chave_publicacao": "2026-09-19|captacao|CF-CAPT-4",
       "usado_em": "2026-09-19T23:00:32.099Z"
+    },
+    {
+      "trilha_id": "mixkit-479",
+      "codigo": "CF-551",
+      "emocao": "urgencia",
+      "chave_publicacao": "2026-09-21|venda|CF-551",
+      "usado_em": "2026-09-21T17:56:35.592Z"
     }
   ]
 }
