@@ -1,5 +1,5 @@
 {
-  "indice": 177,
+  "indice": 178,
   "publicados": [
     {
       "codigo": "429",
@@ -2118,32 +2118,19 @@
       "data": "2026-09-22T16:23:10.056Z",
       "deduplicado": true,
       "observacao": "não republicado: publicação equivalente encontrada no Facebook (512040582222121_1694947572640417)"
+    },
+    {
+      "codigo": "552",
+      "data": "2026-09-24T16:38:25.946Z",
+      "deduplicado": true,
+      "observacao": "não republicado: publicação equivalente encontrada no Facebook (512040582222121_1696974865771021)"
     }
   ],
-  "tentativas": 2,
+  "tentativas": 0,
   "observacao": "Fila de vendas reiniciada em 03/08/2026 para aplicar a prioridade comercial; deduplicação de 30 horas protege reruns e falhas.",
-  "indiceVenda": 37,
-  "contadorNaoLoc": 84,
+  "indiceVenda": 38,
+  "contadorNaoLoc": 85,
   "indiceCapt": 0,
-  "retryPublicacao": {
-    "codigo": "CAPT-1",
-    "tipo": "captacao",
-    "tentativas": 2,
-    "reg": {
-      "codigo": "CAPT-1",
-      "data": "2026-09-23T23:44:57.153Z",
-      "trilha": "mixkit-857",
-      "modelo_video": "laterais-alternadas",
-      "fb_feed": "✅ 512040582222121_1697301375738370",
-      "fb_story": "✅ 29140854405508725",
-      "fb_reel": "✅ 1697301702405004",
-      "ig_feed": "✅ 18124380887311983",
-      "ig_story": "❌ IG Story publish: Media ID is not available",
-      "ig_reel": "✅ 17889646263681772",
-      "youtube": "✅ qq7M2NR2gUk",
-      "tiktok": "— (TikTok pausado)"
-    }
-  },
   "ultimaFalha": {
     "codigo": "CAPT-1",
     "data": "2026-09-23T23:44:57.153Z",
