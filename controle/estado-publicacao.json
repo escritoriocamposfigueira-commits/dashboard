@@ -1,5 +1,5 @@
 {
-  "indice": 178,
+  "indice": 179,
   "publicados": [
     {
       "codigo": "429",
@@ -2124,44 +2124,25 @@
       "data": "2026-09-24T16:38:25.946Z",
       "deduplicado": true,
       "observacao": "não republicado: publicação equivalente encontrada no Facebook (512040582222121_1696974865771021)"
-    }
-  ],
-  "tentativas": 2,
-  "observacao": "Fila de vendas reiniciada em 03/08/2026 para aplicar a prioridade comercial; deduplicação de 30 horas protege reruns e falhas.",
-  "indiceVenda": 38,
-  "contadorNaoLoc": 85,
-  "indiceCapt": 0,
-  "ultimaFalha": {
-    "codigo": "555",
-    "data": "2026-09-26T15:55:37.338Z",
-    "trilha": "mixkit-839",
-    "modelo_video": "foco-central",
-    "fb_feed": "✅ 512040582222121_1699253025543205",
-    "fb_story": "✅ 1432789252062138",
-    "fb_reel": "✅ 1699253528876488",
-    "ig_feed": "❌ IG Carrossel foto 2: Only photo or video can be accepted as media type.",
-    "ig_story": "✅ 18131124496664110",
-    "ig_reel": "✅ 18032256932894572",
-    "youtube": "✅ CrqtqGonXhM",
-    "tiktok": "— (TikTok pausado)"
-  },
-  "retryPublicacao": {
-    "codigo": "555",
-    "tipo": "venda",
-    "tentativas": 2,
-    "reg": {
-      "codigo": "555",
-      "data": "2026-09-26T15:55:37.338Z",
-      "trilha": "mixkit-839",
-      "modelo_video": "foco-central",
-      "fb_feed": "✅ 512040582222121_1699253025543205",
-      "fb_story": "✅ 1432789252062138",
-      "fb_reel": "✅ 1699253528876488",
-      "ig_feed": "❌ IG Carrossel foto 2: Only photo or video can be accepted as media type.",
-      "ig_story": "✅ 18131124496664110",
-      "ig_reel": "✅ 18032256932894572",
-      "youtube": "✅ CrqtqGonXhM",
+    },
+    {
+      "codigo": "CAPT-1",
+      "data": "2026-09-26T23:36:30.391Z",
+      "trilha": "mixkit-1141",
+      "modelo_video": "subida-cinematografica",
+      "fb_feed": "✅ 512040582222121_1700718495396658",
+      "fb_story": "✅ 1111213378147031",
+      "fb_reel": "✅ 1700718715396636",
+      "ig_feed": "✅ 18108320891335688",
+      "ig_story": "✅ 18106951495946642",
+      "ig_reel": "✅ 18116840545764495",
+      "youtube": "✅ jl-R4Tp5gH0",
       "tiktok": "— (TikTok pausado)"
     }
-  }
+  ],
+  "tentativas": 0,
+  "observacao": "Fila de vendas reiniciada em 03/08/2026 para aplicar a prioridade comercial; deduplicação de 30 horas protege reruns e falhas.",
+  "indiceVenda": 38,
+  "contadorNaoLoc": 86,
+  "indiceCapt": 1
 }
