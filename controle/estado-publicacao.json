@@ -2126,16 +2126,16 @@
       "observacao": "não republicado: publicação equivalente encontrada no Facebook (512040582222121_1696974865771021)"
     }
   ],
-  "tentativas": 1,
+  "tentativas": 2,
   "observacao": "Fila de vendas reiniciada em 03/08/2026 para aplicar a prioridade comercial; deduplicação de 30 horas protege reruns e falhas.",
   "indiceVenda": 38,
   "contadorNaoLoc": 85,
   "indiceCapt": 0,
   "ultimaFalha": {
     "codigo": "555",
-    "data": "2026-09-25T16:41:20.801Z",
-    "trilha": "mixkit-815",
-    "modelo_video": "iluminacao-dourada",
+    "data": "2026-09-26T15:55:37.338Z",
+    "trilha": "mixkit-839",
+    "modelo_video": "foco-central",
     "fb_feed": "✅ 512040582222121_1699253025543205",
     "fb_story": "✅ 1432789252062138",
     "fb_reel": "✅ 1699253528876488",
@@ -2148,12 +2148,12 @@
   "retryPublicacao": {
     "codigo": "555",
     "tipo": "venda",
-    "tentativas": 1,
+    "tentativas": 2,
     "reg": {
       "codigo": "555",
-      "data": "2026-09-25T16:41:20.801Z",
-      "trilha": "mixkit-815",
-      "modelo_video": "iluminacao-dourada",
+      "data": "2026-09-26T15:55:37.338Z",
+      "trilha": "mixkit-839",
+      "modelo_video": "foco-central",
       "fb_feed": "✅ 512040582222121_1699253025543205",
       "fb_story": "✅ 1432789252062138",
       "fb_reel": "✅ 1699253528876488",

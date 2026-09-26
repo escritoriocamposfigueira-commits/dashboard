@@ -756,6 +756,13 @@
       "emocao": "urgencia",
       "chave_publicacao": "2026-09-25|venda|CF-555",
       "usado_em": "2026-09-25T16:41:17.279Z"
+    },
+    {
+      "trilha_id": "mixkit-839",
+      "codigo": "CF-555",
+      "emocao": "urgencia",
+      "chave_publicacao": "2026-09-26|venda|CF-555",
+      "usado_em": "2026-09-26T15:55:33.578Z"
     }
   ]
 }
