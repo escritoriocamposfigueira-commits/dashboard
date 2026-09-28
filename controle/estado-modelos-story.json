@@ -666,6 +666,12 @@
       "codigo": "CF-555",
       "chave_publicacao": "2026-09-27|venda|CF-555",
       "usado_em": "2026-09-27T16:30:50.784Z"
+    },
+    {
+      "modelo_id": "topo-cinematografico",
+      "codigo": "CF-564",
+      "chave_publicacao": "2026-09-28|venda|CF-564",
+      "usado_em": "2026-09-28T19:19:34.292Z"
     }
   ]
 }
