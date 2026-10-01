@@ -690,6 +690,12 @@
       "codigo": "CF-CAPT-2",
       "chave_publicacao": "2026-09-30|captacao|CF-CAPT-2",
       "usado_em": "2026-10-01T00:33:49.650Z"
+    },
+    {
+      "modelo_id": "subida-cinematografica",
+      "codigo": "CF-566B",
+      "chave_publicacao": "2026-10-01|venda|CF-566B",
+      "usado_em": "2026-10-01T18:16:36.144Z"
     }
   ]
 }

@@ -805,6 +805,13 @@
       "emocao": "urgencia",
       "chave_publicacao": "2026-09-30|captacao|CF-CAPT-2",
       "usado_em": "2026-10-01T00:33:49.649Z"
+    },
+    {
+      "trilha_id": "mixkit-827",
+      "codigo": "CF-566B",
+      "emocao": "urgencia",
+      "chave_publicacao": "2026-10-01|venda|CF-566B",
+      "usado_em": "2026-10-01T18:16:36.143Z"
     }
   ]
 }
