@@ -684,6 +684,12 @@
       "codigo": "CF-566",
       "chave_publicacao": "2026-09-30|venda|CF-566",
       "usado_em": "2026-09-30T17:43:31.938Z"
+    },
+    {
+      "modelo_id": "foco-central",
+      "codigo": "CF-CAPT-2",
+      "chave_publicacao": "2026-09-30|captacao|CF-CAPT-2",
+      "usado_em": "2026-10-01T00:33:49.650Z"
     }
   ]
 }
