@@ -708,6 +708,12 @@
       "codigo": "CF-573",
       "chave_publicacao": "2026-10-03|venda|CF-573",
       "usado_em": "2026-10-03T15:50:21.585Z"
+    },
+    {
+      "modelo_id": "laterais-alternadas",
+      "codigo": "CF-CAPT-3",
+      "chave_publicacao": "2026-10-03|captacao|CF-CAPT-3",
+      "usado_em": "2026-10-03T23:47:34.568Z"
     }
   ]
 }
