@@ -702,6 +702,12 @@
       "codigo": "CF-570",
       "chave_publicacao": "2026-10-02|venda|CF-570",
       "usado_em": "2026-10-02T17:33:41.252Z"
+    },
+    {
+      "modelo_id": "topo-cinematografico",
+      "codigo": "CF-573",
+      "chave_publicacao": "2026-10-03|venda|CF-573",
+      "usado_em": "2026-10-03T15:50:21.585Z"
     }
   ]
 }
