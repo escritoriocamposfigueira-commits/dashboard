@@ -714,6 +714,12 @@
       "codigo": "CF-CAPT-3",
       "chave_publicacao": "2026-10-03|captacao|CF-CAPT-3",
       "usado_em": "2026-10-03T23:47:34.568Z"
+    },
+    {
+      "modelo_id": "iluminacao-dourada",
+      "codigo": "CF-575",
+      "chave_publicacao": "2026-10-04|venda|CF-575",
+      "usado_em": "2026-10-04T16:32:14.734Z"
     }
   ]
 }
