@@ -732,6 +732,12 @@
       "codigo": "CF-576",
       "chave_publicacao": "2026-10-06|venda|CF-576",
       "usado_em": "2026-10-06T18:02:11.142Z"
+    },
+    {
+      "modelo_id": "cascata",
+      "codigo": "CF-578",
+      "chave_publicacao": "2026-10-07|venda|CF-578",
+      "usado_em": "2026-10-07T18:31:12.342Z"
     }
   ]
 }
