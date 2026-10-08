@@ -868,6 +868,13 @@
       "emocao": "confianca",
       "chave_publicacao": "2026-10-07|captacao|CF-CAPT-4",
       "usado_em": "2026-10-08T00:59:51.246Z"
+    },
+    {
+      "trilha_id": "mixkit-154",
+      "codigo": "CF-581",
+      "emocao": "urgencia",
+      "chave_publicacao": "2026-10-08|venda|CF-581",
+      "usado_em": "2026-10-08T18:31:13.245Z"
     }
   ]
 }
