@@ -738,6 +738,12 @@
       "codigo": "CF-578",
       "chave_publicacao": "2026-10-07|venda|CF-578",
       "usado_em": "2026-10-07T18:31:12.342Z"
+    },
+    {
+      "modelo_id": "topo-cinematografico",
+      "codigo": "CF-CAPT-4",
+      "chave_publicacao": "2026-10-07|captacao|CF-CAPT-4",
+      "usado_em": "2026-10-08T00:59:51.247Z"
     }
   ]
 }
