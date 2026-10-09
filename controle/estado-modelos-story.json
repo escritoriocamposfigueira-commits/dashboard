@@ -750,6 +750,12 @@
       "codigo": "CF-581",
       "chave_publicacao": "2026-10-08|venda|CF-581",
       "usado_em": "2026-10-08T18:31:13.246Z"
+    },
+    {
+      "modelo_id": "iluminacao-dourada",
+      "codigo": "CF-582",
+      "chave_publicacao": "2026-10-09|venda|CF-582",
+      "usado_em": "2026-10-09T18:02:23.945Z"
     }
   ]
 }
