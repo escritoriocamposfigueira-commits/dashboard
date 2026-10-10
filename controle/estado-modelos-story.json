@@ -756,6 +756,12 @@
       "codigo": "CF-582",
       "chave_publicacao": "2026-10-09|venda|CF-582",
       "usado_em": "2026-10-09T18:02:23.945Z"
+    },
+    {
+      "modelo_id": "foco-central",
+      "codigo": "CF-585",
+      "chave_publicacao": "2026-10-10|venda|CF-585",
+      "usado_em": "2026-10-10T17:03:10.757Z"
     }
   ]
 }
