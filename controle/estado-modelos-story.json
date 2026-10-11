@@ -762,6 +762,12 @@
       "codigo": "CF-585",
       "chave_publicacao": "2026-10-10|venda|CF-585",
       "usado_em": "2026-10-10T17:03:10.757Z"
+    },
+    {
+      "modelo_id": "subida-cinematografica",
+      "codigo": "CF-CAPT-1",
+      "chave_publicacao": "2026-10-10|captacao|CF-CAPT-1",
+      "usado_em": "2026-10-11T00:15:13.975Z"
     }
   ]
 }
