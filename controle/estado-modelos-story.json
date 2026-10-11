@@ -768,6 +768,12 @@
       "codigo": "CF-CAPT-1",
       "chave_publicacao": "2026-10-10|captacao|CF-CAPT-1",
       "usado_em": "2026-10-11T00:15:13.975Z"
+    },
+    {
+      "modelo_id": "cascata",
+      "codigo": "CF-589",
+      "chave_publicacao": "2026-10-11|venda|CF-589",
+      "usado_em": "2026-10-11T17:25:38.264Z"
     }
   ]
 }

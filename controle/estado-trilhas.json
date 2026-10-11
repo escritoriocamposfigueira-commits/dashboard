@@ -896,6 +896,13 @@
       "emocao": "urgencia",
       "chave_publicacao": "2026-10-10|captacao|CF-CAPT-1",
       "usado_em": "2026-10-11T00:15:13.974Z"
+    },
+    {
+      "trilha_id": "mixkit-900",
+      "codigo": "CF-589",
+      "emocao": "urgencia",
+      "chave_publicacao": "2026-10-11|venda|CF-589",
+      "usado_em": "2026-10-11T17:25:38.263Z"
     }
   ]
 }
