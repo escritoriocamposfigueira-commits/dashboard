@@ -903,6 +903,13 @@
       "emocao": "urgencia",
       "chave_publicacao": "2026-10-11|venda|CF-589",
       "usado_em": "2026-10-11T17:25:38.263Z"
+    },
+    {
+      "trilha_id": "mixkit-480",
+      "codigo": "CF-595",
+      "emocao": "urgencia",
+      "chave_publicacao": "2026-10-12|venda|CF-595",
+      "usado_em": "2026-10-12T20:59:43.628Z"
     }
   ]
 }
