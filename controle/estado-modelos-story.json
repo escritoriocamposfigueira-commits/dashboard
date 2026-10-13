@@ -780,6 +780,12 @@
       "codigo": "CF-595",
       "chave_publicacao": "2026-10-12|venda|CF-595",
       "usado_em": "2026-10-12T20:59:43.629Z"
+    },
+    {
+      "modelo_id": "laterais-alternadas",
+      "codigo": "CF-584",
+      "chave_publicacao": "2026-10-12|locacao|CF-584",
+      "usado_em": "2026-10-13T00:16:21.414Z"
     }
   ]
 }
