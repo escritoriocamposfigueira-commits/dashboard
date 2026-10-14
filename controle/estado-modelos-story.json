@@ -792,6 +792,12 @@
       "codigo": "CF-597",
       "chave_publicacao": "2026-10-13|venda|CF-597",
       "usado_em": "2026-10-13T18:57:29.575Z"
+    },
+    {
+      "modelo_id": "foco-central",
+      "codigo": "CF-597",
+      "chave_publicacao": "2026-10-14|venda|CF-597",
+      "usado_em": "2026-10-14T16:40:48.061Z"
     }
   ]
 }

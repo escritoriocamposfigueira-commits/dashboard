@@ -1,5 +1,5 @@
 {
-  "indice": 200,
+  "indice": 201,
   "publicados": [
     {
       "codigo": "429",
@@ -2424,44 +2424,25 @@
       "ig_reel": "✅ 17915470035468582",
       "youtube": "✅ ypnoCbVDLGU",
       "tiktok": "— (TikTok pausado)"
-    }
-  ],
-  "tentativas": 1,
-  "observacao": "Fila de vendas reiniciada em 03/08/2026 para aplicar a prioridade comercial; deduplicação de 30 horas protege reruns e falhas.",
-  "indiceVenda": 52,
-  "contadorNaoLoc": 104,
-  "indiceCapt": 1,
-  "retryPublicacao": {
-    "codigo": "597",
-    "tipo": "venda",
-    "tentativas": 1,
-    "reg": {
+    },
+    {
       "codigo": "597",
-      "data": "2026-10-13T18:57:32.426Z",
-      "trilha": "mixkit-927",
-      "modelo_video": "iluminacao-dourada",
+      "data": "2026-10-14T16:40:51.821Z",
+      "trilha": "mixkit-199",
+      "modelo_video": "foco-central",
       "fb_feed": "✅ 512040582222121_1719968340138340",
       "fb_story": "✅ 4500190023580629",
       "fb_reel": "✅ 1719968853471622",
       "ig_feed": "✅ (carrossel 10) 18129640507796696",
-      "ig_story": "❌ IG Story publish: Media ID is not available",
+      "ig_story": "✅ 18023877923866193",
       "ig_reel": "✅ 17961458244231874",
       "youtube": "✅ 4SCo25ByW6Y",
       "tiktok": "— (TikTok pausado)"
     }
-  },
-  "ultimaFalha": {
-    "codigo": "597",
-    "data": "2026-10-13T18:57:32.426Z",
-    "trilha": "mixkit-927",
-    "modelo_video": "iluminacao-dourada",
-    "fb_feed": "✅ 512040582222121_1719968340138340",
-    "fb_story": "✅ 4500190023580629",
-    "fb_reel": "✅ 1719968853471622",
-    "ig_feed": "✅ (carrossel 10) 18129640507796696",
-    "ig_story": "❌ IG Story publish: Media ID is not available",
-    "ig_reel": "✅ 17961458244231874",
-    "youtube": "✅ 4SCo25ByW6Y",
-    "tiktok": "— (TikTok pausado)"
-  }
+  ],
+  "tentativas": 0,
+  "observacao": "Fila de vendas reiniciada em 03/08/2026 para aplicar a prioridade comercial; deduplicação de 30 horas protege reruns e falhas.",
+  "indiceVenda": 53,
+  "contadorNaoLoc": 105,
+  "indiceCapt": 1
 }
