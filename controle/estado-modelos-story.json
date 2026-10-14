@@ -798,6 +798,12 @@
       "codigo": "CF-597",
       "chave_publicacao": "2026-10-14|venda|CF-597",
       "usado_em": "2026-10-14T16:40:48.061Z"
+    },
+    {
+      "modelo_id": "subida-cinematografica",
+      "codigo": "CF-CAPT-2",
+      "chave_publicacao": "2026-10-14|captacao|CF-CAPT-2",
+      "usado_em": "2026-10-14T23:56:01.420Z"
     }
   ]
 }
