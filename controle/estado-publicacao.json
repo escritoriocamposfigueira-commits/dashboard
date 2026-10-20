@@ -1,5 +1,5 @@
 {
-  "indice": 204,
+  "indice": 205,
   "publicados": [
     {
       "codigo": "429",
@@ -2480,63 +2480,25 @@
       "ig_reel": "✅ 18107198480192511",
       "youtube": "✅ gMYYJIjZo_Y",
       "tiktok": "— (TikTok pausado)"
+    },
+    {
+      "codigo": "584",
+      "data": "2026-10-20T00:11:00.947Z",
+      "trilha": "mixkit-371",
+      "modelo_video": "laterais-alternadas",
+      "fb_feed": "✅ 512040582222121_1726848109450363",
+      "fb_story": "✅ 2531570320657184",
+      "fb_reel": "✅ 1726848339450340",
+      "ig_feed": "✅ (carrossel 10) 18078417404740949",
+      "ig_story": "✅ 17874962028593638",
+      "ig_reel": "✅ 17944525608360746",
+      "youtube": "✅ osqT2bbL7E8",
+      "tiktok": "— (TikTok pausado)"
     }
   ],
-  "tentativas": 1,
+  "tentativas": 0,
   "observacao": "Fila de vendas reiniciada em 03/08/2026 para aplicar a prioridade comercial; deduplicação de 30 horas protege reruns e falhas.",
   "indiceVenda": 54,
   "contadorNaoLoc": 108,
-  "indiceCapt": 3,
-  "retryPublicacao": {
-    "codigo": "584",
-    "tipo": "locacao",
-    "tentativas": 1,
-    "reg": {
-      "codigo": "584",
-      "data": "2026-10-19T22:06:10.501Z",
-      "trilha": "mixkit-371",
-      "modelo_video": "laterais-alternadas",
-      "fb_feed": "✅ 512040582222121_1726848109450363",
-      "fb_story": "✅ 2531570320657184",
-      "fb_reel": "✅ 1726848339450340",
-      "ig_feed": "✅ (carrossel 10) 18078417404740949",
-      "ig_story": "❌ IG Story publish: Media ID is not available",
-      "ig_reel": "✅ 17944525608360746",
-      "youtube": "✅ osqT2bbL7E8",
-      "tiktok": "— (TikTok pausado)"
-    }
-  },
-  "ultimaFalha": {
-    "codigo": "584",
-    "data": "2026-10-19T22:06:10.501Z",
-    "trilha": "mixkit-371",
-    "modelo_video": "laterais-alternadas",
-    "fb_feed": "✅ 512040582222121_1726848109450363",
-    "fb_story": "✅ 2531570320657184",
-    "fb_reel": "✅ 1726848339450340",
-    "ig_feed": "✅ (carrossel 10) 18078417404740949",
-    "ig_story": "❌ IG Story publish: Media ID is not available",
-    "ig_reel": "✅ 17944525608360746",
-    "youtube": "✅ osqT2bbL7E8",
-    "tiktok": "— (TikTok pausado)"
-  },
-  "retryLocacao": {
-    "codigo": "584",
-    "semana": "2026-W43",
-    "tentativas": 1,
-    "reg": {
-      "codigo": "584",
-      "data": "2026-10-19T22:06:10.501Z",
-      "trilha": "mixkit-371",
-      "modelo_video": "laterais-alternadas",
-      "fb_feed": "✅ 512040582222121_1726848109450363",
-      "fb_story": "✅ 2531570320657184",
-      "fb_reel": "✅ 1726848339450340",
-      "ig_feed": "✅ (carrossel 10) 18078417404740949",
-      "ig_story": "❌ IG Story publish: Media ID is not available",
-      "ig_reel": "✅ 17944525608360746",
-      "youtube": "✅ osqT2bbL7E8",
-      "tiktok": "— (TikTok pausado)"
-    }
-  }
+  "indiceCapt": 3
 }
