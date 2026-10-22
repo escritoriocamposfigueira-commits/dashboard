@@ -822,6 +822,12 @@
       "codigo": "CF-584",
       "chave_publicacao": "2026-10-19|locacao|CF-584",
       "usado_em": "2026-10-19T22:06:07.358Z"
+    },
+    {
+      "modelo_id": "iluminacao-dourada",
+      "codigo": "CF-CAPT-4",
+      "chave_publicacao": "2026-10-21|captacao|CF-CAPT-4",
+      "usado_em": "2026-10-22T00:01:04.846Z"
     }
   ]
 }
