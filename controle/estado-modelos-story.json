@@ -828,6 +828,12 @@
       "codigo": "CF-CAPT-4",
       "chave_publicacao": "2026-10-21|captacao|CF-CAPT-4",
       "usado_em": "2026-10-22T00:01:04.846Z"
+    },
+    {
+      "modelo_id": "foco-central",
+      "codigo": "CF-CAPT-1",
+      "chave_publicacao": "2026-10-24|captacao|CF-CAPT-1",
+      "usado_em": "2026-10-24T23:10:14.676Z"
     }
   ]
 }
