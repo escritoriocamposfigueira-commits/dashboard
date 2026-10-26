@@ -834,6 +834,12 @@
       "codigo": "CF-CAPT-1",
       "chave_publicacao": "2026-10-24|captacao|CF-CAPT-1",
       "usado_em": "2026-10-24T23:10:14.676Z"
+    },
+    {
+      "modelo_id": "subida-cinematografica",
+      "codigo": "CF-584",
+      "chave_publicacao": "2026-10-26|locacao|CF-584",
+      "usado_em": "2026-10-26T22:24:13.101Z"
     }
   ]
 }

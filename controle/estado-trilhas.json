@@ -973,6 +973,13 @@
       "emocao": "urgencia",
       "chave_publicacao": "2026-10-24|captacao|CF-CAPT-1",
       "usado_em": "2026-10-24T23:10:14.675Z"
+    },
+    {
+      "trilha_id": "mixkit-1210",
+      "codigo": "CF-584",
+      "emocao": "urgencia",
+      "chave_publicacao": "2026-10-26|locacao|CF-584",
+      "usado_em": "2026-10-26T22:24:13.100Z"
     }
   ]
 }
