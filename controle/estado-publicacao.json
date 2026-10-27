@@ -1,5 +1,5 @@
 {
-  "indice": 206,
+  "indice": 207,
   "publicados": [
     {
       "codigo": "429",
@@ -2508,63 +2508,25 @@
       "ig_reel": "✅ 18029629937912058",
       "youtube": "✅ J8VxOozORKc",
       "tiktok": "— (TikTok pausado)"
+    },
+    {
+      "codigo": "584",
+      "data": "2026-10-27T00:43:06.083Z",
+      "trilha": "mixkit-1210",
+      "modelo_video": "subida-cinematografica",
+      "fb_feed": "✅ 512040582222121_1734750135326827",
+      "fb_story": "✅ 2279869482763817",
+      "fb_reel": "✅ 1734750525326788",
+      "ig_feed": "✅ (carrossel 10) 17944080405370458",
+      "ig_story": "✅ 18109809455352761",
+      "ig_reel": "✅ 17892790212454863",
+      "youtube": "✅ hpEdROoD_Xs",
+      "tiktok": "— (TikTok pausado)"
     }
   ],
-  "tentativas": 2,
+  "tentativas": 0,
   "observacao": "Fila de vendas reiniciada em 03/08/2026 para aplicar a prioridade comercial; deduplicação de 30 horas protege reruns e falhas.",
   "indiceVenda": 54,
   "contadorNaoLoc": 109,
-  "indiceCapt": 0,
-  "retryPublicacao": {
-    "codigo": "584",
-    "tipo": "locacao",
-    "tentativas": 2,
-    "reg": {
-      "codigo": "584",
-      "data": "2026-10-26T22:24:16.609Z",
-      "trilha": "mixkit-1210",
-      "modelo_video": "subida-cinematografica",
-      "fb_feed": "✅ 512040582222121_1734750135326827",
-      "fb_story": "✅ 2279869482763817",
-      "fb_reel": "✅ 1734750525326788",
-      "ig_feed": "✅ (carrossel 10) 17944080405370458",
-      "ig_story": "❌ IG Story publish: Media ID is not available",
-      "ig_reel": "✅ 17892790212454863",
-      "youtube": "✅ hpEdROoD_Xs",
-      "tiktok": "— (TikTok pausado)"
-    }
-  },
-  "ultimaFalha": {
-    "codigo": "584",
-    "data": "2026-10-26T22:24:16.609Z",
-    "trilha": "mixkit-1210",
-    "modelo_video": "subida-cinematografica",
-    "fb_feed": "✅ 512040582222121_1734750135326827",
-    "fb_story": "✅ 2279869482763817",
-    "fb_reel": "✅ 1734750525326788",
-    "ig_feed": "✅ (carrossel 10) 17944080405370458",
-    "ig_story": "❌ IG Story publish: Media ID is not available",
-    "ig_reel": "✅ 17892790212454863",
-    "youtube": "✅ hpEdROoD_Xs",
-    "tiktok": "— (TikTok pausado)"
-  },
-  "retryLocacao": {
-    "codigo": "584",
-    "semana": "2026-W44",
-    "tentativas": 2,
-    "reg": {
-      "codigo": "584",
-      "data": "2026-10-26T22:24:16.609Z",
-      "trilha": "mixkit-1210",
-      "modelo_video": "subida-cinematografica",
-      "fb_feed": "✅ 512040582222121_1734750135326827",
-      "fb_story": "✅ 2279869482763817",
-      "fb_reel": "✅ 1734750525326788",
-      "ig_feed": "✅ (carrossel 10) 17944080405370458",
-      "ig_story": "❌ IG Story publish: Media ID is not available",
-      "ig_reel": "✅ 17892790212454863",
-      "youtube": "✅ hpEdROoD_Xs",
-      "tiktok": "— (TikTok pausado)"
-    }
-  }
+  "indiceCapt": 0
 }
