@@ -852,6 +852,12 @@
       "codigo": "CF-CAPT-2",
       "chave_publicacao": "2026-10-31|captacao|CF-CAPT-2",
       "usado_em": "2026-11-01T00:07:46.628Z"
+    },
+    {
+      "modelo_id": "laterais-alternadas",
+      "codigo": "CF-584",
+      "chave_publicacao": "2026-11-02|locacao|CF-584",
+      "usado_em": "2026-11-03T00:40:12.112Z"
     }
   ]
 }
