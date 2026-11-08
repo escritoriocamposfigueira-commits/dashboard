@@ -1008,6 +1008,13 @@
       "emocao": "urgencia",
       "chave_publicacao": "2026-11-04|captacao|CF-CAPT-3",
       "usado_em": "2026-11-05T01:28:32.620Z"
+    },
+    {
+      "trilha_id": "mixkit-471",
+      "codigo": "CF-CAPT-4",
+      "emocao": "confianca",
+      "chave_publicacao": "2026-11-07|captacao|CF-CAPT-4",
+      "usado_em": "2026-11-08T00:33:37.047Z"
     }
   ]
 }
