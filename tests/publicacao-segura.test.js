@@ -6,10 +6,42 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const {
   avancarPonteiros,
+  comRetryRede,
+  ehErroRedeTransitorio,
   escolherProximo,
   publicadoRecentementeNoEstado,
   registroPublicacaoCompleta,
 } = require("../scripts/publicar-servidor");
+
+test("reconhece falhas transitórias de DNS, timeout e servidor", () => {
+  assert.equal(ehErroRedeTransitorio("getaddrinfo ENOTFOUND exemplo.com"), true);
+  assert.equal(ehErroRedeTransitorio("EAI_AGAIN"), true);
+  assert.equal(ehErroRedeTransitorio("HTTP 503"), true);
+  assert.equal(ehErroRedeTransitorio("HTTP 404"), false);
+});
+
+test("repete operação de rede transitória sem duplicar a tentativa bem-sucedida", async () => {
+  let chamadas = 0;
+  const resultado = await comRetryRede(async () => {
+    chamadas += 1;
+    if (chamadas < 3) throw new Error("getaddrinfo ENOTFOUND exemplo.com");
+    return "ok";
+  }, "teste", 3, 0);
+  assert.equal(resultado, "ok");
+  assert.equal(chamadas, 3);
+});
+
+test("não repete erro permanente de imagem", async () => {
+  let chamadas = 0;
+  await assert.rejects(
+    () => comRetryRede(async () => {
+      chamadas += 1;
+      throw new Error("HTTP 404");
+    }, "teste", 3, 0),
+    /HTTP 404/,
+  );
+  assert.equal(chamadas, 1);
+});
 
 const ROOT = path.resolve(__dirname, "..");
 const manifest = JSON.parse(fs.readFileSync(path.join(ROOT, "src/content/imagens-urls.json"), "utf8"));

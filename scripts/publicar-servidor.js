@@ -201,11 +201,33 @@ function dataBrasiliaISO(data = new Date()) {
   }).format(data);
 }
 
-async function baixarImagem(url, destino) {
+function ehErroRedeTransitorio(msg = "") {
+  return /ENOTFOUND|EAI_AGAIN|ECONNRESET|ECONNREFUSED|ETIMEDOUT|EPIPE|socket hang up|network|timeout|timed out|HTTP (?:408|425|429|5\d\d)\b/i.test(msg);
+}
+
+async function comRetryRede(fn, label, vezes = 3, esperaBaseMs = 2_000) {
+  let ultimoErro;
+  for (let tentativa = 1; tentativa <= vezes; tentativa += 1) {
+    try {
+      return await fn();
+    } catch (erro) {
+      ultimoErro = erro;
+      if (tentativa >= vezes || !ehErroRedeTransitorio(erro.message)) throw erro;
+      const espera = esperaBaseMs * tentativa;
+      console.log(`  ⚠️  ${label}: falha transitória (${erro.message}). Nova tentativa ${tentativa + 1}/${vezes} em ${espera / 1000}s...`);
+      await sleep(espera);
+    }
+  }
+  throw ultimoErro;
+}
+
+function baixarImagemUmaVez(url, destino) {
   return new Promise((resolve, reject) => {
     const fazer = (u, redirecionamentos = 0) => {
       if (redirecionamentos > 5) return reject(new Error("Imagem excedeu o limite de redirecionamentos."));
-      https.get(u, { headers: { "User-Agent": "campos-figueira-bot/1.0" } }, (res) => {
+      const req = https.get(u, {
+        headers: { "User-Agent": "campos-figueira-bot/1.0" },
+      }, (res) => {
         if ([301, 302, 307, 308].includes(res.statusCode) && res.headers.location) {
           res.resume();
           return fazer(new URL(res.headers.location, u).toString(), redirecionamentos + 1);
@@ -229,10 +251,23 @@ async function baixarImagem(url, destino) {
           resolve();
         });
         arquivo.on("error", reject);
-      }).on("error", reject);
+      });
+      req.setTimeout(20_000, () => req.destroy(new Error("timeout ao baixar imagem")));
+      req.on("error", reject);
     };
     fazer(url);
   });
+}
+
+async function baixarImagem(url, destino) {
+  return comRetryRede(async () => {
+    try {
+      await baixarImagemUmaVez(url, destino);
+    } catch (erro) {
+      try { if (fs.existsSync(destino)) fs.unlinkSync(destino); } catch {}
+      throw erro;
+    }
+  }, "download da imagem", 3);
 }
 
 function validarImagemRemota(url, rotulo, redirecionamentos = 0, metodo = "HEAD") {
@@ -273,8 +308,13 @@ function validarImagemRemota(url, rotulo, redirecionamentos = 0, metodo = "HEAD"
       resolve(true);
     });
     req.on("error", (erro) => reject(new Error(`${rotulo}: ${erro.message}`)));
+    req.setTimeout(20_000, () => req.destroy(new Error(`${rotulo}: timeout`)));
     req.end();
   });
+}
+
+function validarImagemRemotaComRetry(url, rotulo, vezes = 3) {
+  return comRetryRede(() => validarImagemRemota(url, rotulo), rotulo, vezes);
 }
 
 async function gerarVideoStory(
@@ -986,12 +1026,28 @@ async function main() {
   if (plano.tipo !== "captacao" && fotosEspecificas.length === 0) {
     throw new Error(`CF-${codigo}: nenhuma foto específica cadastrada. Publicação bloqueada para não usar arte genérica.`);
   }
+  // As duas artes principais são obrigatórias. Fotos extras do carrossel são
+  // validadas individualmente: uma indisponibilidade temporária do Supabase não
+  // pode derrubar Facebook, Stories, Reels, YouTube e as demais fotos válidas.
   await Promise.all([
-    validarImagemRemota(urlFeed, `CF-${codigo} feed 4:5`),
-    validarImagemRemota(urlStory, `CF-${codigo} story 9:16`),
-    ...fotosEspecificas.slice(0, 9).map((url, indice) =>
-      validarImagemRemota(url, `CF-${codigo} foto específica ${indice + 1}`)),
+    validarImagemRemotaComRetry(urlFeed, `CF-${codigo} feed 4:5`),
+    validarImagemRemotaComRetry(urlStory, `CF-${codigo} story 9:16`),
   ]);
+  const fotosValidadas = (await Promise.all(
+    fotosEspecificas.slice(0, 9).map(async (url, indice) => {
+      const rotulo = `CF-${codigo} foto específica ${indice + 1}`;
+      try {
+        await validarImagemRemotaComRetry(url, rotulo);
+        return url;
+      } catch (erro) {
+        console.log(`  ⚠️  ${rotulo} ignorada nesta execução: ${erro.message}`);
+        return null;
+      }
+    }),
+  )).filter(Boolean);
+  if (fotosValidadas.length < Math.min(fotosEspecificas.length, 9)) {
+    console.log(`  ⚠️  Carrossel seguirá com ${fotosValidadas.length}/${Math.min(fotosEspecificas.length, 9)} fotos reais disponíveis.`);
+  }
 
   // LOOP INFINITO: nunca termina. Ao esgotar a lista, recomeça sozinho.
   // A lista cresce automaticamente: basta adicionar o imóvel em imagens-urls.json
@@ -1104,8 +1160,13 @@ async function main() {
   if (!manterCanalConcluido("ig_feed")) {
     try {
       if (plano.tipo !== "captacao") {
-        const slides = [urlFeed, ...fotosEspecificas].slice(0, 10); // arte premium + fotos reais
-        reg.ig_feed = `✅ (carrossel ${slides.length}) ` + await publicarCarrosselInstagram(token, slides, caption);
+        const slides = [urlFeed, ...fotosValidadas].slice(0, 10); // arte premium + fotos reais disponíveis
+        if (slides.length >= 2) {
+          reg.ig_feed = `✅ (carrossel ${slides.length}) ` + await publicarCarrosselInstagram(token, slides, caption);
+        } else {
+          console.log("  ⚠️  Fotos extras indisponíveis; IG Feed seguirá com a arte premium em vez de falhar o job.");
+          reg.ig_feed = "✅ (arte única) " + await publicarFeedInstagram(token, urlFeed, caption);
+        }
       } else {
         reg.ig_feed = "✅ " + await publicarFeedInstagram(token, urlFeed, caption);
       }
@@ -1231,6 +1292,8 @@ if (require.main === module) {
 
 module.exports = {
   avancarPonteiros,
+  comRetryRede,
+  ehErroRedeTransitorio,
   escolherProximo,
   normalizarLegenda,
   ordenarVendasPorPrioridade,
