@@ -2608,9 +2608,61 @@
       "tiktok": "— (TikTok pausado)"
     }
   ],
-  "tentativas": 0,
+  "tentativas": 1,
   "observacao": "Fila de vendas reiniciada em 03/08/2026 para aplicar a prioridade comercial; deduplicação de 30 horas protege reruns e falhas.",
   "indiceVenda": 55,
   "contadorNaoLoc": 114,
-  "indiceCapt": 0
+  "indiceCapt": 0,
+  "retryPublicacao": {
+    "codigo": "584",
+    "tipo": "locacao",
+    "tentativas": 1,
+    "reg": {
+      "codigo": "584",
+      "data": "2026-11-10T01:20:20.098Z",
+      "trilha": "mixkit-1134",
+      "modelo_video": "cascata",
+      "fb_feed": "✅ 512040582222121_1752730143528826",
+      "fb_story": "✅ 1185684260649393",
+      "fb_reel": "✅ 1752730420195465",
+      "ig_feed": "✅ (carrossel 10) 18104787395638802",
+      "ig_story": "❌ IG Story publish: Media ID is not available",
+      "ig_reel": "✅ 18385857259233740",
+      "youtube": "✅ yaTJbqAdE1o",
+      "tiktok": "— (TikTok pausado)"
+    }
+  },
+  "ultimaFalha": {
+    "codigo": "584",
+    "data": "2026-11-10T01:20:20.098Z",
+    "trilha": "mixkit-1134",
+    "modelo_video": "cascata",
+    "fb_feed": "✅ 512040582222121_1752730143528826",
+    "fb_story": "✅ 1185684260649393",
+    "fb_reel": "✅ 1752730420195465",
+    "ig_feed": "✅ (carrossel 10) 18104787395638802",
+    "ig_story": "❌ IG Story publish: Media ID is not available",
+    "ig_reel": "✅ 18385857259233740",
+    "youtube": "✅ yaTJbqAdE1o",
+    "tiktok": "— (TikTok pausado)"
+  },
+  "retryLocacao": {
+    "codigo": "584",
+    "semana": "2026-W46",
+    "tentativas": 1,
+    "reg": {
+      "codigo": "584",
+      "data": "2026-11-10T01:20:20.098Z",
+      "trilha": "mixkit-1134",
+      "modelo_video": "cascata",
+      "fb_feed": "✅ 512040582222121_1752730143528826",
+      "fb_story": "✅ 1185684260649393",
+      "fb_reel": "✅ 1752730420195465",
+      "ig_feed": "✅ (carrossel 10) 18104787395638802",
+      "ig_story": "❌ IG Story publish: Media ID is not available",
+      "ig_reel": "✅ 18385857259233740",
+      "youtube": "✅ yaTJbqAdE1o",
+      "tiktok": "— (TikTok pausado)"
+    }
+  }
 }
