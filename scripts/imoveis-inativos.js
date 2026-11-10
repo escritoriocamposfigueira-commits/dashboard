@@ -10,13 +10,27 @@ const ARQUIVO_INATIVOS = path.join(
   "content",
   "imoveis-inativos.json",
 );
+const ARQUIVO_ALIASES = path.join(
+  __dirname,
+  "..",
+  "src",
+  "content",
+  "aliases-imoveis.json",
+);
+const { chaveAlias, normalizarCodigo: normalizarCodigoOficial, separarChavePublicacao } = require("./fonte-imoveis-site");
 
-function normalizarCodigo(codigo) {
-  return String(codigo ?? "")
-    .trim()
-    .toUpperCase()
-    .replace(/^CF\s*-\s*/, "")
-    .replace(/^0+(?=\d)/, "");
+function carregarAliases(arquivo = ARQUIVO_ALIASES) {
+  if (!fs.existsSync(arquivo)) return {};
+  const aliases = JSON.parse(fs.readFileSync(arquivo, "utf8"));
+  return Object.fromEntries(
+    Object.entries(aliases).map(([alias, codigo]) => [chaveAlias(alias), normalizarCodigoOficial(codigo)]),
+  );
+}
+
+function normalizarCodigo(codigo, aliases = carregarAliases()) {
+  const separada = separarChavePublicacao(codigo);
+  const baseSemFinalidade = String(separada.chave).replace(/-(VENDA|LOCACAO)$/i, "");
+  return aliases[chaveAlias(baseSemFinalidade)] || normalizarCodigoOficial(baseSemFinalidade);
 }
 
 function carregarImoveisInativos(arquivo = ARQUIVO_INATIVOS) {
@@ -46,7 +60,9 @@ function filtrarCodigosAtivos(codigos, codigosInativos = carregarCodigosInativos
 }
 
 module.exports = {
+  ARQUIVO_ALIASES,
   ARQUIVO_INATIVOS,
+  carregarAliases,
   carregarCodigosInativos,
   carregarImoveisInativos,
   codigoInativo,

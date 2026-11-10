@@ -11,34 +11,34 @@ const {
 const { escolherProximo } = require("../scripts/publicar-servidor");
 
 test("normaliza variações do código CF-001", () => {
-  assert.equal(normalizarCodigo("CF-001"), "1");
-  assert.equal(normalizarCodigo("CF - 001"), "1");
-  assert.equal(normalizarCodigo("001"), "1");
+  assert.equal(normalizarCodigo("CF-001"), "CF-001");
+  assert.equal(normalizarCodigo("CF - 001"), "CF-001");
+  assert.equal(normalizarCodigo("001"), "CF-001");
 });
 
 test("bloqueia todos os imóveis retirados de circulação", () => {
   const inativos = carregarCodigosInativos();
   assert.equal(codigoInativo("CF-001", inativos), true);
   assert.equal(codigoInativo("413", inativos), true);
-  for (const codigo of ["417", "458", "527", "550", "610"]) {
+  for (const codigo of ["417", "458", "527", "537", "550", "610", "616", "619"]) {
     assert.equal(codigoInativo(`CF-${codigo}`, inativos), true);
   }
-  assert.equal(codigoInativo("537", inativos), false);
+  assert.equal(codigoInativo("CF-FD1FEFC4", inativos), true);
 });
 
 test("remove imóveis inativos de qualquer fila", () => {
   const inativos = carregarCodigosInativos();
   assert.deepEqual(
-    filtrarCodigosAtivos(["001", "413", "417", "458", "527", "550", "610", "537"], inativos),
-    ["537"],
+    filtrarCodigosAtivos(["001", "413", "417", "458", "527", "537", "550", "610", "547"], inativos),
+    ["547"],
   );
 });
 
 test("a rotação do robô nunca escolhe um imóvel inativo", () => {
   const plano = escolherProximo(
-    { ordem: ["001", "413", "417", "458", "527", "550", "610", "537"] },
+    { ordem: ["001", "413", "417", "458", "527", "537", "550", "610", "547"] },
     { indiceVenda: 0, publicados: [] },
     "venda",
   );
-  assert.equal(plano.codigo, "537");
+  assert.equal(plano.codigo, "547");
 });

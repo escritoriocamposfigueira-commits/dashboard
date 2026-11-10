@@ -45,7 +45,7 @@ test("não repete erro permanente de imagem", async () => {
 
 const ROOT = path.resolve(__dirname, "..");
 const manifest = JSON.parse(fs.readFileSync(path.join(ROOT, "src/content/imagens-urls.json"), "utf8"));
-const LOCACOES = new Set(["584", "607", "609", "609B", "619", "620", "CASA INDAIA BERTIOGA", "CASA JARDIM ARMENIA"]);
+const LOCACOES = new Set(["584-LOCACAO", "607", "609", "609B", "619", "620", "CASA INDAIA BERTIOGA", "CASA JARDIM ARMENIA"]);
 const { filtrarCodigosAtivos } = require("../scripts/imoveis-inativos");
 const totalVendas = filtrarCodigosAtivos(manifest.ordem).filter((codigo) => !LOCACOES.has(String(codigo))).length;
 
@@ -103,7 +103,7 @@ test("locação incompleta continua pendente sem bloquear as ainda não tentadas
   const agora = new Date();
   const estado = {
     publicados: [{
-      codigo: "584", data: agora.toISOString(),
+      codigo: "584-LOCACAO", data: agora.toISOString(),
       fb_feed: "✅ ok", fb_story: "✅ ok", ig_feed: "❌ falhou", ig_story: "✅ ok",
     }],
   };

@@ -35,6 +35,16 @@ const {
   carregarCodigosInativos,
   filtrarCodigosAtivos,
 } = require("./imoveis-inativos");
+const {
+  buscarCatalogo,
+  chaveAlias,
+  normalizarCodigo,
+  obterImovel,
+  resolverCodigoFonte,
+  separarChavePublicacao,
+  validarImovelComUrls,
+  validarMetadadosImovel,
+} = require("./fonte-imoveis-site");
 
 // ── Paths ─────────────────────────────────────────────────────────────────────
 const RAIZ      = path.join(__dirname, "..");
@@ -44,8 +54,16 @@ const ESTADO    = path.join(RAIZ, "controle/estado-publicacao.json");
 const VIDEOS    = path.join(RAIZ, "public/videos");
 const TMP       = path.join(RAIZ, ".tmp-videos");
 const PRIORIDADE_VENDAS_ARQUIVO = path.join(RAIZ, "src/content/prioridade-vendas.json");
+const ALIASES_ARQUIVO = path.join(RAIZ, "src/content/aliases-imoveis.json");
 const CODIGOS_INATIVOS = carregarCodigosInativos();
 const JANELA_DUPLICIDADE_HORAS = 30;
+let ALIASES_IMOVEIS = {};
+try {
+  const aliases = JSON.parse(fs.readFileSync(ALIASES_ARQUIVO, "utf-8"));
+  ALIASES_IMOVEIS = Object.fromEntries(
+    Object.entries(aliases).map(([alias, codigo]) => [chaveAlias(alias), normalizarCodigo(codigo)]),
+  );
+} catch {}
 
 // ── Constantes Meta ───────────────────────────────────────────────────────────
 const BASE_HOST = "graph.facebook.com";
@@ -738,21 +756,35 @@ function enviarAlerta(titulo, mensagem, prioridade = 3) {
 // ════════════════════════════════════════════════════════════════════════════
 // ROTAÇÃO — vendas diárias, todas as locações 1x/semana e 2 captações/semana
 // ════════════════════════════════════════════════════════════════════════════
-const LOCACAO_CODES = new Set(["584", "607", "609", "609B", "619", "620", "CASA INDAIA BERTIOGA", "CASA JARDIM ARMENIA"]);
+const LOCACAO_CODES = new Set(["584", "584-LOCACAO", "607", "609", "609B", "619", "620", "CASA INDAIA BERTIOGA", "CASA JARDIM ARMENIA"]);
 let PRIORIDADE_VENDAS = [];
 try { PRIORIDADE_VENDAS = JSON.parse(fs.readFileSync(PRIORIDADE_VENDAS_ARQUIVO, "utf-8")).map(String); } catch {}
 let CAPTACAO = [];
 try { CAPTACAO = JSON.parse(fs.readFileSync(path.join(RAIZ, "src/content/captacao.json"), "utf-8")); } catch {}
-let FOTOS = {};
-try { FOTOS = JSON.parse(fs.readFileSync(path.join(RAIZ, "src/content/fotos-imoveis.json"), "utf-8")); } catch {}
-const ALIASES_FOTOS = {
-  "CASA INDAIA BERTIOGA": "1F",
-  "CASA JARDIM ARMENIA": "57D",
-  "CASA VILA JUNDIAI": "8F",
-  TARLITORAL: "6F",
-};
-for (const [codigo, alias] of Object.entries(ALIASES_FOTOS)) {
-  if (!FOTOS[codigo] && FOTOS[alias]) FOTOS[codigo] = FOTOS[alias];
+
+function codigoEhLocacao(codigo, catalogo = null, aliases = ALIASES_IMOVEIS) {
+  const separada = separarChavePublicacao(codigo);
+  if (separada.finalidade) return separada.finalidade === "locacao";
+  if (catalogo) {
+    const codigoFonte = resolverCodigoFonte(codigo, aliases);
+    const venda = catalogo.has(`${codigoFonte}|venda`);
+    const locacao = catalogo.has(`${codigoFonte}|locacao`);
+    if (locacao && !venda) return true;
+    if (venda && !locacao) return false;
+  }
+  return LOCACAO_CODES.has(String(codigo));
+}
+
+function codigoExibicao(codigo, aliases = ALIASES_IMOVEIS) {
+  return resolverCodigoFonte(codigo, aliases) || normalizarCodigo(codigo);
+}
+
+function codigoPublicavelNaFonte(codigo, catalogo = null, aliases = ALIASES_IMOVEIS) {
+  if (!catalogo) return true;
+  const finalidade = separarChavePublicacao(codigo).finalidade
+    || (codigoEhLocacao(codigo, catalogo, aliases) ? "locacao" : "venda");
+  const imovel = obterImovel(catalogo, codigo, finalidade, aliases);
+  return validarMetadadosImovel(imovel, 6).ok;
 }
 
 function ordenarVendasPorPrioridade(codigos) {
@@ -803,12 +835,13 @@ async function localizarPublicacaoRecenteFacebook(token, caption, janelaHoras = 
   return (resposta.data || []).find((post) => normalizarLegenda(post.message) === alvo) || null;
 }
 
-function avancarPonteiros(estado, plano, manifest) {
+function avancarPonteiros(estado, plano, manifest, catalogo = null, aliases = ALIASES_IMOVEIS) {
   if (plano.tipo === "venda" && plano.vendaIdx !== null) {
     const vendasTot = ordenarVendasPorPrioridade(
       filtrarCodigosAtivos(manifest.ordem, CODIGOS_INATIVOS)
         .map(String)
-        .filter((codigo) => !LOCACAO_CODES.has(codigo)),
+        .filter((codigo) => codigoPublicavelNaFonte(codigo, catalogo, aliases))
+        .filter((codigo) => !codigoEhLocacao(codigo, catalogo, aliases)),
     ).length;
     estado.indiceVenda = vendasTot ? (plano.vendaIdx + 1) % vendasTot : 0;
   }
@@ -841,10 +874,12 @@ function tipoAgendado() {
 }
 
 // PURO: lê o estado e devolve o próximo código, sem alterar nada.
-function escolherProximo(manifest, estado, tipoForcado = "auto") {
-  const ordem = filtrarCodigosAtivos(manifest.ordem, CODIGOS_INATIVOS).map(String);
-  const locacoes = ordem.filter((c) => LOCACAO_CODES.has(c));
-  const vendas = ordenarVendasPorPrioridade(ordem.filter((c) => !LOCACAO_CODES.has(c)));
+function escolherProximo(manifest, estado, tipoForcado = "auto", catalogo = null, aliases = ALIASES_IMOVEIS) {
+  const ordem = filtrarCodigosAtivos(manifest.ordem, CODIGOS_INATIVOS)
+    .map(String)
+    .filter((codigo) => codigoPublicavelNaFonte(codigo, catalogo, aliases));
+  const locacoes = ordem.filter((c) => codigoEhLocacao(c, catalogo, aliases));
+  const vendas = ordenarVendasPorPrioridade(ordem.filter((c) => !codigoEhLocacao(c, catalogo, aliases)));
   const brt = new Date(Date.now() - 3 * 3600 * 1000);
   const semana = semanaISO(brt);
   const registrosSemana = (estado.publicados || [])
@@ -948,16 +983,17 @@ async function main() {
   let estado = { indice: 0, publicados: [], tentativas: 0 };
   if (fs.existsSync(ESTADO)) estado = JSON.parse(fs.readFileSync(ESTADO, "utf-8"));
 
+  // A fonte oficial é obrigatória. Se estiver indisponível, nenhuma informação
+  // antiga do repositório pode autorizar uma publicação.
+  const fonteOficial = await buscarCatalogo();
+  console.log(`  Fonte oficial: ${fonteOficial.listings.length} anúncios disponíveis.`);
+
   let plano;
   const tipoForcado = tipoAgendado();
   try {
-    plano = escolherProximo(manifest, estado, tipoForcado);
+    plano = escolherProximo(manifest, estado, tipoForcado, fonteOficial.indice, ALIASES_IMOVEIS);
   } catch (e) {
-    console.log("  ⚠️  Rotação falhou, usando modo sequencial:", e.message);
-    const ordemAtiva = filtrarCodigosAtivos(manifest.ordem, CODIGOS_INATIVOS);
-    if (!ordemAtiva.length) throw new Error("Nenhum imóvel ativo disponível para publicação.");
-    const i = (estado.indice || 0) % ordemAtiva.length;
-    plano = { codigo: String(ordemAtiva[i]), tipo: "seq", vendaIdx: null };
+    throw new Error(`rotação não pôde ser calculada com a fonte oficial: ${e.message}`);
   }
   console.log(`  Regra agendada: ${tipoForcado}`);
   if (plano.tipo === "noop") {
@@ -965,6 +1001,7 @@ async function main() {
     return;
   }
   const codigo    = plano.codigo;
+  const codigoPublico = plano.tipo === "captacao" ? String(codigo) : codigoExibicao(codigo);
   console.log(`  Tipo: ${plano.tipo}`);
   let urlStory, urlFeed, caption;
   if (plano.tipo === "captacao") {
@@ -979,6 +1016,37 @@ async function main() {
   }
 
   if (!caption) throw new Error(`CF-${codigo}: legenda específica ausente. Publicação bloqueada.`);
+
+  let imovelOficial = null;
+  if (plano.tipo !== "captacao") {
+    const finalidade = separarChavePublicacao(codigo, plano.tipo).finalidade || plano.tipo;
+    imovelOficial = obterImovel(fonteOficial.indice, codigo, finalidade, ALIASES_IMOVEIS);
+    const validacaoFonte = await validarImovelComUrls(imovelOficial, { minimoFotos: 6, maximoUrls: 6 });
+    if (!validacaoFonte.ok) {
+      const motivo = validacaoFonte.erros.join("; ");
+      const registroBloqueado = {
+        codigo,
+        codigo_fonte: codigoPublico,
+        finalidade,
+        data: new Date().toISOString(),
+        bloqueado: true,
+        observacao: `não publicado: ${motivo}`,
+      };
+      estado.publicados = estado.publicados || [];
+      estado.publicados.push(registroBloqueado);
+      avancarPonteiros(estado, plano, manifest, fonteOficial.indice, ALIASES_IMOVEIS);
+      estado.tentativas = 0;
+      delete estado.retryPublicacao;
+      if (plano.tipo === "locacao") delete estado.retryLocacao;
+      fs.mkdirSync(path.dirname(ESTADO), { recursive: true });
+      fs.writeFileSync(ESTADO, JSON.stringify(estado, null, 2), "utf-8");
+      console.log(`  ⛔ ${codigoPublico} bloqueado pela fonte oficial: ${motivo}`);
+      if (process.env.GITHUB_STEP_SUMMARY) {
+        fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `\n- ⛔ ${codigoPublico} não publicado: ${motivo}\n`, "utf8");
+      }
+      return;
+    }
+  }
 
   const semanaAtual = semanaISO(new Date(Date.now() - 3 * 3600 * 1000));
   const retryPublicacao = estado.retryPublicacao?.codigo === codigo
@@ -1008,7 +1076,7 @@ async function main() {
       };
       estado.publicados = estado.publicados || [];
       estado.publicados.push(registroDeduplicado);
-      avancarPonteiros(estado, plano, manifest);
+      avancarPonteiros(estado, plano, manifest, fonteOficial.indice, ALIASES_IMOVEIS);
       estado.tentativas = 0;
       delete estado.retryPublicacao;
       if (plano.tipo === "locacao") delete estado.retryLocacao;
@@ -1022,7 +1090,7 @@ async function main() {
     console.log("  ⚠️  Republicação forçada manualmente; trava de 30 horas ignorada.");
   }
 
-  const fotosEspecificas = plano.tipo === "captacao" ? [] : (FOTOS[String(codigo)] || []);
+  const fotosEspecificas = plano.tipo === "captacao" ? [] : imovelOficial.fotos;
   if (plano.tipo !== "captacao" && fotosEspecificas.length === 0) {
     throw new Error(`CF-${codigo}: nenhuma foto específica cadastrada. Publicação bloqueada para não usar arte genérica.`);
   }
@@ -1035,7 +1103,7 @@ async function main() {
   ]);
   const fotosValidadas = (await Promise.all(
     fotosEspecificas.slice(0, 9).map(async (url, indice) => {
-      const rotulo = `CF-${codigo} foto específica ${indice + 1}`;
+      const rotulo = `${codigoPublico} foto específica ${indice + 1}`;
       try {
         await validarImagemRemotaComRetry(url, rotulo);
         return url;
@@ -1052,8 +1120,10 @@ async function main() {
   // LOOP INFINITO: nunca termina. Ao esgotar a lista, recomeça sozinho.
   // A lista cresce automaticamente: basta adicionar o imóvel em imagens-urls.json
   // (e a legenda em captions-imoveis.json) que ele entra no rodízio no mesmo instante.
-  const totalAtivos = filtrarCodigosAtivos(manifest.ordem, CODIGOS_INATIVOS).length;
-  console.log(`\n▶ Publicando post #${(estado.publicados?.length || 0) + 1} (rodízio infinito de ${totalAtivos} imóveis ativos) — CF-${codigo}`);
+  const totalAtivos = filtrarCodigosAtivos(manifest.ordem, CODIGOS_INATIVOS)
+    .filter((item) => codigoPublicavelNaFonte(item, fonteOficial.indice, ALIASES_IMOVEIS))
+    .length;
+  console.log(`\n▶ Publicando post #${(estado.publicados?.length || 0) + 1} (rodízio infinito de ${totalAtivos} imóveis ativos) — ${codigoPublico}`);
   console.log(`  Feed URL : ${urlFeed}`);
   console.log(`  Story URL: ${urlStory}`);
 
@@ -1069,18 +1139,19 @@ async function main() {
   if (ffmpeg) {
     try {
       const emocao = detectarEmocao(caption);
-      const chavePublicacao = `${dataPublicacao}|${plano.tipo}|CF-${codigo}`;
+      const chavePublicacao = `${dataPublicacao}|${plano.tipo}|${codigoPublico}`;
       trilhaSelecionada = selecionarTrilha({
         emocao,
-        codigo: `CF-${codigo}`,
+        codigo: codigoPublico,
         chavePublicacao,
       });
       modeloSelecionado = selecionarModeloStory({
-        codigo: `CF-${codigo}`,
+        codigo: codigoPublico,
         chavePublicacao,
       });
       const tipoArquivo = String(plano.tipo).replace(/[^a-z0-9-]/gi, "-");
-      const nomeVideo = `CF-${codigo}-story-${dataPublicacao}-${tipoArquivo}-${modeloSelecionado.id}-${trilhaSelecionada.id}.mp4`;
+      const codigoArquivo = String(codigoPublico).replace(/[^a-z0-9-]/gi, "-");
+      const nomeVideo = `${codigoArquivo}-story-${dataPublicacao}-${tipoArquivo}-${modeloSelecionado.id}-${trilhaSelecionada.id}.mp4`;
       videoPath = await gerarVideoStory(
         ffmpeg,
         urlStory,
@@ -1089,8 +1160,8 @@ async function main() {
         trilhaSelecionada,
         modeloSelecionado,
       );
-      registrarUsoTrilha(trilhaSelecionada, { codigo: `CF-${codigo}`, emocao });
-      registrarUsoModelo(modeloSelecionado, { codigo: `CF-${codigo}` });
+      registrarUsoTrilha(trilhaSelecionada, { codigo: codigoPublico, emocao });
+      registrarUsoModelo(modeloSelecionado, { codigo: codigoPublico });
 
       // Hospedar no GitHub para que o IG possa acessar a URL
       const ghUrl = await subirVideoGitHub(videoPath, nomeVideo);
@@ -1245,7 +1316,7 @@ async function main() {
       enviarAlerta(`✅ CF-${codigo} publicado`, `Publicado em: ${canaisOk}`);
     }
     estado.publicados.push(reg);
-    avancarPonteiros(estado, plano, manifest);
+    avancarPonteiros(estado, plano, manifest, fonteOficial.indice, ALIASES_IMOVEIS);
     estado.tentativas = 0;
     delete estado.ultimaFalha;
     delete estado.retryPublicacao;
@@ -1278,7 +1349,7 @@ async function main() {
   fs.writeFileSync(ESTADO, JSON.stringify(estado, null, 2), "utf-8");
 
   let proximo = "(próxima execução)";
-  try { proximo = escolherProximo(manifest, estado, "auto").codigo; } catch {}
+  try { proximo = escolherProximo(manifest, estado, "auto", fonteOficial.indice, ALIASES_IMOVEIS).codigo; } catch {}
   console.log(`\n📊 Estado salvo. Próximo previsto: CF-${proximo}`);
 }
 
@@ -1292,6 +1363,9 @@ if (require.main === module) {
 
 module.exports = {
   avancarPonteiros,
+  codigoEhLocacao,
+  codigoExibicao,
+  codigoPublicavelNaFonte,
   comRetryRede,
   ehErroRedeTransitorio,
   escolherProximo,

@@ -1,0 +1,18 @@
+{
+  "gerado_em": "2026-11-10T15:02:08.969Z",
+  "urls_antigas_restantes": 0,
+  "itens": [
+    {
+      "chave": "616",
+      "codigo_normalizado": "CF-616",
+      "urls_antigas_removidas": 9,
+      "motivo": "sem correspondência na fonte oficial; imóvel não será publicado"
+    },
+    {
+      "chave": "619",
+      "codigo_normalizado": "CF-619",
+      "urls_antigas_removidas": 9,
+      "motivo": "sem correspondência na fonte oficial; imóvel não será publicado"
+    }
+  ]
+}

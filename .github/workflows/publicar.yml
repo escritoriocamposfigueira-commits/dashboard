@@ -50,6 +50,9 @@ jobs:
           git config user.name "Campos Figueira Bot"
           git config user.email "bot@users.noreply.github.com"
 
+      - name: Validar base oficial e bloquear anúncios inconsistentes
+        run: node scripts/validar-base-diaria.js
+
       - name: Publicar próximo imóvel (FB + IG · Feed + Story em vídeo)
         env:
           META_PAGE_TOKEN: ${{ secrets.META_PAGE_TOKEN }}
