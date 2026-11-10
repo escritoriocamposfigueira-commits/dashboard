@@ -1,0 +1,83 @@
+{
+  "gerado_em": "2026-11-10T15:32:10.344Z",
+  "resultados": [
+    {
+      "codigo": "CF-620",
+      "versao": "A",
+      "duracao": 25.9,
+      "resolucao": "1080x1920",
+      "fps": "30/1",
+      "fotos_unicas": 8,
+      "audio": "aac",
+      "arte_inicio_segundos": 21.9,
+      "ssim_arte_em_19_5s": 0.330033,
+      "valido": true,
+      "erros": []
+    },
+    {
+      "codigo": "CF-620",
+      "versao": "B",
+      "duracao": 25.9,
+      "resolucao": "1080x1920",
+      "fps": "30/1",
+      "fotos_unicas": 8,
+      "audio": "aac",
+      "arte_inicio_segundos": 21.9,
+      "ssim_arte_em_19_5s": 0.351931,
+      "valido": true,
+      "erros": []
+    },
+    {
+      "codigo": "CF-609",
+      "versao": "A",
+      "duracao": 26.4,
+      "resolucao": "1080x1920",
+      "fps": "30/1",
+      "fotos_unicas": 6,
+      "audio": "aac",
+      "arte_inicio_segundos": 22.4,
+      "ssim_arte_em_19_5s": 0.375232,
+      "valido": true,
+      "erros": []
+    },
+    {
+      "codigo": "CF-609",
+      "versao": "B",
+      "duracao": 26.4,
+      "resolucao": "1080x1920",
+      "fps": "30/1",
+      "fotos_unicas": 6,
+      "audio": "aac",
+      "arte_inicio_segundos": 22.4,
+      "ssim_arte_em_19_5s": 0.372209,
+      "valido": true,
+      "erros": []
+    },
+    {
+      "codigo": "CF-493",
+      "versao": "A",
+      "duracao": 25.9,
+      "resolucao": "1080x1920",
+      "fps": "30/1",
+      "fotos_unicas": 8,
+      "audio": "aac",
+      "arte_inicio_segundos": 21.9,
+      "ssim_arte_em_19_5s": 0.326254,
+      "valido": true,
+      "erros": []
+    },
+    {
+      "codigo": "CF-493",
+      "versao": "B",
+      "duracao": 25.9,
+      "resolucao": "1080x1920",
+      "fps": "30/1",
+      "fotos_unicas": 8,
+      "audio": "aac",
+      "arte_inicio_segundos": 21.9,
+      "ssim_arte_em_19_5s": 0.347703,
+      "valido": true,
+      "erros": []
+    }
+  ]
+}

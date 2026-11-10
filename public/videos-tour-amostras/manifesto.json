@@ -1,0 +1,507 @@
+{
+  "versao": 1,
+  "gerado_em": "2026-11-10T15:31:07.010Z",
+  "etapa": 2,
+  "status": "amostras_para_aprovacao",
+  "politica": {
+    "somente_fotos_reais": true,
+    "video_generativo": false,
+    "movimento": "zoom e pan determinísticos com FFmpeg",
+    "area_segura": {
+      "topo_px": 120,
+      "rodape_px": 250
+    },
+    "publicacao_automatica": false
+  },
+  "total": 6,
+  "itens": [
+    {
+      "codigo": "CF-620",
+      "finalidade": "locacao",
+      "versao": "A",
+      "video": "public/videos-tour-amostras/CF-620-TOUR-A.mp4",
+      "previa": "public/videos-tour-amostras/CF-620-TOUR-A-PREVIA.jpg",
+      "duracao_segundos": 25.9,
+      "resolucao": "1080x1920",
+      "fps": 30,
+      "gancho": "Condomínio com piscina por R$ 2.600 em Mogi?",
+      "primeira_foto": "https://escritoriocamposfigueira.com.br/uploads/imoveis/1783455427241-vvkulqffa7.jpg",
+      "fotos_usadas": [
+        {
+          "numero": 29,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis/1783455427241-vvkulqffa7.jpg",
+          "sha256": "29ed7780ea339774b9c5416289e875560ffb3df1dcd08b8172dd16a61ccc5d7c",
+          "rotulo": "Piscina do condomínio",
+          "panorama_360": false
+        },
+        {
+          "numero": 31,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis/1783455429641-wfzokpcme3o.jpg",
+          "sha256": "6a11263ad950c420d74386f69bd9b4ddca0f6e3eb493c68268f04762ac66942c",
+          "rotulo": "Condomínio fechado",
+          "panorama_360": false
+        },
+        {
+          "numero": 1,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis/1783455385209-3wy3i1dm0sk.jpg",
+          "sha256": "266e2c34807fc8ba801c7e9350b9463bbe1c6a51f8bd67ec9271b87b12a0ef8f",
+          "rotulo": "Garagem coberta",
+          "panorama_360": false
+        },
+        {
+          "numero": 5,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis/1783455395455-awvmbxpde7.jpg",
+          "sha256": "62778565a24750e7389493ba46bc6639270ed4956b7b3b3f8a25ad7ef3323c54",
+          "rotulo": "Sala confortável",
+          "panorama_360": false
+        },
+        {
+          "numero": 10,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis/1783455401174-xs3zaq6pvj.jpg",
+          "sha256": "ed9bcd5636a760db07a7550a9c25350643b9d4dbebccb08918f0b3634adbce7b",
+          "rotulo": "Cozinha prática",
+          "panorama_360": false
+        },
+        {
+          "numero": 7,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis/1783455397445-9wy48sqparm.jpg",
+          "sha256": "e12f9dcd2077b45cf6cae4c58db98682a88bf28b3f117807d7bf5fd8bff9cc3c",
+          "rotulo": "03 dormitórios",
+          "panorama_360": false
+        },
+        {
+          "numero": 13,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis/1783455406172-hcctu96t5ff.jpg",
+          "sha256": "51e9bf012b1dce90f07d74437fe97f94a14b08b0a9c24d5dd21fa361206d725d",
+          "rotulo": "Área gourmet com churrasqueira",
+          "panorama_360": false
+        },
+        {
+          "numero": 28,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis/1783455426102-4z5hxxh1kdi.jpg",
+          "sha256": "1ac5ae3eac565364fa608f9b671b4ff5076ad1f513d61440244d60d275c899dd",
+          "rotulo": "Salão de festas equipado",
+          "panorama_360": false
+        }
+      ],
+      "preco": "R$ 2.600/mês",
+      "local": "Mogi Moderno • Mogi das Cruzes",
+      "condicao": "Condomínio com lazer completo",
+      "cta": "COMENTE ALUGAR",
+      "creci": "043649-J",
+      "arte_final": "public/anuncios/CF - 620.png",
+      "arte_inicio_segundos": 21.9,
+      "trilha": {
+        "id": "mixkit-33",
+        "titulo": "Motivating Mornings",
+        "licenca": "Mixkit Stock Music Free License"
+      },
+      "sha256": "458e3901ff59fb73a4ff3fef7ccbb2eb482b117813d189f13074f4ba18cc51d4",
+      "bytes": 3839665,
+      "origem": "https://www.escritoriocamposfigueira.com.br/imovel/CF - 620",
+      "imagem_gerada_por_ia": false
+    },
+    {
+      "codigo": "CF-620",
+      "finalidade": "locacao",
+      "versao": "B",
+      "video": "public/videos-tour-amostras/CF-620-TOUR-B.mp4",
+      "previa": "public/videos-tour-amostras/CF-620-TOUR-B-PREVIA.jpg",
+      "duracao_segundos": 25.9,
+      "resolucao": "1080x1920",
+      "fps": 30,
+      "gancho": "3 dormitórios + lazer completo por R$ 2.600/mês",
+      "primeira_foto": "https://escritoriocamposfigueira.com.br/uploads/imoveis/1783455426102-4z5hxxh1kdi.jpg",
+      "fotos_usadas": [
+        {
+          "numero": 28,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis/1783455426102-4z5hxxh1kdi.jpg",
+          "sha256": "1ac5ae3eac565364fa608f9b671b4ff5076ad1f513d61440244d60d275c899dd",
+          "rotulo": "Salão de festas equipado",
+          "panorama_360": false
+        },
+        {
+          "numero": 31,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis/1783455429641-wfzokpcme3o.jpg",
+          "sha256": "6a11263ad950c420d74386f69bd9b4ddca0f6e3eb493c68268f04762ac66942c",
+          "rotulo": "Condomínio fechado",
+          "panorama_360": false
+        },
+        {
+          "numero": 30,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis/1783455428411-8e3uw9h1j74.jpg",
+          "sha256": "e83437e15368af376e041c0ac1871d38615a2e9aa9c5e691ccff135c7427e875",
+          "rotulo": "Piscinas adulto e infantil",
+          "panorama_360": false
+        },
+        {
+          "numero": 6,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis/1783455396456-yi6pf1mftoo.jpg",
+          "sha256": "f0b8eae9b04d682486048fbd1393a4fbc350b9cfea1487cc0706333b361e7ade",
+          "rotulo": "Ambientes bem distribuídos",
+          "panorama_360": false
+        },
+        {
+          "numero": 11,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis/1783455402258-xdsexvmuj7n.jpg",
+          "sha256": "794c164a41d234dd48fbd9647d4faed2b0952f8842637a39560bf809bc6061fa",
+          "rotulo": "Cozinha prática",
+          "panorama_360": false
+        },
+        {
+          "numero": 9,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis/1783455400233-r4gqu2wxqvo.jpg",
+          "sha256": "0281c65e434b07c957e49acd890914c2a262d2d77fc3fd965b2048a7ab54eb57",
+          "rotulo": "03 dormitórios",
+          "panorama_360": false
+        },
+        {
+          "numero": 14,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis/1783455407397-33pconkoldg.jpg",
+          "sha256": "693448047f1db13d4f3e1e11415d15e88e9c2d1ce1a9cfac6adf9475d32e7860",
+          "rotulo": "Área gourmet com churrasqueira",
+          "panorama_360": false
+        },
+        {
+          "numero": 27,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis/1783455424621-iy8zaxv85vc.jpg",
+          "sha256": "be0f0d5f999737f50d30f215fa77c74fc305e4769c6900cf9ec71b2787d2e06a",
+          "rotulo": "Espaços de convivência",
+          "panorama_360": false
+        }
+      ],
+      "preco": "R$ 2.600/mês",
+      "local": "Mogi Moderno • Mogi das Cruzes",
+      "condicao": "Condomínio com lazer completo",
+      "cta": "COMENTE ALUGAR",
+      "creci": "043649-J",
+      "arte_final": "public/anuncios/CF - 620.png",
+      "arte_inicio_segundos": 21.9,
+      "trilha": {
+        "id": "mixkit-33",
+        "titulo": "Motivating Mornings",
+        "licenca": "Mixkit Stock Music Free License"
+      },
+      "sha256": "6bdd17c405dd46058be3af95072b667bb25cab0ae3276a1b999710415acafab7",
+      "bytes": 3935017,
+      "origem": "https://www.escritoriocamposfigueira.com.br/imovel/CF - 620",
+      "imagem_gerada_por_ia": false
+    },
+    {
+      "codigo": "CF-609",
+      "finalidade": "locacao",
+      "versao": "A",
+      "video": "public/videos-tour-amostras/CF-609-TOUR-A.mp4",
+      "previa": "public/videos-tour-amostras/CF-609-TOUR-A-PREVIA.jpg",
+      "duracao_segundos": 26.4,
+      "resolucao": "1080x1920",
+      "fps": 30,
+      "gancho": "Sala reformada na Vila Oliveira por R$ 2 mil",
+      "primeira_foto": "https://escritoriocamposfigueira.com.br/uploads/imoveis/1779480175262-q6rfju9iyns.jpg",
+      "fotos_usadas": [
+        {
+          "numero": 1,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis/1779480175262-q6rfju9iyns.jpg",
+          "sha256": "e8ad88b2e54052ac69083332c9052770191d29e3f0fbbdb0b71c8f4ea789a037",
+          "rotulo": "Sala comercial reformada",
+          "panorama_360": false
+        },
+        {
+          "numero": 3,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis/1779480182264-iftnzfx31b.jpg",
+          "sha256": "c75258fe9a74a3dac90729ae8b82a1d28b4caa5f8e4da28f1e96c09781fd1afe",
+          "rotulo": "Ambiente moderno",
+          "panorama_360": false
+        },
+        {
+          "numero": 4,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis/1779480186031-mfdk1pgd5z.jpg",
+          "sha256": "bb807e7d0ace419a94825d856d2a4ae7767cbf1c4dd51e42c2235f9b6b97e862",
+          "rotulo": "Pronta para seu negócio",
+          "panorama_360": false
+        },
+        {
+          "numero": 5,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis-360/1779715083947-hak3216m9fs.jpg",
+          "sha256": "2277e29072fb2faa33b60608bec7b8a527af3e45386108d6c5a8a619a2ab189f",
+          "rotulo": "Visão 360° da sala",
+          "panorama_360": true
+        },
+        {
+          "numero": 2,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis/1779480178165-gy09pynf96e.jpg",
+          "sha256": "b45a000d640f294b4f173d2b63da408be504f55b23db045c9cf7963713a9e2dd",
+          "rotulo": "Banheiro privativo",
+          "panorama_360": false
+        },
+        {
+          "numero": 6,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis-360/1779715085019-mrzoszotq4s.jpg",
+          "sha256": "4481e7f5c58278cc3e9c3c9ed817db64a8c805391d3a63a346494186afda6e02",
+          "rotulo": "Visão 360° do banheiro",
+          "panorama_360": true
+        }
+      ],
+      "preco": "R$ 2.000/mês",
+      "local": "Vila Oliveira • Mogi das Cruzes",
+      "condicao": "Sala comercial reformada • 15 m²",
+      "cta": "COMENTE ALUGAR",
+      "creci": "043649-J",
+      "arte_final": "public/anuncios/CF - 609.png",
+      "arte_inicio_segundos": 22.4,
+      "trilha": {
+        "id": "mixkit-1002",
+        "titulo": "I'm Fine",
+        "licenca": "Mixkit Stock Music Free License"
+      },
+      "sha256": "1e66d6ad17ac6e750d204cba32061ca203ce920557e2c6da61f0b3fba296c302",
+      "bytes": 2339813,
+      "origem": "https://www.escritoriocamposfigueira.com.br/imovel/CF - 609",
+      "imagem_gerada_por_ia": false
+    },
+    {
+      "codigo": "CF-609",
+      "finalidade": "locacao",
+      "versao": "B",
+      "video": "public/videos-tour-amostras/CF-609-TOUR-B.mp4",
+      "previa": "public/videos-tour-amostras/CF-609-TOUR-B-PREVIA.jpg",
+      "duracao_segundos": 26.4,
+      "resolucao": "1080x1920",
+      "fps": 30,
+      "gancho": "Seu negócio em 15 m² prontos para trabalhar",
+      "primeira_foto": "https://escritoriocamposfigueira.com.br/uploads/imoveis-360/1779715083947-hak3216m9fs.jpg",
+      "fotos_usadas": [
+        {
+          "numero": 5,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis-360/1779715083947-hak3216m9fs.jpg",
+          "sha256": "2277e29072fb2faa33b60608bec7b8a527af3e45386108d6c5a8a619a2ab189f",
+          "rotulo": "Visão 360° da sala",
+          "panorama_360": true
+        },
+        {
+          "numero": 4,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis/1779480186031-mfdk1pgd5z.jpg",
+          "sha256": "bb807e7d0ace419a94825d856d2a4ae7767cbf1c4dd51e42c2235f9b6b97e862",
+          "rotulo": "Ótima iluminação natural",
+          "panorama_360": false
+        },
+        {
+          "numero": 1,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis/1779480175262-q6rfju9iyns.jpg",
+          "sha256": "e8ad88b2e54052ac69083332c9052770191d29e3f0fbbdb0b71c8f4ea789a037",
+          "rotulo": "Sala totalmente reformada",
+          "panorama_360": false
+        },
+        {
+          "numero": 3,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis/1779480182264-iftnzfx31b.jpg",
+          "sha256": "c75258fe9a74a3dac90729ae8b82a1d28b4caa5f8e4da28f1e96c09781fd1afe",
+          "rotulo": "Ambiente profissional",
+          "panorama_360": false
+        },
+        {
+          "numero": 6,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis-360/1779715085019-mrzoszotq4s.jpg",
+          "sha256": "4481e7f5c58278cc3e9c3c9ed817db64a8c805391d3a63a346494186afda6e02",
+          "rotulo": "Visão 360° do banheiro",
+          "panorama_360": true
+        },
+        {
+          "numero": 2,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis/1779480178165-gy09pynf96e.jpg",
+          "sha256": "b45a000d640f294b4f173d2b63da408be504f55b23db045c9cf7963713a9e2dd",
+          "rotulo": "Banheiro privativo",
+          "panorama_360": false
+        }
+      ],
+      "preco": "R$ 2.000/mês",
+      "local": "Vila Oliveira • Mogi das Cruzes",
+      "condicao": "Sala comercial reformada • 15 m²",
+      "cta": "COMENTE ALUGAR",
+      "creci": "043649-J",
+      "arte_final": "public/anuncios/CF - 609.png",
+      "arte_inicio_segundos": 22.4,
+      "trilha": {
+        "id": "mixkit-1002",
+        "titulo": "I'm Fine",
+        "licenca": "Mixkit Stock Music Free License"
+      },
+      "sha256": "1eadb0d8752f8896294b00706dfe6aa9d3aa48613d715bdc4d35b07861b94424",
+      "bytes": 2397154,
+      "origem": "https://www.escritoriocamposfigueira.com.br/imovel/CF - 609",
+      "imagem_gerada_por_ia": false
+    },
+    {
+      "codigo": "CF-493",
+      "finalidade": "venda",
+      "versao": "A",
+      "video": "public/videos-tour-amostras/CF-493-TOUR-A.mp4",
+      "previa": "public/videos-tour-amostras/CF-493-TOUR-A-PREVIA.jpg",
+      "duracao_segundos": 25.9,
+      "resolucao": "1080x1920",
+      "fps": 30,
+      "gancho": "Conforto e lazer para sua família no Jardim Ivete",
+      "primeira_foto": "https://escritoriocamposfigueira.com.br/uploads/imoveis/legacy-wix/77523c36b33a1a456fa91387e433f9a41b069124b98d8b145cbdcfefa0deda4f.jpg",
+      "fotos_usadas": [
+        {
+          "numero": 1,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis/legacy-wix/77523c36b33a1a456fa91387e433f9a41b069124b98d8b145cbdcfefa0deda4f.jpg",
+          "sha256": "a950f2bfce01356e73085cd579b96ee847c3fdc153d84ccf264592d263a2511d",
+          "rotulo": "Sobrado no Jardim Ivete",
+          "panorama_360": false
+        },
+        {
+          "numero": 3,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis/legacy-wix/44672af337a9acd6f0ea6074fb1bff6773994101177aa7a358947e24af980b15.jpg",
+          "sha256": "36c15ac47424aa2c41df608de7aac824b38cc5790d11cf1a532685f56e8a5e85",
+          "rotulo": "Garagem coberta para 02 carros",
+          "panorama_360": false
+        },
+        {
+          "numero": 5,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis/legacy-wix/c08e7f3b37334b27786dd5c85eb60df4b62b32aceedb885c3cd035ff91b9e706.jpg",
+          "sha256": "40682ab3decb669d4acaa26123dc0a55efe7e8de56fcdf405da9b329107b0298",
+          "rotulo": "Sala de estar",
+          "panorama_360": false
+        },
+        {
+          "numero": 6,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis/legacy-wix/a8d608c02e28ed9e5d3fde655e77f831c33567cd9717c95c89889b7ebae16560.jpg",
+          "sha256": "3d45f5d2cb407ea3518a61641af9522d656ed1c33d1e75d0543f35496f69e9ea",
+          "rotulo": "Cozinha planejada",
+          "panorama_360": false
+        },
+        {
+          "numero": 14,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis/legacy-wix/9754d2090295c60b150c9fa87273286c4749fd9000ba62f2e2ab007ba8a5a829.jpg",
+          "sha256": "5a5c9a6d691398d1f762dc423c0247218098b9e22a9577d1a8b98814e98f2ab3",
+          "rotulo": "03 dormitórios",
+          "panorama_360": false
+        },
+        {
+          "numero": 15,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis/legacy-wix/ea5f746a9f5c5df2ff4aa706a03d972d4096da2ec6f04785cfd996cc4b910477.jpg",
+          "sha256": "526021581eb2af6ef1dd8dca33e8f5cd8a75620beaf7d6f9926e6be2c77e9569",
+          "rotulo": "03 banheiros",
+          "panorama_360": false
+        },
+        {
+          "numero": 20,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis/legacy-wix/89d02d1daaf41d83042d3d27095c8b7adbe8a11ef275e1a5a3a4e682e175bb1b.jpg",
+          "sha256": "e0df88008d3d0b77a0b0ba8674d628fe84170230cb9a151bf5a00ff00a3a5c70",
+          "rotulo": "Espaço de lazer",
+          "panorama_360": false
+        },
+        {
+          "numero": 25,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis/legacy-wix/01aeeafc51a340e99a2e266fbad162f5751c0dcd94a077a1a085afe945a4e598.jpg",
+          "sha256": "9f3f042c1b8978182d5e7bc836a4d29352de4717338baff24b72c0ce25f3f526",
+          "rotulo": "Churrasqueira",
+          "panorama_360": false
+        }
+      ],
+      "preco": "R$ 550.000",
+      "local": "Jardim Ivete • Mogi das Cruzes",
+      "condicao": "Aceita financiamento bancário",
+      "cta": "COMENTE COMPRAR",
+      "creci": "043649-J",
+      "arte_final": "public/anuncios/CF - 493.png",
+      "arte_inicio_segundos": 21.9,
+      "trilha": {
+        "id": "mixkit-150",
+        "titulo": "A Blue Day",
+        "licenca": "Mixkit Stock Music Free License"
+      },
+      "sha256": "e9019ae26e1b41e182e8b6426be90489eebe5d082c88c8c1d5617515a3188ca9",
+      "bytes": 4016479,
+      "origem": "https://www.escritoriocamposfigueira.com.br/imovel/CF-493",
+      "imagem_gerada_por_ia": false
+    },
+    {
+      "codigo": "CF-493",
+      "finalidade": "venda",
+      "versao": "B",
+      "video": "public/videos-tour-amostras/CF-493-TOUR-B.mp4",
+      "previa": "public/videos-tour-amostras/CF-493-TOUR-B-PREVIA.jpg",
+      "duracao_segundos": 25.9,
+      "resolucao": "1080x1920",
+      "fps": 30,
+      "gancho": "Sobrado completo: 3 dormitórios por R$ 550 mil",
+      "primeira_foto": "https://escritoriocamposfigueira.com.br/uploads/imoveis/legacy-wix/01aeeafc51a340e99a2e266fbad162f5751c0dcd94a077a1a085afe945a4e598.jpg",
+      "fotos_usadas": [
+        {
+          "numero": 25,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis/legacy-wix/01aeeafc51a340e99a2e266fbad162f5751c0dcd94a077a1a085afe945a4e598.jpg",
+          "sha256": "9f3f042c1b8978182d5e7bc836a4d29352de4717338baff24b72c0ce25f3f526",
+          "rotulo": "Churrasqueira",
+          "panorama_360": false
+        },
+        {
+          "numero": 1,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis/legacy-wix/77523c36b33a1a456fa91387e433f9a41b069124b98d8b145cbdcfefa0deda4f.jpg",
+          "sha256": "a950f2bfce01356e73085cd579b96ee847c3fdc153d84ccf264592d263a2511d",
+          "rotulo": "Sobrado no Jardim Ivete",
+          "panorama_360": false
+        },
+        {
+          "numero": 2,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis/legacy-wix/536a36126e79d483e933239beda07305c8760334d8c5900828df6925f2171e65.jpg",
+          "sha256": "277ec8d8d829f868ede3cb0c923f5e6d8aea062cd6bebe9920e31bc4b4023934",
+          "rotulo": "Sala de estar e jantar",
+          "panorama_360": false
+        },
+        {
+          "numero": 9,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis/legacy-wix/79db822264d9cc5d01416af20c6782c137c02544fb540f6aa2d57f6e805384f2.jpg",
+          "sha256": "9a2b18f698e5c9c2782ceef6b0ee59bbfbfd37f4c68f91f1077618af1569b6bd",
+          "rotulo": "Cozinha funcional",
+          "panorama_360": false
+        },
+        {
+          "numero": 12,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis/legacy-wix/674f4b7432dfcb5a201b4e1d12222440eec38f3bb4ead29a80c6a32cd0288ebd.jpg",
+          "sha256": "f7a818640b557bf3bc960a559003ff8b6b6248a84a19dce1cf90a0e755b2152a",
+          "rotulo": "03 dormitórios",
+          "panorama_360": false
+        },
+        {
+          "numero": 16,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis/legacy-wix/5b271e8c5f901b2fd757207b2d2f3e45a73d9d2715ad6cc09bd27d2510dede95.jpg",
+          "sha256": "83a7345a984637ada337a872e358bbf83139472917c408e5556925978b3db91c",
+          "rotulo": "03 banheiros",
+          "panorama_360": false
+        },
+        {
+          "numero": 20,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis/legacy-wix/89d02d1daaf41d83042d3d27095c8b7adbe8a11ef275e1a5a3a4e682e175bb1b.jpg",
+          "sha256": "e0df88008d3d0b77a0b0ba8674d628fe84170230cb9a151bf5a00ff00a3a5c70",
+          "rotulo": "Salão de festas",
+          "panorama_360": false
+        },
+        {
+          "numero": 3,
+          "url": "https://escritoriocamposfigueira.com.br/uploads/imoveis/legacy-wix/44672af337a9acd6f0ea6074fb1bff6773994101177aa7a358947e24af980b15.jpg",
+          "sha256": "36c15ac47424aa2c41df608de7aac824b38cc5790d11cf1a532685f56e8a5e85",
+          "rotulo": "Garagem coberta para 02 carros",
+          "panorama_360": false
+        }
+      ],
+      "preco": "R$ 550.000",
+      "local": "Jardim Ivete • Mogi das Cruzes",
+      "condicao": "Aceita financiamento bancário",
+      "cta": "COMENTE COMPRAR",
+      "creci": "043649-J",
+      "arte_final": "public/anuncios/CF - 493.png",
+      "arte_inicio_segundos": 21.9,
+      "trilha": {
+        "id": "mixkit-150",
+        "titulo": "A Blue Day",
+        "licenca": "Mixkit Stock Music Free License"
+      },
+      "sha256": "c5497b18101de3b33c8447d23e95343de5dbd0a8660fd8f03c96f9a574873d18",
+      "bytes": 4033115,
+      "origem": "https://www.escritoriocamposfigueira.com.br/imovel/CF-493",
+      "imagem_gerada_por_ia": false
+    }
+  ]
+}

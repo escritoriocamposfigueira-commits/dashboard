@@ -17,6 +17,7 @@
 /.next/
 /out/
 /.tmp-videos/
+/.tmp-tour-etapa2/
 
 # production
 /build
