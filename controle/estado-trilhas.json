@@ -1029,6 +1029,13 @@
       "emocao": "urgencia",
       "chave_publicacao": "2026-11-09|locacao|CF-584",
       "usado_em": "2026-11-10T01:20:17.655Z"
+    },
+    {
+      "trilha_id": "mixkit-228",
+      "codigo": "CF-584",
+      "emocao": "urgencia",
+      "chave_publicacao": "2026-11-10|locacao|CF-584",
+      "usado_em": "2026-11-10T03:19:39.022Z"
     }
   ]
 }

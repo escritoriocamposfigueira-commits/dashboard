@@ -882,6 +882,12 @@
       "codigo": "CF-584",
       "chave_publicacao": "2026-11-09|locacao|CF-584",
       "usado_em": "2026-11-10T01:20:17.656Z"
+    },
+    {
+      "modelo_id": "topo-cinematografico",
+      "codigo": "CF-584",
+      "chave_publicacao": "2026-11-10|locacao|CF-584",
+      "usado_em": "2026-11-10T03:19:39.023Z"
     }
   ]
 }
