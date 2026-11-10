@@ -894,6 +894,12 @@
       "codigo": "CF-611",
       "chave_publicacao": "2026-11-10|venda|CF-611",
       "usado_em": "2026-11-10T19:24:28.470Z"
+    },
+    {
+      "modelo_id": "iluminacao-dourada",
+      "codigo": "CF-607",
+      "chave_publicacao": "2026-11-10|locacao|CF-607",
+      "usado_em": "2026-11-10T22:57:07.305Z"
     }
   ]
 }
