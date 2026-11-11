@@ -900,6 +900,12 @@
       "codigo": "CF-607",
       "chave_publicacao": "2026-11-10|locacao|CF-607",
       "usado_em": "2026-11-10T22:57:07.305Z"
+    },
+    {
+      "modelo_id": "foco-central",
+      "codigo": "CF-612",
+      "chave_publicacao": "2026-11-11|venda|CF-612",
+      "usado_em": "2026-11-11T19:20:42.785Z"
     }
   ]
 }
