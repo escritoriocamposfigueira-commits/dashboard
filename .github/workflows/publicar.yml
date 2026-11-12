@@ -5,6 +5,11 @@ name: Publicar imóveis (servidor 24h)
 # venda diária, locação diária, 1 locação extra, 2 captações rotativas,
 # 1 captação fixa de venda/locação e recuperação diária.
 on:
+  push:
+    branches:
+      - claude/campos-figueira-growth-qmjsux
+    paths:
+      - .github/triggers/publicar-v2-cf516
   schedule:
     - cron: "0 12 * * *"      # Venda — 09:00 BRT
     - cron: "0 18 * * *"      # Locação — 15:00 BRT
@@ -74,8 +79,8 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_REF_NAME: ${{ github.ref_name }}
           GITHUB_SCHEDULE: ${{ github.event.schedule }}
-          PUBLICACAO_TIPO: ${{ inputs.tipo_publicacao || '' }}
-          PUBLICACAO_CODIGO: ${{ inputs.codigo_imovel || '' }}
+          PUBLICACAO_TIPO: ${{ github.event_name == 'push' && 'venda' || inputs.tipo_publicacao || '' }}
+          PUBLICACAO_CODIGO: ${{ github.event_name == 'push' && '516' || inputs.codigo_imovel || '' }}
           PUBLICACAO_FORCAR: ${{ inputs.forcar_republicacao || 'false' }}
           # Opcionais: robô só posta no YouTube/TikTok quando estes Secrets existirem.
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
