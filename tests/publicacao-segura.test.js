@@ -11,6 +11,7 @@ const {
   escolherProximo,
   publicadoRecentementeNoEstado,
   registroPublicacaoCompleta,
+  resolverVideoCaptacao,
 } = require("../scripts/publicar-servidor");
 
 test("reconhece falhas transitórias de DNS, timeout e servidor", () => {
@@ -48,6 +49,22 @@ const manifest = JSON.parse(fs.readFileSync(path.join(ROOT, "src/content/imagens
 const LOCACOES = new Set(["584", "607", "609", "609B", "619", "620", "CASA INDAIA BERTIOGA", "CASA JARDIM ARMENIA"]);
 const { filtrarCodigosAtivos } = require("../scripts/imoveis-inativos");
 const totalVendas = filtrarCodigosAtivos(manifest.ordem).filter((codigo) => !LOCACOES.has(String(codigo))).length;
+
+test("captação em vídeo usa MP4 pronto dentro de public", () => {
+  const item = JSON.parse(fs.readFileSync(path.join(ROOT, "src/content/captacao.json"), "utf8"))
+    .find((captacao) => captacao.id === "CAPT-LOCACAO-PROPRIETARIO");
+  const resolvido = resolverVideoCaptacao(ROOT, item);
+  assert.equal(path.relative(ROOT, resolvido.videoPath).replace(/\\/g, "/"), item.arquivo_video);
+  assert.equal(resolvido.videoUrl, item.url_video);
+});
+
+test("captação em vídeo bloqueia caminho fora de public", () => {
+  assert.throws(() => resolverVideoCaptacao(ROOT, {
+    id: "CAPT-INVALIDA",
+    arquivo_video: "../segredo.mp4",
+    url_video: "https://example.com/segredo.mp4",
+  }), /fora da pasta public/);
+});
 
 test("a fila de vendas completa um ciclo sem repetir e volta ao início", () => {
   const estado = { indiceVenda: 0, indice: 0, publicados: [] };

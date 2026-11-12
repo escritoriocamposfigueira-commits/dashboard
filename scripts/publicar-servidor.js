@@ -70,6 +70,25 @@ carregarEnv();
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
+function resolverVideoCaptacao(raiz, item) {
+  if (!item?.arquivo_video) return null;
+  const raizPublica = path.resolve(raiz, "public");
+  const videoPath = path.resolve(raiz, String(item.arquivo_video));
+  if (videoPath !== raizPublica && !videoPath.startsWith(`${raizPublica}${path.sep}`)) {
+    throw new Error(`Captação ${item.id || "sem id"}: vídeo fora da pasta public/.`);
+  }
+  if (path.extname(videoPath).toLowerCase() !== ".mp4") {
+    throw new Error(`Captação ${item.id || "sem id"}: arquivo de vídeo precisa ser MP4.`);
+  }
+  if (!fs.existsSync(videoPath)) {
+    throw new Error(`Captação ${item.id || "sem id"}: arquivo não encontrado em ${item.arquivo_video}.`);
+  }
+  if (!/^https:\/\//i.test(String(item.url_video || "")) || !/\.mp4(?:\?|$)/i.test(String(item.url_video || ""))) {
+    throw new Error(`Captação ${item.id || "sem id"}: url_video pública e MP4 é obrigatória.`);
+  }
+  return { videoPath, videoUrl: String(item.url_video) };
+}
+
 // ════════════════════════════════════════════════════════════════════════════
 // HTTP HELPERS
 // ════════════════════════════════════════════════════════════════════════════
@@ -967,8 +986,10 @@ async function main() {
   const codigo    = plano.codigo;
   console.log(`  Tipo: ${plano.tipo}`);
   let urlStory, urlFeed, caption;
+  let captacaoSelecionada = null;
   if (plano.tipo === "captacao") {
     const art = CAPTACAO[plano.captIdx];
+    captacaoSelecionada = art;
     urlStory = art.url;
     urlFeed = art.url;
     caption = art.caption;
@@ -1066,7 +1087,27 @@ async function main() {
   let trilhaSelecionada = null;
   let modeloSelecionado = null;
 
-  if (ffmpeg) {
+  const videoCaptacaoPronto = plano.tipo === "captacao"
+    ? resolverVideoCaptacao(RAIZ, captacaoSelecionada)
+    : null;
+
+  if (videoCaptacaoPronto) {
+    try {
+      videoPath = videoCaptacaoPronto.videoPath;
+      videoUrl = videoCaptacaoPronto.videoUrl;
+      trilhaSelecionada = { id: "audio-original-aprovado" };
+      modeloSelecionado = { id: "captacao-profissional-pronta" };
+      const pronta = await aguardarUrl(videoUrl, 12);
+      if (!pronta) throw new Error("Vídeo de captação não ficou acessível no CDN após 12 verificações.");
+      console.log(`  [Captação] Vídeo pronto: ${path.relative(RAIZ, videoPath)}`);
+      console.log(`  URL vídeo: ${videoUrl} (pronta ✅)`);
+    } catch (e) {
+      erroVideo = e.message;
+      videoPath = null;
+      videoUrl = null;
+      console.log(`  ❌ Vídeo de captação indisponível: ${erroVideo}`);
+    }
+  } else if (ffmpeg) {
     try {
       const emocao = detectarEmocao(caption);
       const chavePublicacao = `${dataPublicacao}|${plano.tipo}|CF-${codigo}`;
@@ -1300,6 +1341,7 @@ module.exports = {
   publicadoRecentementeNoEstado,
   registroPublicacaoCompleta,
   registroTeveSucesso,
+  resolverVideoCaptacao,
   semanaISO,
   tipoAgendado,
 };
