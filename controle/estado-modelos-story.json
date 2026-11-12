@@ -918,6 +918,12 @@
       "codigo": "CF-CAPT-1",
       "chave_publicacao": "2026-11-11|captacao|CF-CAPT-1",
       "usado_em": "2026-11-12T02:15:41.608Z"
+    },
+    {
+      "modelo_id": "topo-cinematografico",
+      "codigo": "CF-613",
+      "chave_publicacao": "2026-11-12|venda|CF-613",
+      "usado_em": "2026-11-12T19:37:05.224Z"
     }
   ]
 }
