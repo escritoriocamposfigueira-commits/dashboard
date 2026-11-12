@@ -912,6 +912,12 @@
       "codigo": "CF-609",
       "chave_publicacao": "2026-11-11|locacao|CF-609",
       "usado_em": "2026-11-12T00:12:10.384Z"
+    },
+    {
+      "modelo_id": "cascata",
+      "codigo": "CF-CAPT-1",
+      "chave_publicacao": "2026-11-11|captacao|CF-CAPT-1",
+      "usado_em": "2026-11-12T02:15:41.608Z"
     }
   ]
 }
