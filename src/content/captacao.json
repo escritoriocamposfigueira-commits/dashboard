@@ -35,6 +35,7 @@
   {
     "id": "CAPT-VENDA-LOCACAO",
     "tipo_midia": "video",
+    "agenda": "semanal_fixa",
     "arquivo": "WhatsApp Image 2026-07-03 at 10.54.20.jpeg",
     "url": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/captacao/WhatsApp%20Image%202026-07-03%20at%2010.54.20.jpeg",
     "arquivo_video": "public/captacao-videos/CAPT-VENDA-LOCACAO-30S.mp4",

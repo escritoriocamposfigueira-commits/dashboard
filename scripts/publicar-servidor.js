@@ -40,6 +40,8 @@ const {
 const RAIZ      = path.join(__dirname, "..");
 const MANIFEST  = path.join(RAIZ, "src/content/imagens-urls.json");
 const CAPTIONS  = path.join(RAIZ, "src/content/captions-imoveis.json");
+const VIDEOS_IMOVEIS_ARQUIVO = path.join(RAIZ, "src/content/videos-imoveis.json");
+const ALIASES_IMOVEIS_ARQUIVO = path.join(RAIZ, "src/content/aliases-imoveis.json");
 const ESTADO    = path.join(RAIZ, "controle/estado-publicacao.json");
 const VIDEOS    = path.join(RAIZ, "public/videos");
 const TMP       = path.join(RAIZ, ".tmp-videos");
@@ -87,6 +89,28 @@ function resolverVideoCaptacao(raiz, item) {
     throw new Error(`Captação ${item.id || "sem id"}: url_video pública e MP4 é obrigatória.`);
   }
   return { videoPath, videoUrl: String(item.url_video) };
+}
+
+function normalizarCodigoImovel(valor) {
+  return String(valor || "")
+    .toUpperCase()
+    .replace(/-(VENDA|LOCACAO)$/i, "")
+    .replace(/^CF\s*-?\s*/, "")
+    .replace(/[^A-Z0-9]/g, "");
+}
+
+function resolverVideoImovelPronto(raiz, itens, aliases, codigo, finalidade) {
+  const codigoSemFinalidade = String(codigo || "").replace(/-(VENDA|LOCACAO)$/i, "");
+  const canonico = aliases[codigoSemFinalidade] || codigoSemFinalidade;
+  const item = (itens || []).find((video) =>
+    normalizarCodigoImovel(video.codigo) === normalizarCodigoImovel(canonico)
+      && String(video.finalidade) === String(finalidade));
+  if (!item) return null;
+  return resolverVideoCaptacao(raiz, {
+    id: `${item.codigo}-${item.finalidade}`,
+    arquivo_video: item.arquivo_video,
+    url_video: item.url_video,
+  });
 }
 
 // ════════════════════════════════════════════════════════════════════════════
@@ -757,11 +781,15 @@ function enviarAlerta(titulo, mensagem, prioridade = 3) {
 // ════════════════════════════════════════════════════════════════════════════
 // ROTAÇÃO — vendas diárias, todas as locações 1x/semana e 2 captações/semana
 // ════════════════════════════════════════════════════════════════════════════
-const LOCACAO_CODES = new Set(["584", "607", "609", "609B", "619", "620", "CASA INDAIA BERTIOGA", "CASA JARDIM ARMENIA"]);
+const LOCACAO_CODES = new Set(["584-LOCACAO", "607", "609", "609B", "619", "620", "CASA INDAIA BERTIOGA", "CASA JARDIM ARMENIA"]);
 let PRIORIDADE_VENDAS = [];
 try { PRIORIDADE_VENDAS = JSON.parse(fs.readFileSync(PRIORIDADE_VENDAS_ARQUIVO, "utf-8")).map(String); } catch {}
 let CAPTACAO = [];
 try { CAPTACAO = JSON.parse(fs.readFileSync(path.join(RAIZ, "src/content/captacao.json"), "utf-8")); } catch {}
+let VIDEOS_IMOVEIS_PRONTOS = [];
+try { VIDEOS_IMOVEIS_PRONTOS = JSON.parse(fs.readFileSync(VIDEOS_IMOVEIS_ARQUIVO, "utf-8")); } catch {}
+let ALIASES_IMOVEIS = {};
+try { ALIASES_IMOVEIS = JSON.parse(fs.readFileSync(ALIASES_IMOVEIS_ARQUIVO, "utf-8")); } catch {}
 let FOTOS = {};
 try { FOTOS = JSON.parse(fs.readFileSync(path.join(RAIZ, "src/content/fotos-imoveis.json"), "utf-8")); } catch {}
 const ALIASES_FOTOS = {
@@ -772,6 +800,11 @@ const ALIASES_FOTOS = {
 };
 for (const [codigo, alias] of Object.entries(ALIASES_FOTOS)) {
   if (!FOTOS[codigo] && FOTOS[alias]) FOTOS[codigo] = FOTOS[alias];
+}
+
+function captacoesRotativas() {
+  return CAPTACAO.map((item, indice) => ({ item, indice }))
+    .filter(({ item }) => item.agenda !== "semanal_fixa");
 }
 
 function ordenarVendasPorPrioridade(codigos) {
@@ -832,7 +865,8 @@ function avancarPonteiros(estado, plano, manifest) {
     estado.indiceVenda = vendasTot ? (plano.vendaIdx + 1) % vendasTot : 0;
   }
   if (plano.tipo === "captacao") {
-    estado.indiceCapt = (plano.captIdx + 1) % (CAPTACAO.length || 1);
+    const rotativas = captacoesRotativas();
+    estado.indiceCapt = rotativas.length ? ((plano.captPos || 0) + 1) % rotativas.length : 0;
   }
   if (plano.tipo !== "locacao") estado.contadorNaoLoc = (estado.contadorNaoLoc || 0) + 1;
   estado.indice = (estado.indice || 0) + 1;
@@ -849,12 +883,13 @@ function semanaISO(d) {
 
 function tipoAgendado() {
   const tipoManual = String(process.env.PUBLICACAO_TIPO || "").toLowerCase();
-  if (["venda", "locacao", "captacao", "recuperar_locacao", "auto"].includes(tipoManual)) return tipoManual;
+  if (["venda", "locacao", "captacao", "captacao_semanal", "recuperar_locacao", "auto"].includes(tipoManual)) return tipoManual;
 
   const agenda = String(process.env.GITHUB_SCHEDULE || "");
   if (agenda === "0 12 * * *") return "venda";
   if (agenda === "0 18 * * *" || agenda === "0 21 * * 1") return "locacao";
   if (agenda === "10 21 * * 3,6") return "captacao";
+  if (agenda === "10 21 * * 0") return "captacao_semanal";
   if (agenda === "30 22 * * *") return "recuperar_locacao";
   return "auto";
 }
@@ -904,9 +939,16 @@ function escolherProximo(manifest, estado, tipoForcado = "auto") {
     return { codigo: locPendentes[0], tipo: "locacao", vendaIdx: null };
   }
   if (tipoForcado === "captacao") {
-    if (CAPTACAO.length === 0) return { codigo: null, tipo: "noop", motivo: "nenhuma captação cadastrada" };
-    const ci = (estado.indiceCapt || 0) % CAPTACAO.length;
-    return { codigo: CAPTACAO[ci].id, tipo: "captacao", captIdx: ci };
+    const rotativas = captacoesRotativas();
+    if (rotativas.length === 0) return { codigo: null, tipo: "noop", motivo: "nenhuma captação rotativa cadastrada" };
+    const posicao = (estado.indiceCapt || 0) % rotativas.length;
+    const selecionada = rotativas[posicao];
+    return { codigo: selecionada.item.id, tipo: "captacao", captIdx: selecionada.indice, captPos: posicao };
+  }
+  if (tipoForcado === "captacao_semanal") {
+    const indice = CAPTACAO.findIndex((item) => item.agenda === "semanal_fixa");
+    if (indice < 0) return { codigo: null, tipo: "noop", motivo: "captação semanal fixa não cadastrada" };
+    return { codigo: CAPTACAO[indice].id, tipo: "captacao_semanal", captIdx: indice };
   }
 
   if (locacoes.length === 0 || vendas.length === 0) {
@@ -927,9 +969,11 @@ function escolherProximo(manifest, estado, tipoForcado = "auto") {
   if (forcarLoc) return { codigo: locPendentes[0], tipo: "locacao", vendaIdx: null };
   // Slots não-locação: alterna venda e captação
   const naoLoc = estado.contadorNaoLoc || 0;
-  if (CAPTACAO.length > 0 && naoLoc % 2 === 1) {
-    const ci = (estado.indiceCapt || 0) % CAPTACAO.length;
-    return { codigo: CAPTACAO[ci].id, tipo: "captacao", captIdx: ci };
+  const rotativas = captacoesRotativas();
+  if (rotativas.length > 0 && naoLoc % 2 === 1) {
+    const posicao = (estado.indiceCapt || 0) % rotativas.length;
+    const selecionada = rotativas[posicao];
+    return { codigo: selecionada.item.id, tipo: "captacao", captIdx: selecionada.indice, captPos: posicao };
   }
   const vi = (estado.indiceVenda || 0) % vendas.length;
   return { codigo: vendas[vi], tipo: "venda", vendaIdx: vi };
@@ -970,7 +1014,23 @@ async function main() {
   let plano;
   const tipoForcado = tipoAgendado();
   try {
-    plano = escolherProximo(manifest, estado, tipoForcado);
+    const codigoManual = String(process.env.PUBLICACAO_CODIGO || "").trim();
+    if (codigoManual) {
+      const ordemAtiva = filtrarCodigosAtivos(manifest.ordem, CODIGOS_INATIVOS).map(String);
+      const candidatos = ordemAtiva.filter((item) => normalizarCodigoImovel(item) === normalizarCodigoImovel(codigoManual));
+      const codigoEscolhido = candidatos.find((item) =>
+        tipoForcado === "locacao" ? LOCACAO_CODES.has(item) : !LOCACAO_CODES.has(item)) || candidatos[0];
+      if (!codigoEscolhido) throw new Error(`Código manual ${codigoManual} não está ativo no manifesto.`);
+      const tipoManual = tipoForcado === "locacao" || LOCACAO_CODES.has(codigoEscolhido) ? "locacao" : "venda";
+      const vendas = ordenarVendasPorPrioridade(ordemAtiva.filter((item) => !LOCACAO_CODES.has(item)));
+      plano = {
+        codigo: codigoEscolhido,
+        tipo: tipoManual,
+        vendaIdx: tipoManual === "venda" ? vendas.indexOf(codigoEscolhido) : null,
+      };
+    } else {
+      plano = escolherProximo(manifest, estado, tipoForcado);
+    }
   } catch (e) {
     console.log("  ⚠️  Rotação falhou, usando modo sequencial:", e.message);
     const ordemAtiva = filtrarCodigosAtivos(manifest.ordem, CODIGOS_INATIVOS);
@@ -984,10 +1044,11 @@ async function main() {
     return;
   }
   const codigo    = plano.codigo;
+  const ehCaptacao = plano.tipo === "captacao" || plano.tipo === "captacao_semanal";
   console.log(`  Tipo: ${plano.tipo}`);
   let urlStory, urlFeed, caption;
   let captacaoSelecionada = null;
-  if (plano.tipo === "captacao") {
+  if (ehCaptacao) {
     const art = CAPTACAO[plano.captIdx];
     captacaoSelecionada = art;
     urlStory = art.url;
@@ -1043,8 +1104,8 @@ async function main() {
     console.log("  ⚠️  Republicação forçada manualmente; trava de 30 horas ignorada.");
   }
 
-  const fotosEspecificas = plano.tipo === "captacao" ? [] : (FOTOS[String(codigo)] || []);
-  if (plano.tipo !== "captacao" && fotosEspecificas.length === 0) {
+  const fotosEspecificas = ehCaptacao ? [] : (FOTOS[String(codigo)] || []);
+  if (!ehCaptacao && fotosEspecificas.length === 0) {
     throw new Error(`CF-${codigo}: nenhuma foto específica cadastrada. Publicação bloqueada para não usar arte genérica.`);
   }
   // As duas artes principais são obrigatórias. Fotos extras do carrossel são
@@ -1087,19 +1148,24 @@ async function main() {
   let trilhaSelecionada = null;
   let modeloSelecionado = null;
 
-  const videoCaptacaoPronto = plano.tipo === "captacao"
+  const videoCaptacaoPronto = ehCaptacao
     ? resolverVideoCaptacao(RAIZ, captacaoSelecionada)
     : null;
+  const finalidadeVideo = plano.tipo === "locacao" ? "locacao" : "venda";
+  const videoImovelPronto = ehCaptacao
+    ? null
+    : resolverVideoImovelPronto(RAIZ, VIDEOS_IMOVEIS_PRONTOS, ALIASES_IMOVEIS, codigo, finalidadeVideo);
+  const videoPronto = videoCaptacaoPronto || videoImovelPronto;
 
-  if (videoCaptacaoPronto) {
+  if (videoPronto) {
     try {
-      videoPath = videoCaptacaoPronto.videoPath;
-      videoUrl = videoCaptacaoPronto.videoUrl;
-      trilhaSelecionada = { id: "audio-original-aprovado" };
-      modeloSelecionado = { id: "captacao-profissional-pronta" };
+      videoPath = videoPronto.videoPath;
+      videoUrl = videoPronto.videoUrl;
+      trilhaSelecionada = { id: videoCaptacaoPronto ? "audio-original-aprovado" : "narracao-remy-aprovada" };
+      modeloSelecionado = { id: videoCaptacaoPronto ? "captacao-profissional-pronta" : "imovel-v2-narrado-30s" };
       const pronta = await aguardarUrl(videoUrl, 12);
-      if (!pronta) throw new Error("Vídeo de captação não ficou acessível no CDN após 12 verificações.");
-      console.log(`  [Captação] Vídeo pronto: ${path.relative(RAIZ, videoPath)}`);
+      if (!pronta) throw new Error("Vídeo preparado não ficou acessível no CDN após 12 verificações.");
+      console.log(`  [Vídeo preparado] ${path.relative(RAIZ, videoPath)}`);
       console.log(`  URL vídeo: ${videoUrl} (pronta ✅)`);
     } catch (e) {
       erroVideo = e.message;
@@ -1200,7 +1266,7 @@ async function main() {
 
   if (!manterCanalConcluido("ig_feed")) {
     try {
-      if (plano.tipo !== "captacao") {
+      if (!ehCaptacao) {
         const slides = [urlFeed, ...fotosValidadas].slice(0, 10); // arte premium + fotos reais disponíveis
         if (slides.length >= 2) {
           reg.ig_feed = `✅ (carrossel ${slides.length}) ` + await publicarCarrosselInstagram(token, slides, caption);
@@ -1342,6 +1408,7 @@ module.exports = {
   registroPublicacaoCompleta,
   registroTeveSucesso,
   resolverVideoCaptacao,
+  resolverVideoImovelPronto,
   semanaISO,
   tipoAgendado,
 };

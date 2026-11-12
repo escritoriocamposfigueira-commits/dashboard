@@ -10,13 +10,44 @@ const ARQUIVO_INATIVOS = path.join(
   "content",
   "imoveis-inativos.json",
 );
+const ARQUIVO_ALIASES = path.join(
+  __dirname,
+  "..",
+  "src",
+  "content",
+  "aliases-imoveis.json",
+);
+function semAcentos(valor) {
+  return String(valor ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
 
-function normalizarCodigo(codigo) {
-  return String(codigo ?? "")
+function chaveAlias(valor) {
+  return semAcentos(valor).trim().toUpperCase().replace(/\s+/g, " ");
+}
+
+function normalizarCodigoOficial(codigo) {
+  const valor = semAcentos(codigo)
     .trim()
     .toUpperCase()
-    .replace(/^CF\s*-\s*/, "")
-    .replace(/^0+(?=\d)/, "");
+    .replace(/^CF\s*-?\s*/, "")
+    .replace(/-(VENDA|LOCACAO)$/i, "")
+    .replace(/\s+/g, "")
+    .replace(/[^A-Z0-9-]/g, "")
+    .replace(/^-+|-+$/g, "");
+  return valor ? `CF-${valor}` : "";
+}
+
+function carregarAliases(arquivo = ARQUIVO_ALIASES) {
+  if (!fs.existsSync(arquivo)) return {};
+  const aliases = JSON.parse(fs.readFileSync(arquivo, "utf8"));
+  return Object.fromEntries(
+    Object.entries(aliases).map(([alias, codigo]) => [chaveAlias(alias), normalizarCodigoOficial(codigo)]),
+  );
+}
+
+function normalizarCodigo(codigo, aliases = carregarAliases()) {
+  const baseSemFinalidade = String(codigo ?? "").trim().replace(/-(VENDA|LOCACAO)$/i, "");
+  return aliases[chaveAlias(baseSemFinalidade)] || normalizarCodigoOficial(baseSemFinalidade);
 }
 
 function carregarImoveisInativos(arquivo = ARQUIVO_INATIVOS) {
@@ -46,7 +77,9 @@ function filtrarCodigosAtivos(codigos, codigosInativos = carregarCodigosInativos
 }
 
 module.exports = {
+  ARQUIVO_ALIASES,
   ARQUIVO_INATIVOS,
+  carregarAliases,
   carregarCodigosInativos,
   carregarImoveisInativos,
   codigoInativo,

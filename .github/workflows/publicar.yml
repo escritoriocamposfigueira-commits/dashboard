@@ -2,16 +2,33 @@ name: Publicar imóveis (servidor 24h)
 
 # Servidor 24h grátis do GitHub. Publica sozinho com o PC desligado.
 # Grade semanal em horário de Brasília (UTC-3):
-# venda diária, locação diária, 1 locação extra, 2 captações e recuperação diária.
+# venda diária, locação diária, 1 locação extra, 2 captações rotativas,
+# 1 captação fixa de venda/locação e recuperação diária.
 on:
   schedule:
     - cron: "0 12 * * *"      # Venda — 09:00 BRT
     - cron: "0 18 * * *"      # Locação — 15:00 BRT
     - cron: "0 21 * * 1"      # Locação extra — segunda, 18:00 BRT
     - cron: "10 21 * * 3,6"   # Captação — quarta e sábado, 18:10 BRT
+    - cron: "10 21 * * 0"     # Captação venda/locação fixa — domingo, 18:10 BRT
     - cron: "30 22 * * *"     # Recuperação de canal da locação — 19:30 BRT
   workflow_dispatch:
     inputs:
+      tipo_publicacao:
+        description: "Fila a executar"
+        required: false
+        type: choice
+        default: venda
+        options:
+          - venda
+          - locacao
+          - captacao
+          - captacao_semanal
+          - recuperar_locacao
+      codigo_imovel:
+        description: "Código específico opcional, por exemplo 516"
+        required: false
+        type: string
       forcar_republicacao:
         description: "Republicar mesmo se o imóvel já saiu nas últimas 30 horas"
         required: false
@@ -57,6 +74,8 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_REF_NAME: ${{ github.ref_name }}
           GITHUB_SCHEDULE: ${{ github.event.schedule }}
+          PUBLICACAO_TIPO: ${{ inputs.tipo_publicacao || '' }}
+          PUBLICACAO_CODIGO: ${{ inputs.codigo_imovel || '' }}
           PUBLICACAO_FORCAR: ${{ inputs.forcar_republicacao || 'false' }}
           # Opcionais: robô só posta no YouTube/TikTok quando estes Secrets existirem.
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}

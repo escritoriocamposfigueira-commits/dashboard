@@ -12,6 +12,7 @@ const {
   publicadoRecentementeNoEstado,
   registroPublicacaoCompleta,
   resolverVideoCaptacao,
+  resolverVideoImovelPronto,
 } = require("../scripts/publicar-servidor");
 
 test("reconhece falhas transitórias de DNS, timeout e servidor", () => {
@@ -46,7 +47,7 @@ test("não repete erro permanente de imagem", async () => {
 
 const ROOT = path.resolve(__dirname, "..");
 const manifest = JSON.parse(fs.readFileSync(path.join(ROOT, "src/content/imagens-urls.json"), "utf8"));
-const LOCACOES = new Set(["584", "607", "609", "609B", "619", "620", "CASA INDAIA BERTIOGA", "CASA JARDIM ARMENIA"]);
+const LOCACOES = new Set(["584-LOCACAO", "607", "609", "609B", "619", "620", "CASA INDAIA BERTIOGA", "CASA JARDIM ARMENIA"]);
 const { filtrarCodigosAtivos } = require("../scripts/imoveis-inativos");
 const totalVendas = filtrarCodigosAtivos(manifest.ordem).filter((codigo) => !LOCACOES.has(String(codigo))).length;
 
@@ -64,6 +65,24 @@ test("captação em vídeo bloqueia caminho fora de public", () => {
     arquivo_video: "../segredo.mp4",
     url_video: "https://example.com/segredo.mp4",
   }), /fora da pasta public/);
+});
+
+test("imóvel usa o vídeo V2 narrado correspondente à finalidade", () => {
+  const videos = JSON.parse(fs.readFileSync(path.join(ROOT, "src/content/videos-imoveis.json"), "utf8"));
+  const aliases = JSON.parse(fs.readFileSync(path.join(ROOT, "src/content/aliases-imoveis.json"), "utf8"));
+  const venda = resolverVideoImovelPronto(ROOT, videos, aliases, "584-VENDA", "venda");
+  const locacao = resolverVideoImovelPronto(ROOT, videos, aliases, "584-LOCACAO", "locacao");
+  assert.match(path.basename(venda.videoPath), /584-VENDA-NARRADO\.mp4$/);
+  assert.match(path.basename(locacao.videoPath), /584-LOCACAO-NARRADO\.mp4$/);
+});
+
+test("captação semanal fixa não entra na rotação normal", () => {
+  const captacoes = JSON.parse(fs.readFileSync(path.join(ROOT, "src/content/captacao.json"), "utf8"));
+  const fixa = captacoes.find((item) => item.agenda === "semanal_fixa");
+  assert.equal(fixa.id, "CAPT-VENDA-LOCACAO");
+  const estado = { indiceCapt: 0, publicados: [] };
+  const plano = escolherProximo(manifest, estado, "captacao_semanal");
+  assert.equal(plano.codigo, "CAPT-VENDA-LOCACAO");
 });
 
 test("a fila de vendas completa um ciclo sem repetir e volta ao início", () => {
@@ -120,7 +139,7 @@ test("locação incompleta continua pendente sem bloquear as ainda não tentadas
   const agora = new Date();
   const estado = {
     publicados: [{
-      codigo: "584", data: agora.toISOString(),
+      codigo: "584-LOCACAO", data: agora.toISOString(),
       fb_feed: "✅ ok", fb_story: "✅ ok", ig_feed: "❌ falhou", ig_story: "✅ ok",
     }],
   };

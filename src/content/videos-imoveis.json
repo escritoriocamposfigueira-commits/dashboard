@@ -1,0 +1,494 @@
+[
+  {
+    "codigo": "CF-417",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-417-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-417-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-421",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-421-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-421-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-429",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-429-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-429-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-440",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-440-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-440-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-458",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-458-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-458-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-459",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-459-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-459-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-476",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-476-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-476-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-485",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-485-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-485-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-493",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-493-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-493-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-502",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-502-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-502-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-509",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-509-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-509-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-513",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-513-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-513-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-515",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-515-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-515-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-516",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-516-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-516-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-518",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-518-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-518-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-520",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-520-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-520-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-521",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-521-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-521-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-526",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-526-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-526-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-528",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-528-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-528-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-530",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-530-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-530-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-535",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-535-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-535-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-541",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-541-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-541-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-543",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-543-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-543-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-547",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-547-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-547-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-550",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-550-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-550-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-551",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-551-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-551-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-552",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-552-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-552-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-554",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-554-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-554-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-555",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-555-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-555-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-556",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-556-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-556-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-558",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-558-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-558-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-559",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-559-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-559-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-560",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-560-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-560-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-561",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-561-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-561-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-564",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-564-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-564-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-566",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-566-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-566-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-566B",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-566B-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-566B-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-568",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-568-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-568-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-569",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-569-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-569-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-570",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-570-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-570-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-571",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-571-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-571-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-572",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-572-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-572-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-573",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-573-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-573-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-574",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-574-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-574-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-575",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-575-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-575-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-576",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-576-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-576-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-577",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-577-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-577-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-578",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-578-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-578-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-57D16D6F",
+    "finalidade": "locacao",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-57D16D6F-LOCACAO-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-57D16D6F-LOCACAO-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-581",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-581-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-581-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-582",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-582-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-582-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-584",
+    "finalidade": "locacao",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-584-LOCACAO-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-584-LOCACAO-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-584",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-584-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-584-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-585",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-585-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-585-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-588",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-588-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-588-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-589",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-589-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-589-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-590",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-590-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-590-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-593",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-593-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-593-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-593B",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-593B-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-593B-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-594",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-594-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-594-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-595",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-595-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-595-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-596",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-596-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-596-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-597",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-597-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-597-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-598",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-598-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-598-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-599",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-599-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-599-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-604",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-604-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-604-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-605",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-605-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-605-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-607",
+    "finalidade": "locacao",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-607-LOCACAO-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-607-LOCACAO-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-608",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-608-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-608-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-609B",
+    "finalidade": "locacao",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-609-B-LOCACAO-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-609-B-LOCACAO-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-609",
+    "finalidade": "locacao",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-609-LOCACAO-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-609-LOCACAO-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-610",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-610-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-610-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-611",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-611-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-611-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-612",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-612-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-612-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-613",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-613-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-613-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-614",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-614-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-614-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-615",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-615-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-615-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-617",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-617-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-617-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-618",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-618-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-618-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-620",
+    "finalidade": "locacao",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-620-LOCACAO-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-620-LOCACAO-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-6FDA7DF2",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-6FDA7DF2-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-6FDA7DF2-VENDA-NARRADO.mp4"
+  },
+  {
+    "codigo": "CF-A8FA0877",
+    "finalidade": "venda",
+    "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-A8FA0877-VENDA-NARRADO.mp4",
+    "url_video": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/videos-remotion-imoveis-v2-narrados/CF-A8FA0877-VENDA-NARRADO.mp4"
+  }
+]

@@ -25,6 +25,11 @@
     "inativado_em": "2026-08-03"
   },
   {
+    "codigo": "537",
+    "motivo": "Excluído: anúncio usa montagem e não pode ser publicado",
+    "inativado_em": "2026-11-10"
+  },
+  {
     "codigo": "550",
     "motivo": "Imóvel não está mais disponível",
     "inativado_em": "2026-08-03"
@@ -33,5 +38,20 @@
     "codigo": "610",
     "motivo": "Imóvel não está mais disponível",
     "inativado_em": "2026-08-03"
+  },
+  {
+    "codigo": "616",
+    "motivo": "Imóvel inativo na fonte oficial",
+    "inativado_em": "2026-11-10"
+  },
+  {
+    "codigo": "619",
+    "motivo": "Imóvel alugado; publicação pausada",
+    "inativado_em": "2026-11-10"
+  },
+  {
+    "codigo": "CF-FD1FEFC4",
+    "motivo": "Bloqueado: preço de locação zerado na fonte oficial",
+    "inativado_em": "2026-11-10"
   }
 ]
