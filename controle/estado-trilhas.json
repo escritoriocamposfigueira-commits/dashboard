@@ -1057,6 +1057,13 @@
       "emocao": "urgencia",
       "chave_publicacao": "2026-11-11|venda|CF-612",
       "usado_em": "2026-11-11T19:20:42.784Z"
+    },
+    {
+      "trilha_id": "mixkit-70",
+      "codigo": "CF-609",
+      "emocao": "urgencia",
+      "chave_publicacao": "2026-11-11|locacao|CF-609",
+      "usado_em": "2026-11-12T00:12:10.383Z"
     }
   ]
 }
