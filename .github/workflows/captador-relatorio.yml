@@ -1,0 +1,51 @@
+name: Relatório semanal do captador
+
+on:
+  schedule:
+    - cron: "0 11 * * 1"   # segunda, 08:00 BRT
+    - cron: "30 11 1 * *"  # limpeza mensal, dia 1 às 08:30 BRT
+  workflow_dispatch:
+    inputs:
+      executar_limpeza:
+        description: "Apagar leads perdidos/não contatar com mais de 12 meses"
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  captador:
+    runs-on: ubuntu-latest
+    env:
+      CAPTADOR_API_URL: ${{ secrets.CAPTADOR_API_URL }}
+      CAPTADOR_INTERNAL_TOKEN: ${{ secrets.CAPTADOR_INTERNAL_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Validar estrutura
+        run: node captador/scripts/verificar-prontidao.mjs
+      - name: Informar conexão pendente
+        if: env.CAPTADOR_API_URL == '' || env.CAPTADOR_INTERNAL_TOKEN == ''
+        run: echo "Captador ainda não ativado; relatório e limpeza foram ignorados com segurança."
+      - name: Gerar relatório agregado
+        if: env.CAPTADOR_API_URL != '' && env.CAPTADOR_INTERNAL_TOKEN != '' && github.event.schedule != '30 11 1 * *' && inputs.executar_limpeza != true
+        run: node captador/scripts/relatorio-semanal.mjs "relatorios/leads/$(date -u +%F).md"
+      - name: Limpar dados expirados
+        if: env.CAPTADOR_API_URL != '' && env.CAPTADOR_INTERNAL_TOKEN != '' && (github.event.schedule == '30 11 1 * *' || inputs.executar_limpeza == true)
+        run: |
+          curl --fail-with-body --request POST \
+            --header "X-Internal-Token: ${CAPTADOR_INTERNAL_TOKEN}" \
+            "${CAPTADOR_API_URL}/maintenance/cleanup"
+      - name: Salvar somente relatório sem dados pessoais
+        if: env.CAPTADOR_API_URL != '' && env.CAPTADOR_INTERNAL_TOKEN != '' && github.event.schedule != '30 11 1 * *' && inputs.executar_limpeza != true
+        run: |
+          git config user.name "Campos Figueira Bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add relatorios/leads/
+          git diff --staged --quiet || git commit -m "relatório: leads da semana [skip ci]"
+          git pull --rebase origin "${{ github.ref_name }}"
+          git push origin "HEAD:${{ github.ref_name }}"

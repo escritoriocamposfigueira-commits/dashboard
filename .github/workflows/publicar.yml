@@ -77,6 +77,9 @@ jobs:
           PUBLICACAO_TIPO: ${{ inputs.tipo_publicacao || '' }}
           PUBLICACAO_CODIGO: ${{ inputs.codigo_imovel || '' }}
           PUBLICACAO_FORCAR: ${{ inputs.forcar_republicacao || 'false' }}
+          CAPTADOR_ENABLED: ${{ vars.CAPTADOR_ENABLED || 'false' }}
+          CAPTADOR_PAGES_URL: ${{ vars.CAPTADOR_PAGES_URL || '' }}
+          MANYCHAT_ACTIVE: ${{ vars.MANYCHAT_ACTIVE || 'false' }}
           # Opcionais: robô só posta no YouTube/TikTok quando estes Secrets existirem.
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}

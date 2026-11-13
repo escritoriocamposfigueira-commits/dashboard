@@ -13,7 +13,9 @@
     "test:trilhas": "node --test tests/trilhas.test.js",
     "test:videos-story": "node --test tests/video-story-profissional.test.js",
     "videos:story:biblioteca": "node scripts/gerar-biblioteca-videos-story.js",
-    "videos:story:validar": "node scripts/validar-biblioteca-videos-story.js"
+    "videos:story:validar": "node scripts/validar-biblioteca-videos-story.js",
+    "test:captador": "node --test captador/tests/*.test.mjs",
+    "captador:check": "node captador/scripts/verificar-prontidao.mjs"
   },
   "dependencies": {
     "date-fns": "^4.4.0",

@@ -1,0 +1,6 @@
+.honeypot{display:none!important}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--gold2);outline-offset:3px}
+.btn:hover{filter:brightness(1.06)}
+.kanban{grid-template-columns:repeat(10,minmax(240px,1fr))}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+@media(max-width:820px){.kanban{grid-template-columns:repeat(10,260px)}}

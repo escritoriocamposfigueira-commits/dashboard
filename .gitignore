@@ -52,3 +52,8 @@ controle/*.json
 !controle/estado-trilhas.json
 !controle/estado-modelos-story.json
 logs/
+
+# browser visual checks and local Deno cache
+.playwright-cli/
+output/playwright/
+captador/node_modules/

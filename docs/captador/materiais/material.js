@@ -1,0 +1,8 @@
+const CONTEUDOS={
+  "imoveis-da-semana":{titulo:"Como escolher as oportunidades da semana",itens:["Defina o valor máximo da parcela ou aluguel.","Escolha até três bairros prioritários.","Confira documentação, condição de pagamento e custo total.","Agende a visita antes de decidir somente pelas fotos."]},
+  "alugar-sem-fiador":{titulo:"Checklist para uma locação mais rápida",itens:["Separe documento com foto e comprovantes de renda.","Defina aluguel máximo considerando condomínio e consumo.","Pergunte quais garantias são aceitas no imóvel específico.","Leia vistoria e contrato antes da assinatura."]},
+  "avaliar-meu-imovel":{titulo:"O que influencia o valor do seu imóvel",itens:["Localização, metragem e estado de conservação.","Documentação e possibilidade de financiamento.","Comparação com negócios reais da mesma região.","Qualidade das fotos, anúncio e atendimento dos interessados."]},
+  "guia-direitos-aluguel":{titulo:"Guia educativo sobre aluguel",itens:["Guarde contrato, vistoria e comprovantes.","Diferencie manutenção de uso e problema estrutural.","Formalize solicitações importantes por escrito.","Cada situação exige análise própria; procure um advogado antes de agir."]},
+  "checklist-obra-terreno":{titulo:"Checklist antes da obra ou compra do terreno",itens:["Matrícula, levantamento e medidas conferidas.","Uso do solo e restrições municipais verificados.","Projeto, responsabilidade técnica e orçamento definidos.","Cronograma com etapas, medições e reserva para imprevistos."]}
+};
+const c=CONTEUDOS[document.body.dataset.material];document.title=`${c.titulo} | Campos Figueira`;document.getElementById("material-title").textContent=c.titulo;document.getElementById("material-list").innerHTML=c.itens.map(x=>`<li>${x}</li>`).join("");

@@ -35,6 +35,7 @@ const {
   carregarCodigosInativos,
   filtrarCodigosAtivos,
 } = require("./imoveis-inativos");
+const { enriquecerLegendaCaptador } = require("../captador/integracao-publicador");
 
 // ── Paths ─────────────────────────────────────────────────────────────────────
 const RAIZ      = path.join(__dirname, "..");
@@ -1061,6 +1062,14 @@ async function main() {
   }
 
   if (!caption) throw new Error(`CF-${codigo}: legenda específica ausente. Publicação bloqueada.`);
+  caption = enriquecerLegendaCaptador(caption, {
+    enabled: process.env.CAPTADOR_ENABLED,
+    manychatActive: process.env.MANYCHAT_ACTIVE,
+    baseUrl: process.env.CAPTADOR_PAGES_URL,
+    codigo,
+    tipo: plano.tipo,
+    ehCaptacao,
+  });
 
   const semanaAtual = semanaISO(new Date(Date.now() - 3 * 3600 * 1000));
   const retryPublicacao = estado.retryPublicacao?.codigo === codigo

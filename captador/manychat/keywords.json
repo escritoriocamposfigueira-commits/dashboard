@@ -1,0 +1,32 @@
+{
+  "IMOVEL": {
+    "operacao": "imobiliaria",
+    "interesse": "comprar imóvel",
+    "pagina": "imoveis-da-semana.html"
+  },
+  "ALUGAR": {
+    "operacao": "imobiliaria",
+    "interesse": "alugar imóvel",
+    "pagina": "alugar-sem-fiador.html"
+  },
+  "AVALIAR": {
+    "operacao": "imobiliaria",
+    "interesse": "avaliar ou anunciar imóvel",
+    "pagina": "avaliar-meu-imovel.html"
+  },
+  "GUIA": {
+    "operacao": "advocacia",
+    "interesse": "guia educativo sobre direitos no aluguel",
+    "pagina": "guia-direitos-aluguel.html"
+  },
+  "OBRA": {
+    "operacao": "engenharia",
+    "interesse": "checklist de obra e terreno",
+    "pagina": "checklist-obra-terreno.html"
+  },
+  "REGULARIZAR": {
+    "operacao": "engenharia",
+    "interesse": "regularização de imóvel",
+    "pagina": "checklist-obra-terreno.html"
+  }
+}

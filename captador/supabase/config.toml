@@ -1,0 +1,4 @@
+project_id = "captador-campos-figueira"
+
+[functions.captador-api]
+verify_jwt = false
