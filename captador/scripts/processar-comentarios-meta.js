@@ -3,7 +3,7 @@
 const GRAPH_VERSION = process.env.META_GRAPH_VERSION || "v22.0";
 const PAGE_ID = process.env.META_PAGE_ID || "512040582222121";
 const IG_ID = process.env.META_IG_ID || "17841461388445580";
-const TOKEN = process.env.META_PAGE_TOKEN || "";
+let TOKEN = process.env.META_PAGE_TOKEN || "";
 const API_URL = (process.env.CAPTADOR_API_URL || "").replace(/\/$/, "");
 const OIDC_TOKEN = process.env.GITHUB_OIDC_TOKEN || "";
 const DESDE = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
@@ -34,6 +34,29 @@ async function graphPost(caminho, body) {
   const corpo = await resposta.json().catch(() => ({}));
   if (!resposta.ok) throw new Error(`Meta POST ${caminho}: ${corpo?.error?.message || resposta.status}`);
   return corpo;
+}
+
+async function resolverPageToken() {
+  try {
+    const contas = await graphGet("me/accounts", { fields: "id,name,access_token", limit: 100 });
+    const pagina = (contas.data || []).find((item) => String(item.id) === PAGE_ID) || contas.data?.[0];
+    if (pagina?.access_token) {
+      TOKEN = pagina.access_token;
+      return "me/accounts";
+    }
+  } catch (erro) {
+    console.error(`Derivação me/accounts: ${erro.message}`);
+  }
+  try {
+    const pagina = await graphGet(PAGE_ID, { fields: "access_token" });
+    if (pagina?.access_token) {
+      TOKEN = pagina.access_token;
+      return "page-node";
+    }
+  } catch (erro) {
+    console.error(`Derivação page-node: ${erro.message}`);
+  }
+  return "token-original";
 }
 
 async function captador(caminho, payload) {
@@ -139,18 +162,24 @@ async function processarInstagram() {
 
 async function principal() {
   const resultados = [];
+  const origemToken = await resolverPageToken();
+  const canaisOk = [];
+  const canaisErro = [];
   for (const [nome, executar] of [["Facebook", processarFacebook], ["Instagram", processarInstagram]]) {
     try {
       resultados.push(...await executar());
+      canaisOk.push(nome.toLowerCase());
     } catch (erro) {
       console.error(`${nome}: ${erro.message}`);
+      canaisErro.push(nome.toLowerCase());
     }
   }
   const totais = resultados.reduce((acc, item) => {
     for (const [chave, valor] of Object.entries(item)) acc[chave] = (acc[chave] || 0) + valor;
     return acc;
   }, {});
-  console.log(JSON.stringify({ ok: true, redes_verificadas: 2, ...totais }));
+  console.log(JSON.stringify({ ok: canaisOk.length > 0, origem_token: origemToken, canais_ok: canaisOk, canais_erro: canaisErro, ...totais }));
+  if (!canaisOk.length) process.exitCode = 1;
 }
 
 principal().catch((erro) => {
