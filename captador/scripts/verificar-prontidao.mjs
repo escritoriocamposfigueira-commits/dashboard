@@ -6,7 +6,8 @@ const raiz = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", ".
 const obrigatorios = [
   "captador/supabase/migrations/202611130001_captador.sql",
   "captador/supabase/functions/captador-api/index.ts",
-  "captador/manychat/keywords.json",
+  "captador/scripts/processar-comentarios-meta.js",
+  ".github/workflows/captador-meta.yml",
   "docs/captador/index.html",
   "docs/captador/crm.html",
   "docs/captador/descadastro.html",

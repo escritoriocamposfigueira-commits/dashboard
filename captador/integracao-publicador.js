@@ -21,7 +21,7 @@ function enriquecerLegendaCaptador(legenda, opcoes = {}) {
   url.searchParams.set("utm_campaign", campanha.campanha);
   if (!opcoes.ehCaptacao && opcoes.codigo) url.searchParams.set("codigo_imovel", `CF-${opcoes.codigo}`);
   const linhas = ["", "📋 Receba as informações e deixe seu interesse registrado:", `🔗 ${url.toString()}`];
-  if (verdade(opcoes.manychatActive)) {
+  if (verdade(opcoes.socialCommentsActive) || verdade(opcoes.manychatActive)) {
     linhas.unshift("", `💬 Comente \"${campanha.palavra}\" para receber no direct.`);
   }
   return `${String(legenda || "").trim()}\n${linhas.join("\n").trimEnd()}`;

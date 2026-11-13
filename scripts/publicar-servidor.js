@@ -1064,7 +1064,7 @@ async function main() {
   if (!caption) throw new Error(`CF-${codigo}: legenda específica ausente. Publicação bloqueada.`);
   caption = enriquecerLegendaCaptador(caption, {
     enabled: process.env.CAPTADOR_ENABLED,
-    manychatActive: process.env.MANYCHAT_ACTIVE,
+    socialCommentsActive: process.env.CAPTADOR_SOCIAL_COMMENTS_ACTIVE || process.env.MANYCHAT_ACTIVE,
     baseUrl: process.env.CAPTADOR_PAGES_URL,
     codigo,
     tipo: plano.tipo,

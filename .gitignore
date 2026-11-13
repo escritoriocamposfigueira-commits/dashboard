@@ -57,3 +57,5 @@ logs/
 .playwright-cli/
 output/playwright/
 captador/node_modules/
+captador/supabase/.temp/
+__pycache__/

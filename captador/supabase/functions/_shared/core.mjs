@@ -3,6 +3,7 @@ export const FONTES = new Set([
   "formulario", "comentario_instagram", "comentario_facebook", "dm", "whatsapp",
   "google_meu_negocio", "indicacao", "mailerfind_b2b", "site", "youtube", "tiktok",
 ]);
+export const REDES_SOCIAIS = new Set(["facebook", "instagram"]);
 export const ETAPAS = new Set([
   "novo", "validar", "qualificado", "contato_autorizado", "reuniao", "visita",
   "proposta", "contratado", "perdido", "nao_contatar",
@@ -30,7 +31,7 @@ export function normalizarTexto(valor, maximo = 500) {
 }
 
 export function canaisAutorizados(input) {
-  const aceitos = new Set(["whatsapp", "email"]);
+  const aceitos = new Set(["whatsapp", "email", "social"]);
   return [...new Set((Array.isArray(input) ? input : [input]).map((x) => String(x || "").toLowerCase()))]
     .filter((x) => aceitos.has(x));
 }
@@ -41,18 +42,22 @@ export function validarLead(input = {}) {
   const telefone_e164 = normalizarTelefoneBR(input.telefone);
   const email_normalizado = normalizarEmail(input.email);
   const consentiu = input.consentimento === true || input.consentimento === "true";
-  const baseLegal = input.base_legal === "legitimo_interesse_b2b"
-    ? "legitimo_interesse_b2b"
+  const baseLegal = ["legitimo_interesse_b2b", "interacao_iniciada"].includes(input.base_legal)
+    ? input.base_legal
     : "consentimento";
+  const rede_social = String(input.rede_social || "").toLowerCase();
+  const social_profile_id = normalizarTexto(input.social_profile_id, 160) || null;
   const erros = [];
   if (!OPERACOES.has(operacao)) erros.push("operação inválida");
   if (!FONTES.has(fonte)) erros.push("fonte inválida");
   if (!normalizarTexto(input.nome, 120)) erros.push("nome obrigatório");
   if (!normalizarTexto(input.interesse, 160)) erros.push("interesse obrigatório");
-  if (!telefone_e164 && !email_normalizado) erros.push("WhatsApp ou e-mail válido é obrigatório");
+  if (!telefone_e164 && !email_normalizado && !(REDES_SOCIAIS.has(rede_social) && social_profile_id)) {
+    erros.push("WhatsApp, e-mail ou perfil social válido é obrigatório");
+  }
   if (baseLegal === "consentimento" && !consentiu) erros.push("consentimento obrigatório");
-  if (operacao === "advocacia" && baseLegal !== "consentimento") {
-    erros.push("advocacia exige contato iniciado e consentimento");
+  if (operacao === "advocacia" && !["consentimento", "interacao_iniciada"].includes(baseLegal)) {
+    erros.push("advocacia exige contato iniciado pelo interessado");
   }
 
   const canal = canaisAutorizados(input.canal_autorizado);
@@ -80,11 +85,14 @@ export function validarLead(input = {}) {
       telefone_e164,
       email: normalizarTexto(input.email, 240) || null,
       email_normalizado,
+      rede_social: REDES_SOCIAIS.has(rede_social) ? rede_social : null,
+      social_profile_id,
+      social_username: normalizarTexto(input.social_username, 160) || null,
       base_legal: baseLegal,
-      consentimento_texto: baseLegal === "consentimento"
+      consentimento_texto: baseLegal !== "legitimo_interesse_b2b"
         ? normalizarTexto(input.consentimento_texto, 1000)
         : null,
-      consentimento_em: baseLegal === "consentimento" ? new Date().toISOString() : null,
+      consentimento_em: baseLegal !== "legitimo_interesse_b2b" ? new Date().toISOString() : null,
       canal_autorizado: canal,
       etapa: baseLegal === "legitimo_interesse_b2b" ? "validar" : "novo",
       metadata: typeof input.metadata === "object" && input.metadata ? input.metadata : {},
@@ -95,7 +103,69 @@ export function validarLead(input = {}) {
 export function chaveDedupe(lead) {
   return lead.telefone_e164
     ? `${lead.operacao}|tel:${lead.telefone_e164}`
-    : `${lead.operacao}|email:${lead.email_normalizado}`;
+    : lead.email_normalizado
+      ? `${lead.operacao}|email:${lead.email_normalizado}`
+      : `${lead.operacao}|${lead.rede_social}:${lead.social_profile_id}`;
+}
+
+const REGRAS_SOCIAIS = [
+  {
+    operacao: "engenharia",
+    interesse: "engenharia, obra ou regularização técnica",
+    palavras: ["OBRA", "REFORMA", "ENGENHARIA", "PROJETO", "LAUDO", "DESMEMBRAMENTO", "TOPOGRAFIA", "GEORREFERENCIAMENTO"],
+  },
+  {
+    operacao: "advocacia",
+    interesse: "atendimento jurídico imobiliário",
+    palavras: ["INVENTARIO", "USUCAPIAO", "ESCRITURA", "ADVOGADO", "JURIDICO", "RETIFICACAO", "REGULARIZAR"],
+  },
+  {
+    operacao: "imobiliaria",
+    interesse: "locação de imóvel",
+    palavras: ["ALUGAR", "ALUGUEL", "LOCACAO", "LOCAR"],
+  },
+  {
+    operacao: "imobiliaria",
+    interesse: "venda, avaliação ou administração de imóvel",
+    palavras: ["AVALIAR", "VENDER", "ADMINISTRAR", "CAPTACAO"],
+  },
+  {
+    operacao: "imobiliaria",
+    interesse: "compra de imóvel",
+    palavras: ["IMOVEL", "COMPRAR", "COMPRA", "CASA", "APARTAMENTO", "TERRENO", "SOBRADO", "VENDA", "GUIA"],
+  },
+];
+
+export function textoBusca(valor) {
+  return normalizarTexto(valor, 2000).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
+}
+
+export function classificarInteracaoSocial(mensagem, contexto = "") {
+  const texto = textoBusca(`${mensagem} ${contexto}`);
+  if (/\b(SAIR|PARAR|DESCADASTRAR|CANCELAR)\b/.test(texto)) {
+    return { acao: "descadastrar", operacao: null, interesse: "descadastro", palavra: "SAIR" };
+  }
+  for (const regra of REGRAS_SOCIAIS) {
+    const palavra = regra.palavras.find((item) => new RegExp(`\\b${item}\\b`).test(texto));
+    if (palavra) return { acao: "captar", operacao: regra.operacao, interesse: regra.interesse, palavra };
+  }
+  return { acao: "ignorar", operacao: null, interesse: null, palavra: null };
+}
+
+export function montarRespostaSocial({ classificacao, nome = "", whatsapp = "551123785643" }) {
+  const primeiroNome = normalizarTexto(nome, 80).split(" ")[0];
+  const saudacao = primeiroNome ? `Olá, ${primeiroNome}!` : "Olá!";
+  if (classificacao?.acao === "descadastrar") {
+    return `${saudacao} seu pedido foi registrado e não enviaremos novos conteúdos.`;
+  }
+  const frases = {
+    imobiliaria: "Vamos encontrar a melhor oportunidade para você.",
+    engenharia: "Nossa equipe técnica pode analisar seu caso com segurança.",
+    advocacia: "Para preservar seus dados, o atendimento jurídico continua em conversa privada.",
+  };
+  const termo = classificacao?.palavra || "ATENDIMENTO";
+  const link = `https://wa.me/${whatsapp}?text=${encodeURIComponent(`Olá, vim pelas redes sociais e quero atendimento sobre ${termo}.`)}`;
+  return `${saudacao} ${frases[classificacao?.operacao] || "Vamos ajudar você."} Fale com a Campos Figueira: ${link}`;
 }
 
 export function estaBloqueado(lead, bloqueios = []) {

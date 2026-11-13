@@ -2,11 +2,13 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   aplicarDescadastro,
+  classificarInteracaoSocial,
   chaveDedupe,
   estaBloqueado,
   linhaEhEmpresa,
   normalizarEmail,
   normalizarTelefoneBR,
+  montarRespostaSocial,
   podeReceberConteudo,
   respostaAutomaticaSegura,
   validarLead,
@@ -64,6 +66,31 @@ test("lead sem consentimento é recusado", () => {
 test("lead imobiliário autorizado pode receber conteúdo solicitado", () => {
   const lead = { operacao: "imobiliaria", nao_contatar: false, etapa: "contato_autorizado", canal_autorizado: ["whatsapp"] };
   assert.equal(podeReceberConteudo(lead, "whatsapp"), true);
+});
+
+test("classifica intenção social sem inventar serviço", () => {
+  assert.deepEqual(classificarInteracaoSocial("Quero ALUGAR este imóvel"), {
+    acao: "captar", operacao: "imobiliaria", interesse: "locação de imóvel", palavra: "ALUGAR",
+  });
+  assert.equal(classificarInteracaoSocial("Preciso de um laudo para minha obra").operacao, "engenharia");
+  assert.equal(classificarInteracaoSocial("Bom dia, parabéns pela publicação").acao, "ignorar");
+  assert.equal(classificarInteracaoSocial("SAIR").acao, "descadastrar");
+});
+
+test("interação social iniciada é válida sem telefone e responde com WhatsApp oficial", () => {
+  const validado = validarLead({
+    operacao: "imobiliaria", fonte: "comentario_instagram", nome: "Maria",
+    interesse: "compra de imóvel", base_legal: "interacao_iniciada",
+    consentimento_texto: "Comentário iniciado pela interessada", canal_autorizado: ["social"],
+    rede_social: "instagram", social_profile_id: "maria.exemplo",
+  });
+  assert.equal(validado.ok, true);
+  assert.equal(validado.lead.canal_autorizado[0], "social");
+  const resposta = montarRespostaSocial({
+    classificacao: classificarInteracaoSocial("quero comprar uma casa"), nome: "Maria Silva",
+  });
+  assert.match(resposta, /wa\.me\/551123785643/);
+  assert.match(resposta, /Maria/);
 });
 
 test("CSV B2B limita a 30 empresas e preserva apenas linhas empresariais", () => {

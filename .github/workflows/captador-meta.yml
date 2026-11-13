@@ -1,0 +1,46 @@
+name: Captador automático Meta
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: captador-meta
+  cancel-in-progress: false
+
+jobs:
+  comentarios:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      CAPTADOR_API_URL: https://ggfjmqttrktsfcaymsvu.supabase.co/functions/v1/captador-api
+      CAPTADOR_OIDC_AUDIENCE: https://ggfjmqttrktsfcaymsvu.supabase.co/functions/v1/captador-api/meta-poll
+      META_PAGE_ID: "512040582222121"
+      META_IG_ID: "17841461388445580"
+      META_GRAPH_VERSION: v22.0
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Obter identidade temporária do GitHub
+        id: oidc
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const token = await core.getIDToken(process.env.CAPTADOR_OIDC_AUDIENCE);
+            core.setSecret(token);
+            core.setOutput("token", token);
+
+      - name: Captar e responder comentários autorizados
+        env:
+          META_PAGE_TOKEN: ${{ secrets.META_PAGE_TOKEN }}
+          GITHUB_OIDC_TOKEN: ${{ steps.oidc.outputs.token }}
+        run: node captador/scripts/processar-comentarios-meta.js
