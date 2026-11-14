@@ -1,5 +1,5 @@
 {
-  "indice": 222,
+  "indice": 223,
   "publicados": [
     {
       "codigo": "429",
@@ -2732,63 +2732,25 @@
       "ig_reel": "✅ 18114909856879841",
       "youtube": "✅ _4t6rqp4PWg",
       "tiktok": "— (TikTok pausado)"
+    },
+    {
+      "codigo": "609B",
+      "data": "2026-11-14T02:39:09.588Z",
+      "trilha": "narracao-remy-aprovada",
+      "modelo_video": "imovel-v2-narrado-30s",
+      "fb_feed": "✅ 512040582222121_1758115226323651",
+      "fb_story": "✅ 3076213056051637",
+      "fb_reel": "✅ 1758115586323615",
+      "ig_feed": "✅ (carrossel 10) 17887941987624902",
+      "ig_story": "✅ 18023032397729044",
+      "ig_reel": "✅ 18036367427910211",
+      "youtube": "✅ YE3_iA7UwEo",
+      "tiktok": "— (TikTok pausado)"
     }
   ],
-  "tentativas": 2,
+  "tentativas": 0,
   "observacao": "Fila de vendas reiniciada em 03/08/2026 para aplicar a prioridade comercial; deduplicação de 30 horas protege reruns e falhas.",
   "indiceVenda": 1,
   "contadorNaoLoc": 119,
-  "indiceCapt": 1,
-  "retryPublicacao": {
-    "codigo": "609B",
-    "tipo": "locacao",
-    "tentativas": 2,
-    "reg": {
-      "codigo": "609B",
-      "data": "2026-11-13T23:20:52.493Z",
-      "trilha": "narracao-remy-aprovada",
-      "modelo_video": "imovel-v2-narrado-30s",
-      "fb_feed": "✅ 512040582222121_1758115226323651",
-      "fb_story": "✅ 3076213056051637",
-      "fb_reel": "✅ 1758115586323615",
-      "ig_feed": "✅ (carrossel 10) 17887941987624902",
-      "ig_story": "❌ IG Story container ERROR",
-      "ig_reel": "✅ 18036367427910211",
-      "youtube": "✅ YE3_iA7UwEo",
-      "tiktok": "— (TikTok pausado)"
-    }
-  },
-  "ultimaFalha": {
-    "codigo": "609B",
-    "data": "2026-11-13T23:20:52.493Z",
-    "trilha": "narracao-remy-aprovada",
-    "modelo_video": "imovel-v2-narrado-30s",
-    "fb_feed": "✅ 512040582222121_1758115226323651",
-    "fb_story": "✅ 3076213056051637",
-    "fb_reel": "✅ 1758115586323615",
-    "ig_feed": "✅ (carrossel 10) 17887941987624902",
-    "ig_story": "❌ IG Story container ERROR",
-    "ig_reel": "✅ 18036367427910211",
-    "youtube": "✅ YE3_iA7UwEo",
-    "tiktok": "— (TikTok pausado)"
-  },
-  "retryLocacao": {
-    "codigo": "609B",
-    "semana": "2026-W46",
-    "tentativas": 2,
-    "reg": {
-      "codigo": "609B",
-      "data": "2026-11-13T23:20:52.493Z",
-      "trilha": "narracao-remy-aprovada",
-      "modelo_video": "imovel-v2-narrado-30s",
-      "fb_feed": "✅ 512040582222121_1758115226323651",
-      "fb_story": "✅ 3076213056051637",
-      "fb_reel": "✅ 1758115586323615",
-      "ig_feed": "✅ (carrossel 10) 17887941987624902",
-      "ig_story": "❌ IG Story container ERROR",
-      "ig_reel": "✅ 18036367427910211",
-      "youtube": "✅ YE3_iA7UwEo",
-      "tiktok": "— (TikTok pausado)"
-    }
-  }
+  "indiceCapt": 1
 }
