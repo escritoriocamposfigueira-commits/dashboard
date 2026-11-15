@@ -1078,6 +1078,13 @@
       "emocao": "urgencia",
       "chave_publicacao": "2026-11-12|venda|CF-613",
       "usado_em": "2026-11-12T19:37:05.223Z"
+    },
+    {
+      "trilha_id": "mixkit-77",
+      "codigo": "CF-CAPT-2",
+      "emocao": "urgencia",
+      "chave_publicacao": "2026-11-14|captacao|CF-CAPT-2",
+      "usado_em": "2026-11-15T01:01:21.119Z"
     }
   ]
 }
