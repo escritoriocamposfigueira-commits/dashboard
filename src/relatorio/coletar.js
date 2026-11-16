@@ -104,6 +104,7 @@ async function coletarInstagram(token) {
       salvamentos: insights.saved,
       interacoes: insights.total_interactions,
       erros_metricas: errosInsights,
+      metricas_disponiveis: Object.keys(insights),
     });
   }
   return saida;
@@ -134,6 +135,7 @@ async function coletarFacebook(token) {
       compartilhamentos: item.shares?.count,
       cliques: insights.post_clicks,
       erros_metricas: errosInsights,
+      metricas_disponiveis: Object.keys(insights),
     });
   }
   return saida;
@@ -224,12 +226,13 @@ async function diagnosticarMeta(token, facebook = []) {
   const campos = "id,name,username,link,fan_count,followers_count,instagram_business_account{id,username}";
   const configurada = await graph(`${PAGE_ID}?fields=${encodeURIComponent(campos)}`, token);
   const idPublico = facebook.map((item) => idPublicoDaUrl(item.url)).find(Boolean) || null;
+  const idDosPosts = facebook.map((item) => String(item.id || "").split("_")[0]).find(Boolean) || null;
   let destino = null;
   if (idPublico && idPublico !== String(configurada.id)) {
     try { destino = await graph(`${idPublico}?fields=${encodeURIComponent(campos)}`, token); }
     catch (erro) { destino = { id: idPublico, erro: erro.message }; }
   }
-  return { configurada, idPublico, destino };
+  return { configurada, idPublico, idDosPosts, destino };
 }
 
 function resumoCanal(itens = [], observacao = "") {
@@ -282,7 +285,9 @@ async function main() {
         try {
           const identidade = await diagnosticarMeta(pageToken, facebook.value);
           const alvo = identidade.destino?.name ? `; URL pública aponta para ${identidade.destino.name} (${identidade.idPublico})` : "";
-          observacao += ` Página configurada: ${identidade.configurada.name} (${identidade.configurada.id})${alvo}.`;
+          const atuaisViews = facebook.value.filter((item) => item.metricas_disponiveis?.includes("post_media_view")).length;
+          const atuaisAlcance = facebook.value.filter((item) => item.metricas_disponiveis?.includes("post_total_media_view_unique")).length;
+          observacao += ` Página configurada: ${identidade.configurada.name} (${identidade.configurada.id}); posts retornados pelo ID ${identidade.idDosPosts || "não identificado"}${alvo}. Métricas atuais: views ${atuaisViews}/${facebook.value.length}, alcance ${atuaisAlcance}/${facebook.value.length}.`;
         } catch (erro) { observacao += ` Identidade da página não confirmada: ${erro.message}.`; }
         canais.Facebook = resumoCanal(facebook.value, observacao);
       } else canais.Facebook = { ok: false, total: 0, observacao: facebook.reason.message };
@@ -310,7 +315,8 @@ async function main() {
   catch (erro) { leads = { total: 0, radar: 0, markdown: `Coleta de leads indisponível: ${erro.message}` }; }
 
   const pesosAntes = lerPesos();
-  const pesosDepois = atualizarPesos(pesosAntes, publicacoes, LIMITE_VARIACAO);
+  const relatorioJaExiste = fs.existsSync(destino);
+  const pesosDepois = relatorioJaExiste ? pesosAntes : atualizarPesos(pesosAntes, publicacoes, LIMITE_VARIACAO);
   salvarPesos(pesosDepois);
   const fim = new Date();
   const markdown = renderizarRelatorio({

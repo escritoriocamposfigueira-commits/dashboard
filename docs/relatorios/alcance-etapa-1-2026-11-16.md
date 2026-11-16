@@ -14,6 +14,7 @@ A análise recebida acertou os problemas de medição incompleta, repetição en
 | TikTok | Pausado e sem credenciais de publicação disponíveis no workflow. | Permanece explicitamente como parcial, sem inventar métricas. |
 | Feed e Reel duplicados | Confirmado na grade anterior. | O robô já foi alterado para escolher um único formato permanente por imóvel, mantendo Stories; os pesos iniciais são 60% Reel e 40% feed. |
 | Mudança automática de pesos | A amostra anterior era insuficiente para decisões seguras. | Pesos só mudam quando um formato possui pelo menos 10 posts com alcance ou views realmente medidos. |
+| Reexecução do relatório | A mesma data podia aplicar a variação de peso mais de uma vez. | A atualização de pesos agora é idempotente: reexecutar o relatório do mesmo dia apenas atualiza a medição. |
 
 ## Origem do radar
 
@@ -50,6 +51,7 @@ O conjunto é majoritariamente composto por anúncios públicos de pessoas e im�
 ## Pendências legítimas
 
 - Renovar o consentimento OAuth do YouTube com `youtube.upload` + `youtube.readonly` para obter estatísticas e status exato de todos os Shorts. Enquanto isso, o relatório só consegue confirmar se o vídeo é acessível publicamente.
+- A validação real encontrou **15 de 15 Shorts da semana acessíveis publicamente**. Não há evidência de que estejam privados.
 - Conectar credenciais oficiais do TikTok antes de reativar publicação ou métricas.
 - Coletar pelo menos uma semana de métricas corrigidas antes de reduzir novamente a frequência. A alteração de feed/Reel simultâneos já está ativa; uma nova mudança de cadência agora misturaria os efeitos.
 
