@@ -185,7 +185,7 @@ async function publishOnPage(page, item, dryRun = false) {
   const send = page.getByRole("button", { name: /Enviar 1 item selecionado/i });
   await send.click();
   await send.waitFor({ state: "hidden", timeout: 120000 });
-  await page.getByRole("button", { name: /Meu status/i }).waitFor({ state: "visible", timeout: 30000 });
+  await page.getByRole("button", { name: /Meu status.*Hoje às/i }).waitFor({ state: "visible", timeout: 120000 });
   console.log(`Publicado no Status pessoal: ${item.code}`);
   return `web-${Date.now()}`;
 }
@@ -247,11 +247,12 @@ async function runPost(args) {
   const caption = captionIndex >= 0 ? args[captionIndex + 1] : "";
   const dryRun = args.includes("--dry-run");
   const copiesOnly = args.includes("--copies-only");
+  const statusOnly = args.includes("--status-only");
   validateVideo(video);
   if (dryRun) {
     const item = { code: "TESTE", video, caption };
     if (!copiesOnly) await publishOnPage(null, item, true);
-    for (const contact of DELIVERY_CONTACTS) await sendCopyToContact(null, item, contact, true);
+    if (!statusOnly) for (const contact of DELIVERY_CONTACTS) await sendCopyToContact(null, item, contact, true);
     return;
   }
   await withLock(async () => {
@@ -261,7 +262,7 @@ async function runPost(args) {
       await waitLoggedIn(page);
       const item = { code: publicReference(path.basename(video).split("-")[1]), video, caption };
       if (!copiesOnly) await publishOnPage(page, item);
-      for (const contact of DELIVERY_CONTACTS) await sendCopyToContact(page, item, contact);
+      if (!statusOnly) for (const contact of DELIVERY_CONTACTS) await sendCopyToContact(page, item, contact);
     } catch (error) {
       fs.mkdirSync(SCREENSHOT_DIR, { recursive: true });
       const page = context.pages()[0];
