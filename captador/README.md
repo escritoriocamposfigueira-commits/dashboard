@@ -20,7 +20,7 @@ Operações isoladas:
 1. Páginas estáticas em `docs/captador/`, publicáveis pelo GitHub Pages.
 2. Supabase Edge Function `captador-api` recebe formulários, comentários Meta, descadastro e CRM.
 3. Postgres/Supabase armazena `leads`, `interacoes`, `bloqueio` e `eventos_captacao` com RLS.
-4. GitHub Actions consulta comentários pelas APIs oficiais da Meta, registra a intenção e responde com o WhatsApp oficial. A autenticação entre GitHub e Supabase usa OIDC temporário, sem uma nova chave permanente.
+4. GitHub Actions consulta comentários pelas APIs oficiais da Meta, registra a intenção e tenta responder em conversa privada com o WhatsApp oficial. Se a permissão de mensagem privada não estiver disponível, usa uma única resposta pública como fallback. A autenticação entre GitHub e Supabase usa OIDC temporário, sem uma nova chave permanente.
 5. O CRM web consulta a API administrativa sem expor a chave do Supabase no navegador.
 6. O workflow semanal grava apenas métricas agregadas, nunca dados pessoais, no repositório.
 
@@ -33,6 +33,7 @@ Operações isoladas:
 - CSV B2B aceita somente empresas e limita 30 novos contatos por dia.
 - Dados de leads perdidos ou sem resposta são eliminados depois de 12 meses.
 - Nada de raspar seguidores, automatizar login ou enviar mensagens em massa.
+- Nada de pedidos de amizade em massa ou convites automáticos a membros de grupos; a captação social começa quando a pessoa comenta, envia mensagem ou preenche o formulário.
 
 ## Entregas desta fase
 

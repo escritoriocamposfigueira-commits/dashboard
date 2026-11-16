@@ -1,5 +1,7 @@
 "use strict";
 
+const { planoRespostaPrivada, planoRespostaPublica } = require("../meta-respostas.js");
+
 const GRAPH_VERSION = process.env.META_GRAPH_VERSION || "v22.0";
 const PAGE_ID = process.env.META_PAGE_ID || "512040582222121";
 const IG_ID = process.env.META_IG_ID || "17841461388445580";
@@ -88,10 +90,29 @@ async function processarComentario(item) {
   if (!item.event_id || !item.social_profile_id || !item.mensagem) return { ignorado: 1 };
   const decisao = await captador("/meta-poll", item);
   if (!decisao.responder || !decisao.resposta_publica) return { duplicado: decisao.duplicado ? 1 : 0, ignorado: 1 };
-  const endpoint = item.rede === "instagram" ? `${item.event_id}/replies` : `${item.event_id}/comments`;
-  await graphPost(endpoint, { message: decisao.resposta_publica });
+  const privada = planoRespostaPrivada({
+    rede: item.rede,
+    eventId: item.event_id,
+    igId: IG_ID,
+    texto: decisao.resposta_publica,
+  });
+  try {
+    await graphPost(privada.endpoint, privada.body);
+    await captador("/meta-poll/ack", { event_id: item.event_id });
+    return { captado: 1, respondido: 1, privado: 1 };
+  } catch (erro) {
+    // A resposta privada depende das permissões aprovadas da conta. A resposta
+    // pública mantém o atendimento funcional enquanto essas permissões variam.
+    console.error(`Resposta privada indisponível em ${item.rede}; usando resposta pública: ${erro.message}`);
+  }
+  const publica = planoRespostaPublica({
+    rede: item.rede,
+    eventId: item.event_id,
+    texto: decisao.resposta_publica,
+  });
+  await graphPost(publica.endpoint, publica.body);
   await captador("/meta-poll/ack", { event_id: item.event_id });
-  return { captado: 1, respondido: 1 };
+  return { captado: 1, respondido: 1, publico: 1 };
 }
 
 async function processarFacebook() {

@@ -43,7 +43,7 @@ token do Supabase no GitHub. O publicador já inclui o link rastreável e a pala
 
 1. Publicar `.github/workflows/captador-meta.yml` na branch de produção.
 2. O workflow usa o token oficial já existente, sem login automatizado.
-3. A Edge Function deduplica cada comentário e gera uma única resposta pública com o WhatsApp.
+3. A Edge Function deduplica cada comentário. O robô tenta uma única resposta privada oficial com o WhatsApp e, se a permissão não estiver disponível, usa uma única resposta pública.
 4. Testar uma palavra por operação: `IMOVEL`, `ALUGAR`, `AVALIAR`, `OBRA` e `GUIA`.
 5. Testar `SAIR`; o contato não pode voltar às listas de conteúdo.
 
