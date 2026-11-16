@@ -47,6 +47,10 @@ next-env.d.ts
 # Controle interno (não versionar dados sensíveis de publicações)
 controle/*.csv
 controle/*.json
+# Sessão local do WhatsApp (credenciais de aparelho vinculado; nunca versionar)
+controle/whatsapp-status/
+controle/whatsapp-status-web-profile/
+controle/whatsapp-status-web.lock
 # exceção: estado da fila do servidor 24h precisa ser versionado
 !controle/estado-publicacao.json
 !controle/estado-trilhas.json
