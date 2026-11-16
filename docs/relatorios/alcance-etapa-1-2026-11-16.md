@@ -1,0 +1,55 @@
+# Etapa 1 — medição e visibilidade
+
+Data da validação: 16/11/2026.
+
+## Resultado executivo
+
+A análise recebida acertou os problemas de medição incompleta, repetição entre feed e Reel e ausência de leads consentidos. Algumas causas apresentadas eram hipóteses e não foram tratadas como fatos.
+
+| Ponto | Resultado validado | Ação aplicada |
+|---|---|---|
+| Facebook com zero | Zero era usado também quando a API não devolvia a métrica. Portanto, não provava alcance zero. | Métrica ausente agora aparece como **não medido**. A coleta tenta primeiro as métricas atuais de visualização e alcance e preserva fallbacks compatíveis. |
+| IDs diferentes do Facebook | Diferença de ID pode ser identidade pública/permalink ou página distinta. Não há base segura para trocar a página sem consultar a API autenticada. | O relatório consulta nome, ID, seguidores e Instagram vinculado da página configurada e compara com o ID numérico observado no permalink. Nenhuma página é trocada automaticamente. |
+| YouTube privado | O robô já solicita `privacyStatus: public`; logo, a afirmação de que os vídeos “provavelmente” estão privados não estava comprovada. | Todo novo upload é rejeitado se a API responder com privacidade diferente de `public`. Para vídeos existentes, o relatório usa a API autenticada e, se faltar `youtube.readonly`, confirma acessibilidade pública por oEmbed sem inventar estatísticas. |
+| TikTok | Pausado e sem credenciais de publicação disponíveis no workflow. | Permanece explicitamente como parcial, sem inventar métricas. |
+| Feed e Reel duplicados | Confirmado na grade anterior. | O robô já foi alterado para escolher um único formato permanente por imóvel, mantendo Stories; os pesos iniciais são 60% Reel e 40% feed. |
+| Mudança automática de pesos | A amostra anterior era insuficiente para decisões seguras. | Pesos só mudam quando um formato possui pelo menos 10 posts com alcance ou views realmente medidos. |
+
+## Origem do radar
+
+O radar possui 1.479 registros aguardando validação. Ele **não é uma base extraída do Google Maps** e também não deve ser chamado de “radar B2B”. Distribuição observada:
+
+- Proprietário Direto: 954
+- OLX: 355
+- Diretório Mogi: 48
+- Facebook: 29
+- Grupo Facebook: 20
+- Imovelweb: 19
+- ZAP: 17
+- Diretório listamogi: 13
+- WebSearch/site próprio: 11
+- WebSearch/construtoras: 8
+- Corretor autônomo: 4
+- WebSearch/síndicos: 1
+
+O conjunto é majoritariamente composto por anúncios públicos de pessoas e imóveis: 1.023 oportunidades de venda, 235 de locação, 136 rurais, 77 parcerias e 8 de engenharia. Apenas 154 registros possuem telefone e nenhum possui e-mail empresarial validado. Portanto:
+
+1. continua proibido disparo automático;
+2. cada registro precisa de validação humana, base legal e consentimento antes de virar lead;
+3. advocacia permanece fora de prospecção ativa;
+4. o relatório passa a chamar o total de **oportunidades aguardando validação**, não de leads nem de B2B.
+
+## Critérios novos do relatório
+
+- Posts encontrados, vídeos publicamente acessíveis e posts com métricas medidas são contagens separadas.
+- Ausência de alcance/views é `null` e aparece como **não medido**, nunca como zero.
+- O relatório mostra mediana de views, além de média por formato.
+- Uma recomendação de aumentar/reduzir formato exige amostra mínima de 10 posts medidos.
+- Nenhum dado pessoal é gravado no relatório semanal.
+
+## Pendências legítimas
+
+- Renovar o consentimento OAuth do YouTube com `youtube.upload` + `youtube.readonly` para obter estatísticas e status exato de todos os Shorts. Enquanto isso, o relatório só consegue confirmar se o vídeo é acessível publicamente.
+- Conectar credenciais oficiais do TikTok antes de reativar publicação ou métricas.
+- Coletar pelo menos uma semana de métricas corrigidas antes de reduzir novamente a frequência. A alteração de feed/Reel simultâneos já está ativa; uma nova mudança de cadência agora misturaria os efeitos.
+

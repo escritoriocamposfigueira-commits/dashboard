@@ -2,7 +2,7 @@
 
 const fs = require("fs");
 const path = require("path");
-const { atualizarPesos, renderizarRelatorio } = require("./core");
+const { atualizarPesos, mediana, renderizarRelatorio } = require("./core");
 
 const RAIZ = path.resolve(__dirname, "../..");
 const GRAPH_VERSION = process.env.META_GRAPH_VERSION || "v22.0";
@@ -55,16 +55,23 @@ async function paginarGraph(endpoint, token, limite = 100) {
 }
 
 async function insightsIndividuais(id, metricas, token) {
-  const saida = {};
+  const valores = {};
+  const erros = {};
   for (const metrica of metricas) {
     try {
       const dados = await graph(`${id}/insights?metric=${encodeURIComponent(metrica)}&period=lifetime`, token);
       const item = dados.data?.[0];
       const valor = item?.values?.at(-1)?.value ?? item?.value;
-      saida[metrica] = typeof valor === "object" ? Object.values(valor || {}).reduce((s, n) => s + Number(n || 0), 0) : Number(valor || 0);
-    } catch { /* Métricas variam conforme formato e versão da API. */ }
+      if (valor !== null && valor !== undefined) {
+        valores[metrica] = typeof valor === "object"
+          ? Object.values(valor || {}).reduce((s, n) => s + Number(n || 0), 0)
+          : Number(valor);
+      }
+    } catch (erro) {
+      erros[metrica] = erro.message;
+    }
   }
-  return saida;
+  return { valores, erros };
 }
 
 function formatoMeta(item) {
@@ -81,7 +88,7 @@ async function coletarInstagram(token) {
   const recentes = itens.filter((item) => new Date(item.timestamp) >= desde);
   const saida = [];
   for (const item of recentes) {
-    const insights = await insightsIndividuais(item.id, ["views", "reach", "saved", "shares", "total_interactions"], token);
+    const { valores: insights, erros: errosInsights } = await insightsIndividuais(item.id, ["views", "reach", "saved", "shares", "total_interactions"], token);
     saida.push({
       rede: "Instagram",
       id: item.id,
@@ -96,6 +103,7 @@ async function coletarInstagram(token) {
       compartilhamentos: insights.shares,
       salvamentos: insights.saved,
       interacoes: insights.total_interactions,
+      erros_metricas: errosInsights,
     });
   }
   return saida;
@@ -108,7 +116,10 @@ async function coletarFacebook(token) {
   const itens = await paginarGraph(`${PAGE_ID}/published_posts?fields=${encodeURIComponent(campos)}&since=${since}&limit=100`, token, 100);
   const saida = [];
   for (const item of itens) {
-    const insights = await insightsIndividuais(item.id, ["post_impressions_unique", "post_impressions", "post_clicks", "post_video_views"], token);
+    const { valores: insights, erros: errosInsights } = await insightsIndividuais(item.id, [
+      "post_media_view", "post_total_media_view_unique", "post_clicks", "post_video_views",
+      "post_impressions", "post_impressions_unique",
+    ], token);
     saida.push({
       rede: "Facebook",
       id: item.id,
@@ -116,12 +127,13 @@ async function coletarFacebook(token) {
       legenda: item.message || "",
       url: item.permalink_url,
       data: item.created_time,
-      alcance: insights.post_impressions_unique,
-      visualizacoes: insights.post_video_views || insights.post_impressions,
+      alcance: insights.post_total_media_view_unique ?? insights.post_impressions_unique,
+      visualizacoes: insights.post_media_view ?? insights.post_video_views ?? insights.post_impressions,
       curtidas: item.reactions?.summary?.total_count,
       comentarios: item.comments?.summary?.total_count,
       compartilhamentos: item.shares?.count,
       cliques: insights.post_clicks,
+      erros_metricas: errosInsights,
     });
   }
   return saida;
@@ -161,26 +173,75 @@ async function coletarYoutube() {
   }
   const ids = idsYoutubeRecentes();
   if (!ids.length) return { itens: [], observacao: "Nenhum Short novo identificado no período." };
-  const oauth = await tokenYoutube();
   const mapa = new Map(ids.map((item) => [item.id, item]));
-  const dados = await fetchJson(`https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&id=${encodeURIComponent(ids.map((x) => x.id).join(","))}`, {
-    headers: { authorization: `Bearer ${oauth.access_token}` },
-  });
+  try {
+    const oauth = await tokenYoutube();
+    const dados = await fetchJson(`https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics,status&id=${encodeURIComponent(ids.map((x) => x.id).join(","))}`, {
+      headers: { authorization: `Bearer ${oauth.access_token}` },
+    });
+    return {
+      itens: (dados.items || []).map((item) => ({
+        rede: "YouTube", id: item.id, codigo: mapa.get(item.id)?.codigo, formato: "video",
+        titulo: item.snippet?.title, legenda: item.snippet?.description,
+        url: `https://www.youtube.com/shorts/${item.id}`,
+        data: item.snippet?.publishedAt || mapa.get(item.id)?.data,
+        visualizacoes: item.statistics?.viewCount, curtidas: item.statistics?.likeCount,
+        comentarios: item.statistics?.commentCount,
+        publico: item.status?.privacyStatus === "public",
+      })),
+      observacao: "Estatísticas e visibilidade consultadas pela YouTube Data API.",
+    };
+  } catch (erroApi) {
+    const itens = [];
+    for (const registro of ids) {
+      try {
+        const dados = await fetchJson(`https://www.youtube.com/oembed?url=${encodeURIComponent(`https://www.youtube.com/watch?v=${registro.id}`)}&format=json`);
+        itens.push({
+          rede: "YouTube", id: registro.id, codigo: registro.codigo, formato: "video",
+          titulo: dados.title, url: `https://www.youtube.com/shorts/${registro.id}`,
+          data: registro.data, publico: true,
+        });
+      } catch {
+        itens.push({
+          rede: "YouTube", id: registro.id, codigo: registro.codigo, formato: "video",
+          url: `https://www.youtube.com/shorts/${registro.id}`, data: registro.data, publico: false,
+        });
+      }
+    }
+    const acessiveis = itens.filter((item) => item.publico).length;
+    return {
+      itens,
+      observacao: `${acessiveis}/${itens.length} vídeos acessíveis publicamente; métricas não medidas porque o OAuth não possui youtube.readonly (${erroApi.message}).`,
+    };
+  }
+}
+
+function idPublicoDaUrl(url = "") {
+  return String(url).match(/facebook\.com\/(\d+)(?:\/|$)/i)?.[1] || null;
+}
+
+async function diagnosticarMeta(token, facebook = []) {
+  const campos = "id,name,username,link,fan_count,followers_count,instagram_business_account{id,username}";
+  const configurada = await graph(`${PAGE_ID}?fields=${encodeURIComponent(campos)}`, token);
+  const idPublico = facebook.map((item) => idPublicoDaUrl(item.url)).find(Boolean) || null;
+  let destino = null;
+  if (idPublico && idPublico !== String(configurada.id)) {
+    try { destino = await graph(`${idPublico}?fields=${encodeURIComponent(campos)}`, token); }
+    catch (erro) { destino = { id: idPublico, erro: erro.message }; }
+  }
+  return { configurada, idPublico, destino };
+}
+
+function resumoCanal(itens = [], observacao = "") {
+  const visualizacoes = itens.map((item) => item.visualizacoes ?? item.alcance).filter((valor) => valor !== null && valor !== undefined);
+  const publicosConhecidos = itens.filter((item) => item.publico !== undefined);
   return {
-    itens: (dados.items || []).map((item) => ({
-      rede: "YouTube",
-      id: item.id,
-      codigo: mapa.get(item.id)?.codigo,
-      formato: "video",
-      titulo: item.snippet?.title,
-      legenda: item.snippet?.description,
-      url: `https://www.youtube.com/shorts/${item.id}`,
-      data: item.snippet?.publishedAt || mapa.get(item.id)?.data,
-      visualizacoes: item.statistics?.viewCount,
-      curtidas: item.statistics?.likeCount,
-      comentarios: item.statistics?.commentCount,
-    })),
-    observacao: "Estatísticas públicas dos Shorts publicados pelo robô.",
+    ok: true,
+    total: itens.length,
+    publicos: publicosConhecidos.length ? publicosConhecidos.filter((item) => item.publico).length : undefined,
+    medidos: visualizacoes.length,
+    mediana_views: mediana(visualizacoes),
+    observacao,
   };
 }
 
@@ -217,11 +278,17 @@ async function main() {
       const [facebook, instagram] = await Promise.allSettled([coletarFacebook(pageToken), coletarInstagram(pageToken)]);
       if (facebook.status === "fulfilled") {
         publicacoes.push(...facebook.value);
-        canais.Facebook = { ok: true, total: facebook.value.length, observacao: "Graph API" };
+        let observacao = "Graph API conectada; ausências de alcance/views são exibidas como não medido.";
+        try {
+          const identidade = await diagnosticarMeta(pageToken, facebook.value);
+          const alvo = identidade.destino?.name ? `; URL pública aponta para ${identidade.destino.name} (${identidade.idPublico})` : "";
+          observacao += ` Página configurada: ${identidade.configurada.name} (${identidade.configurada.id})${alvo}.`;
+        } catch (erro) { observacao += ` Identidade da página não confirmada: ${erro.message}.`; }
+        canais.Facebook = resumoCanal(facebook.value, observacao);
       } else canais.Facebook = { ok: false, total: 0, observacao: facebook.reason.message };
       if (instagram.status === "fulfilled") {
         publicacoes.push(...instagram.value);
-        canais.Instagram = { ok: true, total: instagram.value.length, observacao: "Instagram Graph API" };
+        canais.Instagram = resumoCanal(instagram.value, "Instagram Graph API conectada.");
       } else canais.Instagram = { ok: false, total: 0, observacao: instagram.reason.message };
     } catch (erro) {
       canais.Facebook = { ok: false, total: 0, observacao: erro.message };
@@ -234,9 +301,9 @@ async function main() {
   try {
     const youtube = await coletarYoutube();
     publicacoes.push(...youtube.itens);
-    canais.YouTube = { ok: Boolean(process.env.YT_REFRESH_TOKEN), total: youtube.itens.length, observacao: youtube.observacao };
+    canais.YouTube = resumoCanal(youtube.itens, youtube.observacao);
   } catch (erro) { canais.YouTube = { ok: false, total: 0, observacao: erro.message }; }
-  canais.TikTok = { ok: false, total: 0, observacao: "Publicação pausada por decisão do escritório; nenhuma métrica foi inventada." };
+  canais.TikTok = { ok: false, total: 0, publicos: 0, medidos: 0, mediana_views: null, observacao: "Publicação pausada por decisão do escritório; nenhuma métrica foi inventada." };
 
   let leads;
   try { leads = await coletarLeads(); }
@@ -257,4 +324,4 @@ async function main() {
 
 if (require.main === module) main().catch((erro) => { console.error(erro); process.exit(1); });
 
-module.exports = { coletarFacebook, coletarInstagram, coletarLeads, coletarYoutube, resolverPageToken };
+module.exports = { coletarFacebook, coletarInstagram, coletarLeads, coletarYoutube, diagnosticarMeta, idPublicoDaUrl, resolverPageToken, resumoCanal };

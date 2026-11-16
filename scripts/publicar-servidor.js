@@ -673,7 +673,13 @@ async function publicarYouTubeShort(videoPath, caption) {
       "Content-Length": bodyBuf.length,
     },
   }, bodyBuf);
-  if (r.data && r.data.id) return r.data.id;
+  if (r.data && r.data.id) {
+    const privacidade = r.data.status?.privacyStatus;
+    if (privacidade && privacidade !== "public") {
+      throw new Error(`YouTube devolveu privacidade ${privacidade}; publicação rejeitada pelo robô`);
+    }
+    return r.data.id;
+  }
   throw new Error("YouTube upload: " + JSON.stringify(r.data).slice(0, 160));
 }
 

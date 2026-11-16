@@ -7,6 +7,10 @@ function numero(valor) {
   return Number.isFinite(n) ? n : 0;
 }
 
+function definido(valor) {
+  return valor !== null && valor !== undefined && valor !== "" && Number.isFinite(Number(valor));
+}
+
 function textoCurto(valor, limite = 84) {
   const limpo = String(valor || "").replace(/\s+/g, " ").trim();
   return limpo.length > limite ? `${limpo.slice(0, limite - 1).trim()}…` : limpo;
@@ -25,8 +29,10 @@ function codigoDaLegenda(texto = "") {
 }
 
 function metricasPublicacao(item = {}) {
-  const alcance = numero(item.alcance || item.reach || item.visualizacoes || item.views);
-  const visualizacoes = numero(item.visualizacoes || item.views);
+  const alcanceBruto = item.alcance ?? item.reach;
+  const visualizacoesBruto = item.visualizacoes ?? item.views;
+  const alcance = definido(alcanceBruto) ? numero(alcanceBruto) : null;
+  const visualizacoes = definido(visualizacoesBruto) ? numero(visualizacoesBruto) : null;
   const curtidas = numero(item.curtidas || item.likes);
   const comentarios = numero(item.comentarios || item.comments);
   const compartilhamentos = numero(item.compartilhamentos || item.shares);
@@ -34,7 +40,7 @@ function metricasPublicacao(item = {}) {
   const cliques = numero(item.cliques || item.clicks);
   const interacoes = numero(item.interacoes)
     || curtidas + comentarios + compartilhamentos + salvamentos + cliques;
-  const denominador = alcance || visualizacoes;
+  const denominador = alcance ?? visualizacoes;
   return {
     alcance,
     visualizacoes,
@@ -44,7 +50,8 @@ function metricasPublicacao(item = {}) {
     salvamentos,
     cliques,
     interacoes,
-    taxa_engajamento: denominador > 0 ? interacoes / denominador : 0,
+    metricas_medido: definido(denominador),
+    taxa_engajamento: denominador > 0 ? interacoes / denominador : (definido(denominador) ? 0 : null),
   };
 }
 
@@ -60,8 +67,8 @@ function enriquecerPublicacao(item = {}) {
 
 function ordenarPublicacoes(publicacoes = []) {
   return publicacoes.map(enriquecerPublicacao).sort((a, b) => {
-    const scoreA = a.taxa_engajamento * 1_000_000 + a.interacoes * 100 + a.visualizacoes;
-    const scoreB = b.taxa_engajamento * 1_000_000 + b.interacoes * 100 + b.visualizacoes;
+    const scoreA = a.taxa_engajamento === null ? -1 : a.taxa_engajamento * 1_000_000 + a.interacoes * 100 + numero(a.visualizacoes);
+    const scoreB = b.taxa_engajamento === null ? -1 : b.taxa_engajamento * 1_000_000 + b.interacoes * 100 + numero(b.visualizacoes);
     return scoreB - scoreA;
   });
 }
@@ -71,21 +78,23 @@ function resumirFormatos(publicacoes = []) {
   for (const item of publicacoes.map(enriquecerPublicacao)) {
     const formato = FORMATOS.includes(item.formato) ? item.formato : "feed";
     const atual = grupos.get(formato) || {
-      formato, publicacoes: 0, alcance: 0, visualizacoes: 0, interacoes: 0,
+      formato, publicacoes: 0, medidos: 0, alcance: 0, alcance_medidos: 0,
+      visualizacoes: 0, visualizacoes_medidas: 0, interacoes: 0,
     };
     atual.publicacoes += 1;
-    atual.alcance += item.alcance;
-    atual.visualizacoes += item.visualizacoes;
+    if (definido(item.alcance)) { atual.alcance += item.alcance; atual.alcance_medidos += 1; }
+    if (definido(item.visualizacoes)) { atual.visualizacoes += item.visualizacoes; atual.visualizacoes_medidas += 1; }
+    if (item.metricas_medido) atual.medidos += 1;
     atual.interacoes += item.interacoes;
     grupos.set(formato, atual);
   }
   return [...grupos.values()].map((grupo) => {
-    const denominador = grupo.alcance || grupo.visualizacoes;
+    const denominador = grupo.alcance_medidos ? grupo.alcance : (grupo.visualizacoes_medidas ? grupo.visualizacoes : null);
     return {
       ...grupo,
-      taxa_engajamento: denominador ? grupo.interacoes / denominador : 0,
-      alcance_medio: grupo.publicacoes ? grupo.alcance / grupo.publicacoes : 0,
-      visualizacoes_medias: grupo.publicacoes ? grupo.visualizacoes / grupo.publicacoes : 0,
+      taxa_engajamento: denominador > 0 ? grupo.interacoes / denominador : (definido(denominador) ? 0 : null),
+      alcance_medio: grupo.alcance_medidos ? grupo.alcance / grupo.alcance_medidos : null,
+      visualizacoes_medias: grupo.visualizacoes_medidas ? grupo.visualizacoes / grupo.visualizacoes_medidas : null,
     };
   }).sort((a, b) => b.taxa_engajamento - a.taxa_engajamento);
 }
@@ -98,7 +107,7 @@ function limitarVariacao(atual, alvo, limite = 0.2) {
 }
 
 function atualizarPesos(pesosAtuais = {}, publicacoes = [], limite = 0.2) {
-  const resumo = resumirFormatos(publicacoes).filter((x) => x.publicacoes > 0);
+  const resumo = resumirFormatos(publicacoes).filter((x) => x.medidos >= 10 && x.taxa_engajamento !== null);
   const media = resumo.length
     ? resumo.reduce((soma, item) => soma + item.taxa_engajamento, 0) / resumo.length
     : 0;
@@ -116,17 +125,29 @@ function atualizarPesos(pesosAtuais = {}, publicacoes = [], limite = 0.2) {
 }
 
 function percentual(valor) {
-  return `${(numero(valor) * 100).toFixed(2).replace(".", ",")}%`;
+  return valor === null || valor === undefined ? "não medido" : `${(numero(valor) * 100).toFixed(2).replace(".", ",")}%`;
 }
 
 function inteiro(valor) {
   return Math.round(numero(valor)).toLocaleString("pt-BR");
 }
 
+function medidaInteira(valor) {
+  return valor === null || valor === undefined ? "não medido" : inteiro(valor);
+}
+
+function mediana(valores = []) {
+  const nums = valores.filter(definido).map(Number).sort((a, b) => a - b);
+  if (!nums.length) return null;
+  const meio = Math.floor(nums.length / 2);
+  return nums.length % 2 ? nums[meio] : (nums[meio - 1] + nums[meio]) / 2;
+}
+
 function linhaPublicacao(item) {
   const titulo = textoCurto(item.legenda || item.titulo || item.codigo || "Publicação");
   const link = /^https:\/\//.test(String(item.url || "")) ? `[${titulo}](${item.url})` : titulo;
-  return `| ${item.rede || "—"} | ${item.formato || "—"} | ${item.codigo || "—"} | ${link} | ${inteiro(item.alcance || item.visualizacoes)} | ${inteiro(item.interacoes)} | ${percentual(item.taxa_engajamento)} |`;
+  const exposicao = item.alcance ?? item.visualizacoes;
+  return `| ${item.rede || "—"} | ${item.formato || "—"} | ${item.codigo || "—"} | ${link} | ${medidaInteira(exposicao)} | ${inteiro(item.interacoes)} | ${percentual(item.taxa_engajamento)} |`;
 }
 
 function gerarRecomendacoes(publicacoes = [], leads = {}) {
@@ -136,8 +157,9 @@ function gerarRecomendacoes(publicacoes = [], leads = {}) {
   if (!enriquecidas.length) {
     recomendacoes.push("Corrigir a coleta de métricas antes de alterar a grade; nenhuma publicação mensurável foi retornada pelas APIs.");
   } else {
-    const campeao = formatos[0];
-    if (campeao) recomendacoes.push(`Produzir até 20% mais conteúdo no formato **${campeao.formato}**, que liderou a taxa de engajamento (${percentual(campeao.taxa_engajamento)}).`);
+    const campeao = formatos.find((item) => item.medidos >= 10 && item.taxa_engajamento !== null);
+    if (campeao) recomendacoes.push(`Testar até 20% mais conteúdo no formato **${campeao.formato}**, sustentado por ${campeao.medidos} posts medidos e taxa de ${percentual(campeao.taxa_engajamento)}.`);
+    else recomendacoes.push("Não alterar pesos por formato nesta semana: nenhum formato alcançou 10 publicações com denominador mensurável.");
     const comCompartilhamento = [...enriquecidas].sort((a, b) => b.compartilhamentos - a.compartilhamentos)[0];
     if (comCompartilhamento?.compartilhamentos > 0) recomendacoes.push(`Reaproveitar o gancho de **${comCompartilhamento.codigo}** em uma variação nova: foi a peça mais compartilhada (${inteiro(comCompartilhamento.compartilhamentos)}).`);
     else recomendacoes.push("Testar ganchos locais e condições reais do imóvel nos primeiros 3 segundos para estimular compartilhamentos, sem inventar ofertas.");
@@ -161,11 +183,11 @@ function renderizarRelatorio({ data, inicio, fim, publicacoes = [], canais = {},
     "",
     "## Situação dos canais",
     "",
-    "| Canal | Situação | Itens medidos | Observação |",
-    "|---|---|---:|---|",
-    ...Object.entries(canais).map(([canal, info]) => `| ${canal} | ${info.ok ? "✅ conectado" : "⚠️ parcial"} | ${inteiro(info.total)} | ${textoCurto(info.observacao, 120) || "—"} |`),
+    "| Canal | Situação | Posts | Públicos | Métricas medidas | Mediana views | Observação |",
+    "|---|---|---:|---:|---:|---:|---|",
+    ...Object.entries(canais).map(([canal, info]) => `| ${canal} | ${info.ok ? "✅ conectado" : "⚠️ parcial"} | ${inteiro(info.total)} | ${info.publicos === undefined ? "não medido" : inteiro(info.publicos)} | ${inteiro(info.medidos)} | ${medidaInteira(info.mediana_views)} | ${textoCurto(info.observacao, 160) || "—"} |`),
     "",
-    `Publicações mensuradas: **${ordenadas.length}** · Leads consentidos na semana: **${inteiro(leads.total)}** · Oportunidades B2B no radar: **${inteiro(leads.radar)}**.`,
+    `Publicações encontradas: **${ordenadas.length}** · Leads consentidos na semana: **${inteiro(leads.total)}** · Oportunidades aguardando validação no radar: **${inteiro(leads.radar)}**.`,
     "",
     "## Top 5 por taxa de engajamento",
     "",
@@ -183,7 +205,7 @@ function renderizarRelatorio({ data, inicio, fim, publicacoes = [], canais = {},
     "",
     "| Formato | Posts | Alcance médio | Views médias | Interações | Taxa | Peso anterior → novo |",
     "|---|---:|---:|---:|---:|---:|---:|",
-    ...formatos.map((item) => `| ${item.formato} | ${item.publicacoes} | ${inteiro(item.alcance_medio)} | ${inteiro(item.visualizacoes_medias)} | ${inteiro(item.interacoes)} | ${percentual(item.taxa_engajamento)} | ${(pesosAntes[item.formato] ?? "—")} → ${(pesosDepois[item.formato] ?? "—")} |`),
+    ...formatos.map((item) => `| ${item.formato} | ${item.publicacoes} (${item.medidos} medidos) | ${medidaInteira(item.alcance_medio)} | ${medidaInteira(item.visualizacoes_medias)} | ${inteiro(item.interacoes)} | ${percentual(item.taxa_engajamento)} | ${(pesosAntes[item.formato] ?? "—")} → ${(pesosDepois[item.formato] ?? "—")} |`),
     "",
     "## Recomendações automáticas da semana",
     "",
@@ -200,6 +222,8 @@ function renderizarRelatorio({ data, inicio, fim, publicacoes = [], canais = {},
 }
 
 module.exports = {
+  definido,
+  mediana,
   atualizarPesos,
   codigoDaLegenda,
   enriquecerPublicacao,
