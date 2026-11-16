@@ -15,6 +15,8 @@
     "videos:story:biblioteca": "node scripts/gerar-biblioteca-videos-story.js",
     "videos:story:validar": "node scripts/validar-biblioteca-videos-story.js",
     "test:captador": "node --test captador/tests/*.test.mjs",
+    "test:relatorio": "node --test tests/relatorio.test.js",
+    "relatorio:semanal": "node src/relatorio/coletar.js",
     "captador:check": "node captador/scripts/verificar-prontidao.mjs"
   },
   "dependencies": {

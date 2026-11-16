@@ -68,7 +68,7 @@ async function exigirGitHubActions(req: Request) {
       audience: OIDC_AUDIENCE,
     });
     const workflow = String(payload.job_workflow_ref || payload.workflow_ref || "");
-    const workflowPermitido = ["captador-meta.yml", "captador-relatorio.yml"]
+    const workflowPermitido = ["captador-meta.yml", "captador-relatorio.yml", "relatorio.yml"]
       .some((arquivo) => workflow.includes(`${GITHUB_REPOSITORY}/.github/workflows/${arquivo}@`));
     return payload.repository === GITHUB_REPOSITORY
       && payload.ref === `refs/heads/${GITHUB_BRANCH}`
