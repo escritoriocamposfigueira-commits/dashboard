@@ -214,7 +214,7 @@ async function sendCopyToContact(page, item, contact, dryRun = false) {
   await page.getByRole("menuitem", { name: "Fotos e vídeos", exact: true }).click();
   const chooser = await chooserPromise;
   await chooser.setFiles(item.video);
-  const caption = page.getByRole("textbox", { name: "Adicione uma legenda" });
+  const caption = page.getByRole("textbox", { name: /Adicione uma legenda|Digite uma mensagem/i }).last();
   await caption.waitFor({ state: "visible", timeout: 30000 });
   await caption.fill(item.caption);
   const send = page.getByRole("button", { name: /Enviar 1 item selecionado/i });
@@ -246,10 +246,11 @@ async function runPost(args) {
   const video = videoIndex >= 0 ? path.resolve(ROOT, args[videoIndex + 1]) : "";
   const caption = captionIndex >= 0 ? args[captionIndex + 1] : "";
   const dryRun = args.includes("--dry-run");
+  const copiesOnly = args.includes("--copies-only");
   validateVideo(video);
   if (dryRun) {
     const item = { code: "TESTE", video, caption };
-    await publishOnPage(null, item, true);
+    if (!copiesOnly) await publishOnPage(null, item, true);
     for (const contact of DELIVERY_CONTACTS) await sendCopyToContact(null, item, contact, true);
     return;
   }
@@ -259,7 +260,7 @@ async function runPost(args) {
       const page = await getPage(context);
       await waitLoggedIn(page);
       const item = { code: publicReference(path.basename(video).split("-")[1]), video, caption };
-      await publishOnPage(page, item);
+      if (!copiesOnly) await publishOnPage(page, item);
       for (const contact of DELIVERY_CONTACTS) await sendCopyToContact(page, item, contact);
     } catch (error) {
       fs.mkdirSync(SCREENSHOT_DIR, { recursive: true });
