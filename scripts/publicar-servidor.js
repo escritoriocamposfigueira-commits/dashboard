@@ -933,8 +933,8 @@ function tipoAgendado() {
   if (["venda", "locacao", "captacao", "captacao_semanal", "recuperar_locacao", "auto"].includes(tipoManual)) return tipoManual;
 
   const agenda = String(process.env.GITHUB_SCHEDULE || "");
-  if (agenda === "0 12 * * *") return "venda";
-  if (agenda === "0 18 * * *" || agenda === "0 21 * * 1") return "locacao";
+  if (agenda === "0 15 * * *") return "venda";
+  if (agenda === "30 20 * * *" || agenda === "0 21 * * 1") return "locacao";
   if (agenda === "10 21 * * 3,6") return "captacao";
   if (agenda === "10 21 * * 0") return "captacao_semanal";
   if (agenda === "30 22 * * *") return "recuperar_locacao";

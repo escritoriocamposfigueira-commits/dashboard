@@ -8,9 +8,20 @@ O publicador usa o **WhatsApp Web oficial**, em um perfil local exclusivo do Chr
 .\scripts\whatsapp-status-parear.ps1
 .\scripts\whatsapp-status-testar.ps1
 .\scripts\whatsapp-status-agendar.ps1
+.\scripts\energia-publicacao-agendar.ps1
 ```
 
 O primeiro comando abre o Chrome oficial para escanear o QR uma única vez. Depois, a tarefa agendada verifica a fila a cada 2 minutos e publica apenas os vídeos novos que já passaram pelo robô. A tarefa também inicia no logon, volta após suspensão e tenta novamente quando houver falha temporária.
+
+Os vídeos são publicados no Status com legenda e, em seguida, enviados em conversa privada para **Renan Silva** e **Henrique Figueira**, com a mesma descrição, para facilitar o repasse. O WhatsApp Web não oferece menção privada no editor de Status; digitar `@` seria apenas texto e não liberaria o botão de republicar.
+
+## Energia no fim de semana
+
+- sexta-feira, às 20:00, o computador entra em suspensão quando ficar ocioso;
+- sábado e domingo, acorda às 11:50, permanece ativo até 13:00 e volta a suspender;
+- sábado e domingo, acorda às 17:20, permanece ativo até 20:00 e volta a suspender;
+- se alguém estiver usando o computador, a suspensão é adiada e depois cancelada com segurança ao atingir o limite;
+- o computador deve permanecer na tomada, conectado à internet e sem ser desligado pelo menu do Windows.
 
 ## Proteções
 

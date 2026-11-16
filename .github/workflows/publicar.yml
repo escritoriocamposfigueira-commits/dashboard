@@ -6,8 +6,8 @@ name: Publicar imóveis (servidor 24h)
 # 1 captação fixa de venda/locação e recuperação diária.
 on:
   schedule:
-    - cron: "0 12 * * *"      # Venda — 09:00 BRT
-    - cron: "0 18 * * *"      # Locação — 15:00 BRT
+    - cron: "0 15 * * *"      # Venda — 12:00 BRT
+    - cron: "30 20 * * *"     # Locação — 17:30 BRT
     - cron: "0 21 * * 1"      # Locação extra — segunda, 18:00 BRT
     - cron: "10 21 * * 3,6"   # Captação — quarta e sábado, 18:10 BRT
     - cron: "10 21 * * 0"     # Captação venda/locação fixa — domingo, 18:10 BRT

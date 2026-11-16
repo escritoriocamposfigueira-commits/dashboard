@@ -13,6 +13,10 @@ const SCREENSHOT_DIR = path.join(ROOT, "output", "whatsapp-status");
 const PUBLICATION_STATE_PATH = process.env.WHATSAPP_PUBLICATION_STATE
   ? path.resolve(process.env.WHATSAPP_PUBLICATION_STATE)
   : path.join(ROOT, "controle", "estado-publicacao.json");
+const DELIVERY_CONTACTS = String(process.env.WHATSAPP_DELIVERY_CONTACTS || "Renan Silva|Henrique Figueira")
+  .split("|")
+  .map((value) => value.trim())
+  .filter(Boolean);
 
 function readJson(file) {
   const target = path.isAbsolute(file) ? file : path.join(ROOT, file);
@@ -91,7 +95,9 @@ function resolvePending(state) {
     const success = String(publication.fb_story || "").startsWith("✅") || String(publication.ig_story || "").startsWith("✅");
     if (!success || !Number.isFinite(publishedAt) || publishedAt <= activatedAt) continue;
     const key = `${publication.data}|${String(publication.codigo).toUpperCase()}`;
-    if (state.posted[key]) continue;
+    const progress = state.posted[key];
+    const delivered = DELIVERY_CONTACTS.every((contact) => progress?.contacts?.[contact]);
+    if (progress?.message_id && delivered) continue;
 
     const capture = captures.find((item) => item.id === publication.codigo && item.arquivo_video);
     if (capture) {
@@ -184,6 +190,39 @@ async function publishOnPage(page, item, dryRun = false) {
   return `web-${Date.now()}`;
 }
 
+async function openContact(page, contact) {
+  await page.getByRole("button", { name: "Conversas", exact: true }).click();
+  const search = page.getByRole("textbox", { name: "Pesquisar ou começar uma nova conversa" });
+  await search.waitFor({ state: "visible", timeout: 30000 });
+  await search.fill(contact);
+  const matches = page.getByText(contact, { exact: true });
+  await matches.first().waitFor({ state: "visible", timeout: 30000 });
+  const count = await matches.count();
+  if (count !== 1) throw new Error(`Contato ausente ou ambiguo no WhatsApp: ${contact} (${count} resultados)`);
+  await matches.first().click();
+  await page.getByRole("textbox", { name: `Digite uma mensagem para ${contact}`, exact: true }).waitFor({ state: "visible", timeout: 30000 });
+}
+
+async function sendCopyToContact(page, item, contact, dryRun = false) {
+  if (dryRun) {
+    console.log(`DRY-RUN: copia de ${item.code} -> ${contact}`);
+    return;
+  }
+  await openContact(page, contact);
+  await page.getByRole("button", { name: "Anexar", exact: true }).click();
+  const chooserPromise = page.waitForEvent("filechooser", { timeout: 15000 });
+  await page.getByRole("menuitem", { name: "Fotos e vídeos", exact: true }).click();
+  const chooser = await chooserPromise;
+  await chooser.setFiles(item.video);
+  const caption = page.getByRole("textbox", { name: "Adicione uma legenda" });
+  await caption.waitFor({ state: "visible", timeout: 30000 });
+  await caption.fill(item.caption);
+  const send = page.getByRole("button", { name: /Enviar 1 item selecionado/i });
+  await send.click();
+  await send.waitFor({ state: "hidden", timeout: 120000 });
+  console.log(`Copia enviada: ${item.code} -> ${contact}`);
+}
+
 async function withLock(callback) {
   fs.mkdirSync(path.dirname(LOCK_PATH), { recursive: true });
   let handle;
@@ -208,13 +247,20 @@ async function runPost(args) {
   const caption = captionIndex >= 0 ? args[captionIndex + 1] : "";
   const dryRun = args.includes("--dry-run");
   validateVideo(video);
-  if (dryRun) return publishOnPage(null, { code: "TESTE", video, caption }, true);
+  if (dryRun) {
+    const item = { code: "TESTE", video, caption };
+    await publishOnPage(null, item, true);
+    for (const contact of DELIVERY_CONTACTS) await sendCopyToContact(null, item, contact, true);
+    return;
+  }
   await withLock(async () => {
     const context = await launch(args.includes("--visible") ? false : true);
     try {
       const page = await getPage(context);
       await waitLoggedIn(page);
-      await publishOnPage(page, { code: publicReference(path.basename(video).split("-")[1]), video, caption });
+      const item = { code: publicReference(path.basename(video).split("-")[1]), video, caption };
+      await publishOnPage(page, item);
+      for (const contact of DELIVERY_CONTACTS) await sendCopyToContact(page, item, contact);
     } catch (error) {
       fs.mkdirSync(SCREENSHOT_DIR, { recursive: true });
       const page = context.pages()[0];
@@ -249,9 +295,20 @@ async function runSync(args) {
       const page = await getPage(context);
       await waitLoggedIn(page);
       for (const item of pending) {
-        const messageId = await publishOnPage(page, item);
-        state.posted[item.key] = { codigo: item.code, data: item.date, video: item.video, message_id: messageId };
-        saveSyncState(state);
+        const progress = state.posted[item.key] || { codigo: item.code, data: item.date, video: item.video, contacts: {} };
+        progress.contacts ||= {};
+        if (!progress.message_id) {
+          progress.message_id = await publishOnPage(page, item);
+          state.posted[item.key] = progress;
+          saveSyncState(state);
+        }
+        for (const contact of DELIVERY_CONTACTS) {
+          if (progress.contacts[contact]) continue;
+          await sendCopyToContact(page, item, contact);
+          progress.contacts[contact] = { sent_at: new Date().toISOString() };
+          state.posted[item.key] = progress;
+          saveSyncState(state);
+        }
       }
     } catch (error) {
       fs.mkdirSync(SCREENSHOT_DIR, { recursive: true });
@@ -278,7 +335,9 @@ async function audit() {
     try { validateVideo(path.join(ROOT, capture.arquivo_video)); } catch (error) { errors.push(error.message); }
   }
   if (errors.length) throw new Error(errors.join("\n"));
-  console.log(`Auditoria aprovada: ${videos.length} imóveis e ${captures.length} vídeos fixos.`);
+  if (DELIVERY_CONTACTS.length !== 2) errors.push(`Quantidade inesperada de contatos para copia: ${DELIVERY_CONTACTS.length}`);
+  if (errors.length) throw new Error(errors.join("\n"));
+  console.log(`Auditoria aprovada: ${videos.length} imóveis, ${captures.length} vídeos fixos e ${DELIVERY_CONTACTS.length} contatos de entrega.`);
 }
 
 async function main() {
