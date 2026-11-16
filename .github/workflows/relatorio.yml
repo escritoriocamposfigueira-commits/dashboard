@@ -26,6 +26,15 @@ jobs:
       CAPTADOR_OIDC_AUDIENCE: https://ggfjmqttrktsfcaymsvu.supabase.co/functions/v1/captador-api/meta-poll
     steps:
       - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          sparse-checkout: |
+            src/relatorio
+            tests/relatorio.test.js
+            config/pesos-formatos.json
+            controle/estado-publicacao.json
+            relatorios/performance
+            package.json
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
