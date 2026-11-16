@@ -47,6 +47,7 @@ const ESTADO    = path.join(RAIZ, "controle/estado-publicacao.json");
 const VIDEOS    = path.join(RAIZ, "public/videos");
 const TMP       = path.join(RAIZ, ".tmp-videos");
 const PRIORIDADE_VENDAS_ARQUIVO = path.join(RAIZ, "src/content/prioridade-vendas.json");
+const PESOS_FORMATOS_ARQUIVO = path.join(RAIZ, "config/pesos-formatos.json");
 const CODIGOS_INATIVOS = carregarCodigosInativos();
 const JANELA_DUPLICIDADE_HORAS = 30;
 
@@ -793,6 +794,8 @@ let ALIASES_IMOVEIS = {};
 try { ALIASES_IMOVEIS = JSON.parse(fs.readFileSync(ALIASES_IMOVEIS_ARQUIVO, "utf-8")); } catch {}
 let FOTOS = {};
 try { FOTOS = JSON.parse(fs.readFileSync(path.join(RAIZ, "src/content/fotos-imoveis.json"), "utf-8")); } catch {}
+let PESOS_FORMATOS = { feed: 1, reel: 1, story: 1, video: 1 };
+try { PESOS_FORMATOS = { ...PESOS_FORMATOS, ...JSON.parse(fs.readFileSync(PESOS_FORMATOS_ARQUIVO, "utf-8")) }; } catch {}
 const ALIASES_FOTOS = {
   "CASA INDAIA BERTIOGA": "1F",
   "CASA JARDIM ARMENIA": "57D",
@@ -815,6 +818,39 @@ function ordenarVendasPorPrioridade(codigos) {
   return [...prioritarios, ...(codigos || []).map(String).filter((codigo) => !priorizados.has(codigo))];
 }
 
+function escolherFormatoPrincipal(estado = {}, pesos = PESOS_FORMATOS) {
+  const pesoFeed = Math.max(0, Number(pesos.feed) || 0);
+  const pesoReel = Math.max(0, Number(pesos.reel) || 0);
+  const total = pesoFeed + pesoReel;
+  if (!total) return "reel";
+  const proporcaoReel = pesoReel / total;
+  const indice = Number(estado.contadorFormato ?? estado.indice ?? 0);
+  // Sequência quase uniforme: evita publicar seis Reels seguidos e depois quatro feeds.
+  const posicao = ((indice * 0.61803398875) % 1 + 1) % 1;
+  return posicao < proporcaoReel ? "reel" : "feed";
+}
+
+function legendaCompactaParaVideo(caption = "") {
+  const linhas = String(caption).split(/\r?\n/).map((linha) => linha.trim()).filter(Boolean);
+  const escolhidas = [];
+  const adicionar = (linha) => {
+    if (linha && !escolhidas.includes(linha)) escolhidas.push(linha);
+  };
+  linhas.slice(0, 2).forEach(adicionar);
+  linhas.filter((linha) => /^(🏡|🏢|🏖️|📍|💰)/u.test(linha)).slice(0, 4).forEach(adicionar);
+  linhas.filter((linha) => /^✅/u.test(linha)).slice(0, 4).forEach(adicionar);
+  const indiceCta = linhas.findIndex((linha) => /Manda .+ no WhatsApp|Fale com|Chame no WhatsApp/i.test(linha));
+  if (indiceCta >= 0) {
+    adicionar(linhas[indiceCta]);
+    adicionar(linhas[indiceCta + 1]);
+  }
+  linhas.filter((linha) => /escritoriocamposfigueira\.com\.br|CRECI-PJ/i.test(linha)).forEach(adicionar);
+  const hashtags = linhas.filter((linha) => linha.startsWith("#"))
+    .flatMap((linha) => linha.split(/\s+/)).slice(0, 6).join(" ");
+  adicionar(hashtags);
+  return escolhidas.join("\n\n");
+}
+
 function registroTeveSucesso(registro) {
   return Boolean(registro?.deduplicado) || Object.values(registro || {})
     .some((valor) => typeof valor === "string" && valor.startsWith("✅"));
@@ -822,7 +858,10 @@ function registroTeveSucesso(registro) {
 
 function registroPublicacaoCompleta(registro) {
   if (registro?.deduplicado) return true;
-  const canais = ["fb_feed", "fb_story", "ig_feed", "ig_story"];
+  const formato = registro?.formato_principal || "feed";
+  const canais = formato === "reel"
+    ? ["fb_reel", "fb_story", "ig_reel", "ig_story"]
+    : ["fb_feed", "fb_story", "ig_feed", "ig_story"];
   if (typeof registro?.youtube === "string" && !registro.youtube.includes("sem chave YT")) {
     canais.push("youtube");
   }
@@ -871,6 +910,7 @@ function avancarPonteiros(estado, plano, manifest) {
   }
   if (plano.tipo !== "locacao") estado.contadorNaoLoc = (estado.contadorNaoLoc || 0) + 1;
   estado.indice = (estado.indice || 0) + 1;
+  estado.contadorFormato = (estado.contadorFormato || 0) + 1;
 }
 
 function semanaISO(d) {
@@ -1082,18 +1122,23 @@ async function main() {
       ? estado.retryLocacao
       : null;
   const retryAnterior = retryPublicacao?.reg || retryLocacao?.reg || null;
+  const formatoPrincipal = retryAnterior?.formato_principal || escolherFormatoPrincipal(estado);
+  const captionVideo = legendaCompactaParaVideo(caption);
+  const captionPublica = formatoPrincipal === "reel" ? captionVideo : caption;
+  console.log(`  Formato permanente desta execução: ${formatoPrincipal} (pesos feed=${PESOS_FORMATOS.feed}, reel=${PESOS_FORMATOS.reel})`);
 
   const forcarRepublicacao = /^(1|true|sim|yes)$/i.test(String(process.env.PUBLICACAO_FORCAR || ""));
   if (!forcarRepublicacao && !retryAnterior) {
     const duplicadoEstado = publicadoRecentementeNoEstado(estado, codigo);
     const postFacebook = duplicadoEstado
       ? null
-      : await localizarPublicacaoRecenteFacebook(token, caption);
+      : await localizarPublicacaoRecenteFacebook(token, captionPublica);
     if (duplicadoEstado || postFacebook) {
       const origem = duplicadoEstado ? "estado versionado" : `Facebook (${postFacebook.id})`;
       const registroDeduplicado = {
         codigo,
         data: new Date().toISOString(),
+        formato_principal: formatoPrincipal,
         deduplicado: true,
         observacao: `não republicado: publicação equivalente encontrada no ${origem}`,
       };
@@ -1228,6 +1273,7 @@ async function main() {
   const reg = {
     codigo,
     data: new Date().toISOString(),
+    formato_principal: formatoPrincipal,
     trilha: trilhaSelecionada?.id || "—",
     modelo_video: modeloSelecionado?.id || "—",
     fb_feed: "—",
@@ -1249,7 +1295,9 @@ async function main() {
     return false;
   };
 
-  if (!manterCanalConcluido("fb_feed")) {
+  if (formatoPrincipal !== "feed") {
+    reg.fb_feed = "— (alternância: Reel nesta execução)";
+  } else if (!manterCanalConcluido("fb_feed")) {
     try {
       reg.fb_feed = "✅ " + await comRetry(() => publicarFeedFacebook(token, urlFeed, caption), "FB Feed");
     } catch (e) { reg.fb_feed = "❌ " + e.message; }
@@ -1265,15 +1313,19 @@ async function main() {
   console.log("  FB Story:", reg.fb_story);
 
   // FB Reel (feed permanente + alcança quem não curte a página) — só quando há vídeo
-  if (!manterCanalConcluido("fb_reel")) {
+  if (formatoPrincipal !== "reel") {
+    reg.fb_reel = "— (alternância: Feed nesta execução)";
+  } else if (!manterCanalConcluido("fb_reel")) {
     try {
       if (!videoPath) throw new Error(`Vídeo obrigatório indisponível: ${erroVideo || "motivo desconhecido"}`);
-      reg.fb_reel = "✅ " + await publicarReelFacebook(token, videoPath, caption);
+      reg.fb_reel = "✅ " + await publicarReelFacebook(token, videoPath, captionVideo);
     } catch (e) { reg.fb_reel = "❌ " + e.message; }
   }
   console.log("  FB Reel :", reg.fb_reel);
 
-  if (!manterCanalConcluido("ig_feed")) {
+  if (formatoPrincipal !== "feed") {
+    reg.ig_feed = "— (alternância: Reel nesta execução)";
+  } else if (!manterCanalConcluido("ig_feed")) {
     try {
       if (!ehCaptacao) {
         const slides = [urlFeed, ...fotosValidadas].slice(0, 10); // arte premium + fotos reais disponíveis
@@ -1303,10 +1355,12 @@ async function main() {
   console.log("  IG Story:", reg.ig_story);
 
   // IG Reel (feed permanente + alcança quem não segue) — só quando há vídeo público
-  if (!manterCanalConcluido("ig_reel")) {
+  if (formatoPrincipal !== "reel") {
+    reg.ig_reel = "— (alternância: Feed nesta execução)";
+  } else if (!manterCanalConcluido("ig_reel")) {
     try {
       if (!videoPath || !videoUrl) throw new Error(`Vídeo obrigatório indisponível: ${erroVideo || "motivo desconhecido"}`);
-      reg.ig_reel = "✅ " + await publicarReelInstagram(token, videoUrl, caption);
+      reg.ig_reel = "✅ " + await publicarReelInstagram(token, videoUrl, captionVideo);
     } catch (e) { reg.ig_reel = "❌ " + e.message; }
   }
   console.log("  IG Reel :", reg.ig_reel);
@@ -1315,7 +1369,7 @@ async function main() {
   if (!manterCanalConcluido("youtube")) {
     try {
       if (temChavesYouTube() && videoPath) {
-        reg.youtube = "✅ " + await publicarYouTubeShort(videoPath, caption);
+        reg.youtube = "✅ " + await publicarYouTubeShort(videoPath, captionVideo);
       } else {
         reg.youtube = temChavesYouTube() ? "— (sem vídeo)" : "— (sem chave YT)";
       }
@@ -1338,7 +1392,9 @@ async function main() {
   console.log("  TikTok  :", reg.tiktok);
 
   // ── Avançar fila ──────────────────────────────────────────────────────────
-  const canaisObrigatorios = ["fb_feed", "fb_story", "ig_feed", "ig_story"];
+  const canaisObrigatorios = formatoPrincipal === "reel"
+    ? ["fb_reel", "fb_story", "ig_reel", "ig_story"]
+    : ["fb_feed", "fb_story", "ig_feed", "ig_story"];
   if (temChavesYouTube()) canaisObrigatorios.push("youtube");
   const publicacaoCompleta = canaisObrigatorios.every((canal) => reg[canal].startsWith("✅"));
   const tentativasAnteriores = retryPublicacao?.tentativas
@@ -1411,6 +1467,8 @@ module.exports = {
   comRetryRede,
   ehErroRedeTransitorio,
   escolherProximo,
+  escolherFormatoPrincipal,
+  legendaCompactaParaVideo,
   normalizarLegenda,
   ordenarVendasPorPrioridade,
   publicadoRecentementeNoEstado,

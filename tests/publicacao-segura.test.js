@@ -9,11 +9,49 @@ const {
   comRetryRede,
   ehErroRedeTransitorio,
   escolherProximo,
+  escolherFormatoPrincipal,
+  legendaCompactaParaVideo,
   publicadoRecentementeNoEstado,
   registroPublicacaoCompleta,
   resolverVideoCaptacao,
   resolverVideoImovelPronto,
 } = require("../scripts/publicar-servidor");
+
+test("alternância favorece Reel sem eliminar o carrossel", () => {
+  const formatos = Array.from({ length: 20 }, (_, indice) =>
+    escolherFormatoPrincipal({ indice }, { feed: 0.8, reel: 1.2 }));
+  const reels = formatos.filter((item) => item === "reel").length;
+  const feeds = formatos.filter((item) => item === "feed").length;
+  assert.ok(reels > feeds);
+  assert.ok(feeds >= 6);
+});
+
+test("legenda de vídeo mantém fatos, CTA e reduz o bloco social", () => {
+  const caption = [
+    "Seu imóvel pode virar patrimônio.",
+    "Uma oportunidade real em Mogi.",
+    "🏡 Casa — Centro",
+    "💰 R$ 300.000",
+    "✅ 2 dormitórios",
+    "✅ 1 vaga",
+    "✅ quintal",
+    "✅ financiamento bancário",
+    "✅ linha excedente",
+    "👇 Manda \"CENTRO 123\" no WhatsApp agora:",
+    "📲 https://wa.me/551123785643",
+    "📲 instagram.com/exemplo",
+    "✅ https://www.escritoriocamposfigueira.com.br",
+    "CRECI-PJ: 043649-J",
+    "#mogidascruzes #imoveismogi #casaavenda #imobiliariamogi #extra #mais #corta",
+  ].join("\n");
+  const curta = legendaCompactaParaVideo(caption);
+  assert.match(curta, /R\$ 300\.000/);
+  assert.match(curta, /wa\.me\/551123785643/);
+  assert.match(curta, /CRECI-PJ/);
+  assert.doesNotMatch(curta, /instagram\.com\/exemplo/);
+  assert.doesNotMatch(curta, /linha excedente/);
+  assert.ok(curta.length < caption.length);
+});
 
 test("reconhece falhas transitórias de DNS, timeout e servidor", () => {
   assert.equal(ehErroRedeTransitorio("getaddrinfo ENOTFOUND exemplo.com"), true);
@@ -133,6 +171,12 @@ test("locação só conta como concluída com Feed e Story nas duas redes", () =
   assert.equal(registroPublicacaoCompleta({
     fb_feed: "✅ ok", fb_story: "✅ ok", ig_feed: "✅ ok", ig_story: "✅ ok", youtube: "✅ short",
   }), true);
+  assert.equal(registroPublicacaoCompleta({
+    formato_principal: "reel", fb_reel: "✅ ok", fb_story: "✅ ok", ig_reel: "✅ ok", ig_story: "✅ ok",
+  }), true);
+  assert.equal(registroPublicacaoCompleta({
+    formato_principal: "reel", fb_reel: "✅ ok", fb_story: "✅ ok", ig_reel: "❌ falhou", ig_story: "✅ ok",
+  }), false);
 });
 
 test("locação incompleta continua pendente sem bloquear as ainda não tentadas", () => {
