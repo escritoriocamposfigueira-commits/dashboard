@@ -23,6 +23,6 @@ function Install-EnergyTask {
 
 Install-EnergyTask -Name "Campos Figueira - Sexta suspender" -Days Friday -At "20:00" -KeepAwake 0 -WaitIdle 240
 Install-EnergyTask -Name "Campos Figueira - Fim de semana meio-dia" -Days Saturday,Sunday -At "11:50" -KeepAwake 70 -WaitIdle 120
-Install-EnergyTask -Name "Campos Figueira - Fim de semana tarde" -Days Saturday,Sunday -At "17:20" -KeepAwake 160 -WaitIdle 120
+Install-EnergyTask -Name "Campos Figueira - Fim de semana tarde" -Days Saturday,Sunday -At "15:50" -KeepAwake 70 -WaitIdle 120
 
-Write-Host "Energia automatica instalada: sexta 20:00; sabado e domingo 11:50 e 17:20." -ForegroundColor Green
+Write-Host "Energia automatica instalada: sexta 20:00; sabado e domingo 11:50 e 15:50." -ForegroundColor Green
