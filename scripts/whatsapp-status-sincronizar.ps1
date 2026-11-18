@@ -19,6 +19,9 @@ if ((Test-Path -LiteralPath $LogPath) -and (Get-Item -LiteralPath $LogPath).Leng
 }
 
 $Utf8SemBom = New-Object System.Text.UTF8Encoding($false)
+# Windows PowerShell uses the console code page to decode native stdout.
+# Git stores the JSON in UTF-8, including the success marker used by the queue.
+[Console]::OutputEncoding = $Utf8SemBom
 
 function Write-StatusLog {
   param([Parameter(Mandatory = $true)][string]$Message)
@@ -39,13 +42,15 @@ if (-not $SemAtualizarRepositorio) {
     $RemoteState = & git show "${RemoteHead}:controle/estado-publicacao.json" 2>&1
     if ($LASTEXITCODE -eq 0) {
       [System.IO.File]::WriteAllText($RemoteStatePath, (($RemoteState -join "`n") + "`n"), $Utf8SemBom)
-      $env:WHATSAPP_PUBLICATION_STATE = $RemoteStatePath
     } else {
       Write-StatusLog "AVISO: estado remoto indisponivel; usando o estado local."
     }
   } else {
     Write-StatusLog "AVISO: GitHub indisponivel; usando o estado local."
   }
+}
+if (Test-Path -LiteralPath $RemoteStatePath) {
+  $env:WHATSAPP_PUBLICATION_STATE = $RemoteStatePath
 }
 
 $Arguments = @(".\scripts\whatsapp-status-web.js", "sync")

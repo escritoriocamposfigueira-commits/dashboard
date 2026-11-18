@@ -583,38 +583,47 @@ async function publicarReelFacebook(token, videoPath, caption) {
   return finish.post_id || finish.id || videoId;
 }
 
-// IG Story: precisa de URL pública para video_url
-// IG Reel: mesmo vídeo 9:16, vai pro FEED (permanente) e alcança quem não segue
-async function publicarReelInstagram(token, videoUrl, caption) {
-  const cont = await apiPost(`${IG_ID}/media`, {
-    media_type: "REELS", video_url: videoUrl, caption, share_to_feed: true, access_token: token,
-  });
-  if (cont.error) throw new Error("IG Reel container: " + cont.error.message);
-  for (let i = 0; i < 40; i++) { // Reel processa mais devagar (até ~2min)
-    await sleep(3000);
-    const st = await apiGet(`${cont.id}?fields=status_code&access_token=${encodeURIComponent(token)}`);
-    if (st.status_code === "FINISHED") break;
-    if (st.status_code === "ERROR") throw new Error("IG Reel container ERROR");
+async function concluirVideoInstagram({ consultar, publicar, aguardar = sleep, limite = 12 }) {
+  for (let tentativa = 0; tentativa < limite; tentativa++) {
+    await aguardar(10000);
+    const estado = await consultar();
+    if (estado.error) throw new Error("consulta: " + estado.error.message);
+    if (estado.status_code === "PUBLISHED") return "publicado (container confirmado)";
+    if (["ERROR", "EXPIRED"].includes(estado.status_code)) {
+      throw new Error("container " + estado.status_code);
+    }
+    if (estado.status_code !== "FINISHED") continue;
+    const resposta = await publicar();
+    if (resposta.id) return resposta.id;
+    if (Number(resposta.error?.code) === 9007 || /media id is not available/i.test(resposta.error?.message || "")) {
+      continue; // aguarda e consulta o mesmo container, sem criar um segundo vídeo.
+    }
+    throw new Error("publish: " + (resposta.error?.message || "sem ID de confirmação"));
   }
-  const pub = await apiPost(`${IG_ID}/media_publish`, { creation_id: cont.id, access_token: token });
-  if (pub.error) throw new Error("IG Reel publish: " + pub.error.message);
-  return pub.id;
+  throw new Error("container não ficou disponível para publicação no prazo");
 }
 
-async function publicarVideoStoryInstagram(token, videoUrl) {
-  const cont = await apiPost(`${IG_ID}/media`, {
-    video_url: videoUrl, media_type: "STORIES", access_token: token,
-  });
-  if (cont.error) throw new Error("IG Story container: " + cont.error.message);
-  for (let i = 0; i < 24; i++) {
-    await sleep(2500);
-    const st = await apiGet(`${cont.id}?fields=status_code&access_token=${encodeURIComponent(token)}`);
-    if (st.status_code === "FINISHED") break;
-    if (st.status_code === "ERROR") throw new Error("IG Story container ERROR");
+async function publicarVideoInstagram(token, dados, rotulo) {
+  const cont = await apiPost(`${IG_ID}/media`, { ...dados, access_token: token });
+  if (!cont.id) throw new Error(`${rotulo} container: ${cont.error?.message || "sem ID"}`);
+  try {
+    return await concluirVideoInstagram({
+      consultar: () => apiGet(`${cont.id}?fields=status_code&access_token=${encodeURIComponent(token)}`),
+      publicar: () => apiPost(`${IG_ID}/media_publish`, { creation_id: cont.id, access_token: token }),
+    });
+  } catch (erro) {
+    throw new Error(`${rotulo}: ${erro.message}`);
   }
-  const pub = await apiPost(`${IG_ID}/media_publish`, { creation_id: cont.id, access_token: token });
-  if (pub.error) throw new Error("IG Story publish: " + pub.error.message);
-  return pub.id;
+}
+
+function publicarReelInstagram(token, videoUrl, caption) {
+  return publicarVideoInstagram(token, {
+    media_type: "REELS", video_url: videoUrl, caption, share_to_feed: true,
+  }, "IG Reel");
+}
+
+function publicarVideoStoryInstagram(token, videoUrl) {
+  return publicarVideoInstagram(token, { video_url: videoUrl, media_type: "STORIES" }, "IG Story");
 }
 
 // ════════════════════════════════════════════════════════════════════════════
@@ -836,6 +845,11 @@ function escolherFormatoPrincipal(estado = {}, pesos = PESOS_FORMATOS) {
   return posicao < proporcaoReel ? "reel" : "feed";
 }
 
+function formatoDaExecucao(estado, retryAnterior, configuracao) {
+  if (configuracao === "reel") return "reel";
+  return retryAnterior?.formato_principal || escolherFormatoPrincipal(estado);
+}
+
 function legendaCompactaParaVideo(caption = "") {
   const linhas = String(caption).split(/\r?\n/).map((linha) => linha.trim()).filter(Boolean);
   const escolhidas = [];
@@ -928,13 +942,13 @@ function semanaISO(d) {
   return `${dt.getUTCFullYear()}-W${String(semana).padStart(2, "0")}`;
 }
 
-function tipoAgendado() {
-  const tipoManual = String(process.env.PUBLICACAO_TIPO || "").toLowerCase();
+function tipoAgendado(env = process.env) {
+  const tipoManual = String(env.PUBLICACAO_TIPO || "").toLowerCase();
   if (["venda", "locacao", "captacao", "captacao_semanal", "recuperar_locacao", "auto"].includes(tipoManual)) return tipoManual;
 
-  const agenda = String(process.env.GITHUB_SCHEDULE || "");
-  if (agenda === "0 15 * * *") return "venda";
-  if (agenda === "30 20 * * *" || agenda === "0 21 * * 1") return "locacao";
+  const agenda = String(env.GITHUB_SCHEDULE || "");
+  if (agenda === "7 15 * * *" || agenda === "0 15 * * *") return "venda";
+  if (["7 19 * * *", "0 19 * * *", "30 20 * * *", "0 21 * * 1"].includes(agenda)) return "locacao";
   if (agenda === "10 21 * * 3,6") return "captacao";
   if (agenda === "10 21 * * 0") return "captacao_semanal";
   if (agenda === "30 22 * * *") return "recuperar_locacao";
@@ -1128,7 +1142,7 @@ async function main() {
       ? estado.retryLocacao
       : null;
   const retryAnterior = retryPublicacao?.reg || retryLocacao?.reg || null;
-  const formatoPrincipal = retryAnterior?.formato_principal || escolherFormatoPrincipal(estado);
+  const formatoPrincipal = formatoDaExecucao(estado, retryAnterior, process.env.PUBLICACAO_FORMATO);
   const captionVideo = legendaCompactaParaVideo(caption);
   const captionPublica = formatoPrincipal === "reel" ? captionVideo : caption;
   console.log(`  Formato permanente desta execução: ${formatoPrincipal} (pesos feed=${PESOS_FORMATOS.feed}, reel=${PESOS_FORMATOS.reel})`);
@@ -1278,7 +1292,7 @@ async function main() {
   // ── Publicar ─────────────────────────────────────────────────────────────
   const reg = {
     codigo,
-    data: new Date().toISOString(),
+    data: retryAnterior?.data || new Date().toISOString(),
     formato_principal: formatoPrincipal,
     trilha: trilhaSelecionada?.id || "—",
     modelo_video: modeloSelecionado?.id || "—",
@@ -1301,9 +1315,7 @@ async function main() {
     return false;
   };
 
-  if (formatoPrincipal !== "feed") {
-    reg.fb_feed = "— (alternância: Reel nesta execução)";
-  } else if (!manterCanalConcluido("fb_feed")) {
+  if (!manterCanalConcluido("fb_feed") && formatoPrincipal === "feed") {
     try {
       reg.fb_feed = "✅ " + await comRetry(() => publicarFeedFacebook(token, urlFeed, caption), "FB Feed");
     } catch (e) { reg.fb_feed = "❌ " + e.message; }
@@ -1329,9 +1341,7 @@ async function main() {
   }
   console.log("  FB Reel :", reg.fb_reel);
 
-  if (formatoPrincipal !== "feed") {
-    reg.ig_feed = "— (alternância: Reel nesta execução)";
-  } else if (!manterCanalConcluido("ig_feed")) {
+  if (!manterCanalConcluido("ig_feed") && formatoPrincipal === "feed") {
     try {
       if (!ehCaptacao) {
         const slides = [urlFeed, ...fotosValidadas].slice(0, 10); // arte premium + fotos reais disponíveis
@@ -1471,9 +1481,11 @@ if (require.main === module) {
 module.exports = {
   avancarPonteiros,
   comRetryRede,
+  concluirVideoInstagram,
   ehErroRedeTransitorio,
   escolherProximo,
   escolherFormatoPrincipal,
+  formatoDaExecucao,
   legendaCompactaParaVideo,
   normalizarLegenda,
   ordenarVendasPorPrioridade,

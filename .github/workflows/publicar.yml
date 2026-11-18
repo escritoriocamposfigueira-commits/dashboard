@@ -6,8 +6,8 @@ name: Publicar imóveis (servidor 24h)
 # 1 captação fixa de venda/locação e recuperação diária.
 on:
   schedule:
-    - cron: "0 15 * * *"      # Venda — 12:00 BRT
-    - cron: "0 19 * * *"      # Locação — 16:00 BRT; Status WhatsApp às 16:30
+    - cron: "7 15 * * *"      # Venda — 12:07 BRT; Status WhatsApp às 12:30
+    - cron: "7 19 * * *"      # Locação — 16:07 BRT; Status WhatsApp às 16:30
     - cron: "0 21 * * 1"      # Locação extra — segunda, 18:00 BRT
     - cron: "10 21 * * 3,6"   # Captação — quarta e sábado, 18:10 BRT
     - cron: "10 21 * * 0"     # Captação venda/locação fixa — domingo, 18:10 BRT
@@ -77,6 +77,7 @@ jobs:
           PUBLICACAO_TIPO: ${{ inputs.tipo_publicacao || '' }}
           PUBLICACAO_CODIGO: ${{ inputs.codigo_imovel || '' }}
           PUBLICACAO_FORCAR: ${{ inputs.forcar_republicacao || 'false' }}
+          PUBLICACAO_FORMATO: reel
           CAPTADOR_ENABLED: ${{ vars.CAPTADOR_ENABLED || 'true' }}
           CAPTADOR_PAGES_URL: ${{ vars.CAPTADOR_PAGES_URL || 'https://escritoriocamposfigueira-commits.github.io/dashboard/captador' }}
           CAPTADOR_SOCIAL_COMMENTS_ACTIVE: ${{ vars.CAPTADOR_SOCIAL_COMMENTS_ACTIVE || 'true' }}

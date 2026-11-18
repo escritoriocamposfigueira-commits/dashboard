@@ -10,7 +10,6 @@ $ErrorActionPreference = "Stop"
 $RepoRoot = Split-Path -Parent $PSScriptRoot
 $LogDir = Join-Path $RepoRoot "logs"
 $LogPath = Join-Path $LogDir "energia-publicacao.log"
-$SyncTask = "Campos Figueira - Status WhatsApp"
 $Utf8SemBom = New-Object System.Text.UTF8Encoding($false)
 New-Item -ItemType Directory -Force -Path $LogDir | Out-Null
 
@@ -57,7 +56,6 @@ if ($DryRun) {
 try {
   [void][EnergyPublication.Native]::SetThreadExecutionState($EsContinuous -bor $EsSystemRequired)
   Write-EnergyLog "JANELA INICIADA: acordado por $ManterAcordadoMinutos minutos."
-  Start-ScheduledTask -TaskName $SyncTask -ErrorAction SilentlyContinue
 
   while ((Get-Date) -lt $KeepUntil) {
     Start-Sleep -Seconds 30

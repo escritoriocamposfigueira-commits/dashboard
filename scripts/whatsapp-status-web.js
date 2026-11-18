@@ -81,8 +81,22 @@ function saveSyncState(state) {
   fs.renameSync(temp, STATE_PATH);
 }
 
+function confirmedVideoPublications(snapshot) {
+  const publications = [...(snapshot.publicados || []), snapshot.retryPublicacao?.reg, snapshot.retryLocacao?.reg];
+  const confirmed = new Map();
+  for (const publication of publications) {
+    if (!publication?.codigo || !Number.isFinite(Date.parse(publication.data))) continue;
+    const hasVideo = ["fb_story", "ig_story", "fb_reel", "ig_reel"].some((channel) =>
+      String(publication[channel] || "").startsWith("✅") && !/\(imagem\)/i.test(publication[channel]));
+    if (!hasVideo) continue;
+    const key = `${publication.data}|${String(publication.codigo).toUpperCase()}`;
+    confirmed.set(key, publication);
+  }
+  return confirmed;
+}
+
 function resolvePending(state) {
-  const publications = readJson(PUBLICATION_STATE_PATH).publicados || [];
+  const publications = confirmedVideoPublications(readJson(PUBLICATION_STATE_PATH));
   const videos = readJson(path.join("src", "content", "videos-imoveis.json"));
   const captions = readJson(path.join("src", "content", "captions-imoveis.json"));
   const captures = readJson(path.join("src", "content", "captacao.json"));
@@ -90,11 +104,9 @@ function resolvePending(state) {
   const activatedAt = Date.parse(state.activated_at);
   const pending = [];
 
-  for (const publication of publications) {
+  for (const [key, publication] of publications) {
     const publishedAt = Date.parse(publication.data);
-    const success = String(publication.fb_story || "").startsWith("✅") || String(publication.ig_story || "").startsWith("✅");
-    if (!success || !Number.isFinite(publishedAt) || publishedAt <= activatedAt) continue;
-    const key = `${publication.data}|${String(publication.codigo).toUpperCase()}`;
+    if (publishedAt <= activatedAt) continue;
     const progress = state.posted[key];
     const delivered = DELIVERY_CONTACTS.every((contact) => progress?.contacts?.[contact]);
     if (progress?.message_id && delivered) continue;
@@ -278,7 +290,7 @@ async function runSync(args) {
   const dryRun = args.includes("--dry-run");
   const { created, state } = loadSyncState();
   if (created) {
-    saveSyncState(state);
+    if (!dryRun) saveSyncState(state);
     console.log("Fila inicializada; publicações antigas não serão repetidas.");
     return;
   }
@@ -352,7 +364,11 @@ async function main() {
   throw new Error("Use: pair | post | sync | audit");
 }
 
-main().catch((error) => {
-  console.error(`ERRO: ${error.message}`);
-  process.exitCode = 1;
-});
+if (require.main === module) {
+  main().catch((error) => {
+    console.error(`ERRO: ${error.message}`);
+    process.exitCode = 1;
+  });
+}
+
+module.exports = { confirmedVideoPublications };

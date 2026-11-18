@@ -7,14 +7,17 @@ const assert = require("node:assert/strict");
 const {
   avancarPonteiros,
   comRetryRede,
+  concluirVideoInstagram,
   ehErroRedeTransitorio,
   escolherProximo,
   escolherFormatoPrincipal,
+  formatoDaExecucao,
   legendaCompactaParaVideo,
   publicadoRecentementeNoEstado,
   registroPublicacaoCompleta,
   resolverVideoCaptacao,
   resolverVideoImovelPronto,
+  tipoAgendado,
 } = require("../scripts/publicar-servidor");
 
 test("alternância favorece Reel sem eliminar o carrossel", () => {
@@ -24,6 +27,42 @@ test("alternância favorece Reel sem eliminar o carrossel", () => {
   const feeds = formatos.filter((item) => item === "feed").length;
   assert.ok(reels > feeds);
   assert.ok(feeds >= 6);
+});
+
+test("produção publica Reel mesmo se a tentativa anterior só publicou fotos", () => {
+  const anterior = { formato_principal: "feed" };
+  assert.equal(formatoDaExecucao({}, anterior, "reel"), "reel");
+  assert.equal(formatoDaExecucao({}, anterior), "feed");
+});
+
+test("horários diários em produção apontam para venda e locação", () => {
+  assert.equal(tipoAgendado({ GITHUB_SCHEDULE: "7 15 * * *" }), "venda");
+  assert.equal(tipoAgendado({ GITHUB_SCHEDULE: "7 19 * * *" }), "locacao");
+});
+
+test("Instagram espera o container e tenta novamente só o mesmo vídeo no erro 9007", async () => {
+  const estados = ["IN_PROGRESS", "FINISHED", "FINISHED"];
+  const envios = [{ error: { code: 9007 } }, { id: "id-confirmado" }];
+  assert.equal(await concluirVideoInstagram({
+    consultar: async () => ({ status_code: estados.shift() }),
+    publicar: async () => envios.shift(),
+    aguardar: async () => {},
+    limite: 3,
+  }), "id-confirmado");
+  assert.equal(estados.length, 0);
+  assert.equal(envios.length, 0);
+});
+
+test("Instagram não envia container incompleto, expirado ou já publicado", async () => {
+  const executar = (status_code) => concluirVideoInstagram({
+    consultar: async () => ({ status_code }),
+    publicar: async () => assert.fail("Publicação não deveria ser chamada"),
+    aguardar: async () => {},
+    limite: 2,
+  });
+  await assert.rejects(executar("IN_PROGRESS"), /no prazo/);
+  await assert.rejects(executar("EXPIRED"), /EXPIRED/);
+  assert.match(await executar("PUBLISHED"), /confirmado/);
 });
 
 test("legenda de vídeo mantém fatos, CTA e reduz o bloco social", () => {
