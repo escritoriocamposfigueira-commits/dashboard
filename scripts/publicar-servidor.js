@@ -228,6 +228,17 @@ function encontrarFFmpeg() {
   return null;
 }
 
+function ffmpegParaRenderizacao() {
+  const instalado = encontrarFFmpeg();
+  if (instalado || process.env.GITHUB_ACTIONS !== "true" || process.platform !== "linux") return instalado;
+  console.log("  FFmpeg ausente: instalação com limite de tempo só para esta renderização.");
+  for (const args of [["update", "-qq"], ["install", "-y", "ffmpeg"]]) {
+    const resultado = spawnSync("sudo", ["-n", "timeout", "--kill-after=10s", "80s", "apt-get", "-o", "Acquire::Retries=1", ...args], { stdio: "inherit", timeout: 95000 });
+    if (resultado.status !== 0) return null;
+  }
+  return encontrarFFmpeg();
+}
+
 function detectarEmocao(caption = "") {
   const t = caption.toLowerCase();
   if (/urgência|oportunidade|não perd|última unidade|agora|corre|rápido/.test(t)) return "urgencia";
@@ -1216,7 +1227,6 @@ async function main() {
   console.log(`  Story URL: ${urlStory}`);
 
   // ── FFmpeg ──────────────────────────────────────────────────────────────
-  const ffmpeg = encontrarFFmpeg();
   const dataPublicacao = dataBrasiliaISO();
   let videoPath = null;
   let videoUrl  = null;
@@ -1232,6 +1242,8 @@ async function main() {
     ? null
     : resolverVideoImovelPronto(RAIZ, VIDEOS_IMOVEIS_PRONTOS, ALIASES_IMOVEIS, codigo, finalidadeVideo);
   const videoPronto = videoCaptacaoPronto || videoImovelPronto;
+  // O MP4 aprovado já está pronto. Não bloquear sua publicação com instalação de pacotes.
+  const ffmpeg = videoPronto ? null : ffmpegParaRenderizacao();
 
   if (videoPronto) {
     try {
