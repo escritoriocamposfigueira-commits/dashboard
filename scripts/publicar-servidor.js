@@ -865,6 +865,8 @@ function legendaCompactaParaVideo(caption = "") {
     adicionar(linhas[indiceCta + 1]);
   }
   linhas.filter((linha) => /escritoriocamposfigueira\.com\.br|CRECI-PJ/i.test(linha)).forEach(adicionar);
+  linhas.filter((linha) => /^💬\s*Comente\s|^🔗\s*https:\/\/[^\s]+[?&]utm_campaign=/u.test(linha))
+    .forEach(adicionar);
   const hashtags = linhas.filter((linha) => linha.startsWith("#"))
     .flatMap((linha) => linha.split(/\s+/)).slice(0, 6).join(" ");
   adicionar(hashtags);
@@ -1413,6 +1415,7 @@ async function main() {
     : ["fb_feed", "fb_story", "ig_feed", "ig_story"];
   if (temChavesYouTube()) canaisObrigatorios.push("youtube");
   const publicacaoCompleta = canaisObrigatorios.every((canal) => reg[canal].startsWith("✅"));
+  const canaisIncompletos = canaisObrigatorios.filter((canal) => !reg[canal].startsWith("✅"));
   const tentativasAnteriores = retryPublicacao?.tentativas
     || retryLocacao?.tentativas
     || estado.tentativas
@@ -1464,6 +1467,9 @@ async function main() {
   // ── Salvar estado ─────────────────────────────────────────────────────────
   fs.mkdirSync(path.dirname(ESTADO), { recursive: true });
   fs.writeFileSync(ESTADO, JSON.stringify(estado, null, 2), "utf-8");
+  if (process.env.GITHUB_OUTPUT && canaisIncompletos.length) {
+    fs.appendFileSync(process.env.GITHUB_OUTPUT, `canais_incompletos=${canaisIncompletos.join(", ")}\n`, "utf8");
+  }
 
   let proximo = "(próxima execução)";
   try { proximo = escolherProximo(manifest, estado, "auto").codigo; } catch {}

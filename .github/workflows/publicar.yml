@@ -68,6 +68,7 @@ jobs:
           git config user.email "bot@users.noreply.github.com"
 
       - name: Publicar próximo imóvel (FB + IG · Feed + Story em vídeo)
+        id: publicar
         env:
           META_PAGE_TOKEN: ${{ secrets.META_PAGE_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -115,4 +116,12 @@ jobs:
             sleep $((tentativa * 5))
           done
           echo "::error::A publicação ocorreu, mas o estado não pôde ser salvo após 3 tentativas."
+          exit 1
+
+      - name: Sinalizar canais incompletos após salvar a fila
+        if: ${{ steps.publicar.outputs.canais_incompletos != '' }}
+        env:
+          CANAIS_INCOMPLETOS: ${{ steps.publicar.outputs.canais_incompletos }}
+        run: |
+          echo "::error::Ainda pendente: $CANAIS_INCOMPLETOS. Estado salvo para recuperação sem duplicar canais concluídos."
           exit 1

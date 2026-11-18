@@ -2,8 +2,13 @@ name: Captador automático Meta
 
 on:
   schedule:
-    - cron: "*/15 * * * *"
+    - cron: "4,19,34,49 * * * *"
   workflow_dispatch:
+    inputs:
+      somente_verificar:
+        description: "Consulta as redes e classifica localmente sem registrar leads ou enviar mensagens"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -43,4 +48,5 @@ jobs:
         env:
           META_PAGE_TOKEN: ${{ secrets.META_PAGE_TOKEN }}
           GITHUB_OIDC_TOKEN: ${{ steps.oidc.outputs.token }}
+          CAPTADOR_META_DRY_RUN: ${{ inputs.somente_verificar || 'false' }}
         run: node captador/scripts/processar-comentarios-meta.js

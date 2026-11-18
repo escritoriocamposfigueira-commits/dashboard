@@ -1,0 +1,36 @@
+name: Publicar páginas de captação
+on:
+  push:
+    branches: [claude/campos-figueira-growth-qmjsux]
+    paths: ["docs/captador/**", ".github/workflows/captador-pages.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: captador-pages
+  cancel-in-progress: false
+
+jobs:
+  pages:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}captador/
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: docs/captador
+      - name: Empacotar somente o captador público
+        run: |
+          mkdir -p "$RUNNER_TEMP/pages"
+          cp -R docs/captador "$RUNNER_TEMP/pages/"
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ runner.temp }}/pages
+      - uses: actions/deploy-pages@v4
+        id: deploy

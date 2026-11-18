@@ -8,7 +8,9 @@ const IG_ID = process.env.META_IG_ID || "17841461388445580";
 let TOKEN = process.env.META_PAGE_TOKEN || "";
 const API_URL = (process.env.CAPTADOR_API_URL || "").replace(/\/$/, "");
 const OIDC_TOKEN = process.env.GITHUB_OIDC_TOKEN || "";
+const DRY_RUN = process.env.CAPTADOR_META_DRY_RUN === "true";
 const DESDE = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
+let classificar;
 
 if (!TOKEN || !API_URL || !OIDC_TOKEN) {
   console.error("Configuração incompleta: Meta token, URL do captador e OIDC são obrigatórios.");
@@ -34,7 +36,11 @@ async function graphPost(caminho, body) {
     body: JSON.stringify(body),
   });
   const corpo = await resposta.json().catch(() => ({}));
-  if (!resposta.ok) throw new Error(`Meta POST ${caminho}: ${corpo?.error?.message || resposta.status}`);
+  if (!resposta.ok || corpo.error) {
+    const erro = new Error(`Meta POST ${caminho}: ${corpo?.error?.message || resposta.status}`);
+    erro.metaCode = Number(corpo?.error?.code);
+    throw erro;
+  }
   return corpo;
 }
 
@@ -88,6 +94,9 @@ async function listarTudo(caminho, parametros, limitePaginas = 3) {
 
 async function processarComentario(item) {
   if (!item.event_id || !item.social_profile_id || !item.mensagem) return { ignorado: 1 };
+  const classificacao = classificar(item.mensagem, item.contexto);
+  if (classificacao.acao === "ignorar") return { ignorado: 1 };
+  if (DRY_RUN) return { elegivel_sem_envio: 1 };
   const decisao = await captador("/meta-poll", item);
   if (!decisao.responder || !decisao.resposta_publica) return { duplicado: decisao.duplicado ? 1 : 0, ignorado: 1 };
   const privada = planoRespostaPrivada({
@@ -96,23 +105,24 @@ async function processarComentario(item) {
     igId: IG_ID,
     texto: decisao.resposta_publica,
   });
+  let canal = "privado";
   try {
     await graphPost(privada.endpoint, privada.body);
-    await captador("/meta-poll/ack", { event_id: item.event_id });
-    return { captado: 1, respondido: 1, privado: 1 };
   } catch (erro) {
-    // A resposta privada depende das permissões aprovadas da conta. A resposta
-    // pública mantém o atendimento funcional enquanto essas permissões variam.
-    console.error(`Resposta privada indisponível em ${item.rede}; usando resposta pública: ${erro.message}`);
+    // Só usar o comentário público se a Meta negou expressamente o Direct.
+    // Timeout, erro de confirmação ou mensagem já enviada não são novas autorizações.
+    if (![10, 200].includes(erro.metaCode)) throw erro;
+    console.error(`Meta negou a permissão de Direct em ${item.rede}; usando resposta pública.`);
+    const publica = planoRespostaPublica({
+      rede: item.rede,
+      eventId: item.event_id,
+      texto: decisao.resposta_publica,
+    });
+    await graphPost(publica.endpoint, publica.body);
+    canal = "publico";
   }
-  const publica = planoRespostaPublica({
-    rede: item.rede,
-    eventId: item.event_id,
-    texto: decisao.resposta_publica,
-  });
-  await graphPost(publica.endpoint, publica.body);
   await captador("/meta-poll/ack", { event_id: item.event_id });
-  return { captado: 1, respondido: 1, publico: 1 };
+  return { captado: 1, respondido: 1, [canal]: 1 };
 }
 
 async function processarFacebook() {
@@ -182,6 +192,7 @@ async function processarInstagram() {
 }
 
 async function principal() {
+  ({ classificarInteracaoSocial: classificar } = await import("../supabase/functions/_shared/core.mjs"));
   const resultados = [];
   const origemToken = await resolverPageToken();
   const canaisOk = [];
@@ -199,8 +210,8 @@ async function principal() {
     for (const [chave, valor] of Object.entries(item)) acc[chave] = (acc[chave] || 0) + valor;
     return acc;
   }, {});
-  console.log(JSON.stringify({ ok: canaisOk.length > 0, origem_token: origemToken, canais_ok: canaisOk, canais_erro: canaisErro, ...totais }));
-  if (!canaisOk.length) process.exitCode = 1;
+  console.log(JSON.stringify({ ok: !canaisErro.length, dry_run: DRY_RUN, origem_token: origemToken, canais_ok: canaisOk, canais_erro: canaisErro, ...totais }));
+  if (canaisErro.length) process.exitCode = 1;
 }
 
 principal().catch((erro) => {

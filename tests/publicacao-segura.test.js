@@ -92,6 +92,15 @@ test("legenda de vídeo mantém fatos, CTA e reduz o bloco social", () => {
   assert.ok(curta.length < caption.length);
 });
 
+test("Reels mantêm a chamada e o link de captação", () => {
+  const texto = legendaCompactaParaVideo([
+    "Casa em Mogi", "Condomínio fechado", '💬 Comente "IMOVEL" para receber no direct.',
+    "🔗 https://exemplo.com/captador/imoveis?utm_source=robo_social&utm_campaign=venda-cf-554",
+  ].join("\n"));
+  assert.match(texto, /Comente "IMOVEL"/);
+  assert.match(texto, /utm_campaign=venda-cf-554/);
+});
+
 test("reconhece falhas transitórias de DNS, timeout e servidor", () => {
   assert.equal(ehErroRedeTransitorio("getaddrinfo ENOTFOUND exemplo.com"), true);
   assert.equal(ehErroRedeTransitorio("EAI_AGAIN"), true);

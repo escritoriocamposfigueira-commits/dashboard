@@ -141,13 +141,24 @@ export function textoBusca(valor) {
 }
 
 export function classificarInteracaoSocial(mensagem, contexto = "") {
-  const texto = textoBusca(`${mensagem} ${contexto}`);
-  if (/\b(SAIR|PARAR|DESCADASTRAR|CANCELAR)\b/.test(texto)) {
+  const texto = textoBusca(mensagem);
+  if (/^(?:(?:QUERO|PODE)\s+)?(?:SAIR|PARAR|DESCADASTRAR|CANCELAR)(?:\s+(?:MENSAGENS|MEU CADASTRO|O CADASTRO|MEU CONTATO))?[\s.!]*$/.test(texto)) {
     return { acao: "descadastrar", operacao: null, interesse: "descadastro", palavra: "SAIR" };
   }
+  if (/\b(?:SEM INTERESSE|NAO (?:TENHO INTERESSE|QUERO|ESTOU INTERESSAD[OA]))\b/.test(texto)) {
+    return { acao: "ignorar", operacao: null, interesse: null, palavra: null };
+  }
+  const palavraExata = texto.replace(/[\s.!?]+$/, "");
+  const pedido = /\b(QUERO|GOSTARIA|PRECISO|INTERESS[EO]|PROCUR[OA]|DETALHES|INFORMAC(?:AO|OES)|QUANTO|PRECO|VALOR|DISPONIVEL|VISITA|FINANCIAMENTO|FINANCIA|PERMUTA|ENTRADA|PARCELAS)\b/.test(texto);
+  const chamada = textoBusca(contexto).match(/\bCOMENTE\s+["“']?([A-Z]+)\b/);
+  const palavraContexto = pedido ? chamada?.[1] : null;
   for (const regra of REGRAS_SOCIAIS) {
-    const palavra = regra.palavras.find((item) => new RegExp(`\\b${item}\\b`).test(texto));
+    const palavra = regra.palavras.find((item) => item === palavraExata || (pedido && new RegExp(`\\b${item}\\b`).test(texto)));
     if (palavra) return { acao: "captar", operacao: regra.operacao, interesse: regra.interesse, palavra };
+  }
+  if (palavraContexto) {
+    const regra = REGRAS_SOCIAIS.find(({ palavras }) => palavras.includes(palavraContexto));
+    if (regra) return { acao: "captar", operacao: regra.operacao, interesse: regra.interesse, palavra: palavraContexto };
   }
   return { acao: "ignorar", operacao: null, interesse: null, palavra: null };
 }

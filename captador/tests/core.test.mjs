@@ -77,6 +77,15 @@ test("classifica intenção social sem inventar serviço", () => {
   assert.equal(classificarInteracaoSocial("SAIR").acao, "descadastrar");
 });
 
+test("a palavra da legenda não transforma elogio em lead nem induz descadastro", () => {
+  assert.equal(classificarInteracaoSocial("Linda casa!", 'Comente "IMOVEL" para receber no Direct.').acao, "ignorar");
+  assert.equal(classificarInteracaoSocial("Parabéns pela publicação", 'Comente "ALUGAR" para sair do aluguel.').acao, "ignorar");
+  assert.equal(classificarInteracaoSocial("Não tenho interesse", 'Comente "IMOVEL".').acao, "ignorar");
+  assert.equal(classificarInteracaoSocial("Quero sair do aluguel", 'Comente "IMOVEL".').acao, "captar");
+  assert.equal(classificarInteracaoSocial("Quero parar mensagens", 'Comente "IMOVEL".').acao, "descadastrar");
+  assert.equal(classificarInteracaoSocial("Qual o preço?", 'Comente "ALUGAR".').palavra, "ALUGAR");
+});
+
 test("interação social iniciada é válida sem telefone e responde com WhatsApp oficial", () => {
   const validado = validarLead({
     operacao: "imobiliaria", fonte: "comentario_instagram", nome: "Maria",
