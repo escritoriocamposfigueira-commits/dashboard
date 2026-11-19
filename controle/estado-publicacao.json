@@ -1,5 +1,5 @@
 {
-  "indice": 231,
+  "indice": 232,
   "publicados": [
     {
       "codigo": "429",
@@ -2853,6 +2853,21 @@
       "ig_reel": "✅ 18135189550683210",
       "youtube": "✅ 1mjjhxTtIYE",
       "tiktok": "— (TikTok pausado)"
+    },
+    {
+      "codigo": "607",
+      "data": "2026-11-19T01:09:33.106Z",
+      "formato_principal": "reel",
+      "trilha": "narracao-remy-aprovada",
+      "modelo_video": "imovel-v2-narrado-30s",
+      "fb_feed": "—",
+      "fb_story": "✅ 1680863673743629",
+      "fb_reel": "✅ 1765013342300506",
+      "ig_feed": "—",
+      "ig_story": "✅ 18189497041423933",
+      "ig_reel": "✅ 17996892330116635",
+      "youtube": "✅ 50IpcwOcfXw",
+      "tiktok": "— (TikTok pausado)"
     }
   ],
   "tentativas": 0,
@@ -2860,5 +2875,5 @@
   "indiceVenda": 4,
   "contadorNaoLoc": 124,
   "indiceCapt": 2,
-  "contadorFormato": 3
+  "contadorFormato": 4
 }
