@@ -25,6 +25,7 @@
   },
   {
     "id": "CAPT-LOCACAO-PROPRIETARIO",
+    "publicacao_automatica": true,
     "tipo_midia": "video",
     "arquivo": "WhatsApp Image 2026-07-03 at 10.54.21.jpeg",
     "url": "https://raw.githubusercontent.com/escritoriocamposfigueira-commits/dashboard/claude/campos-figueira-growth-qmjsux/public/captacao/WhatsApp%20Image%202026-07-03%20at%2010.54.21.jpeg",
@@ -34,6 +35,7 @@
   },
   {
     "id": "CAPT-VENDA-LOCACAO",
+    "publicacao_automatica": false,
     "tipo_midia": "video",
     "agenda": "semanal_fixa",
     "arquivo": "WhatsApp Image 2026-07-03 at 10.54.20.jpeg",

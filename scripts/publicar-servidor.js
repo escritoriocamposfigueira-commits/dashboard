@@ -4,15 +4,11 @@
  * Roda no GitHub Actions (ubuntu-latest) em uma grade semanal:
  *   venda diária, locação diária, 1 locação extra, 2 captações e recuperação.
  *
- * Publica em 4 canais por imóvel:
- *   FB Feed  (imagem 4:5 + copy UTF-8)
- *   FB Story (VÍDEO 15s com montagem profissional + trilha aprovada)
- *   IG Feed  (imagem 4:5 + copy UTF-8)
- *   IG Story (VÍDEO 15s com montagem profissional + trilha aprovada)
+ * Publica o MP4 aprovado em Reel e Story no Facebook e Instagram,
+ * e no YouTube quando configurado. Não renderiza arte estática.
  *
  * Variáveis de ambiente obrigatórias:
  *   META_PAGE_TOKEN  — Page Access Token permanente (GitHub Secret)
- *   GITHUB_TOKEN     — injetado automaticamente pelo GitHub Actions
  */
 
 "use strict";
@@ -20,17 +16,7 @@ const https  = require("https");
 const http   = require("http");
 const fs     = require("fs");
 const path   = require("path");
-const { execSync, spawnSync } = require("child_process");
-const {
-  registrarUsoTrilha,
-  selecionarTrilha,
-} = require("./biblioteca-trilhas");
-const {
-  DURACAO_PADRAO,
-  gerarVideoStoryProfissional,
-  registrarUsoModelo,
-  selecionarModeloStory,
-} = require("./video-story-profissional");
+const { captacaoAprovada } = require("./midia-aprovada");
 const {
   carregarCodigosInativos,
   filtrarCodigosAtivos,
@@ -44,8 +30,6 @@ const CAPTIONS  = path.join(RAIZ, "src/content/captions-imoveis.json");
 const VIDEOS_IMOVEIS_ARQUIVO = path.join(RAIZ, "src/content/videos-imoveis.json");
 const ALIASES_IMOVEIS_ARQUIVO = path.join(RAIZ, "src/content/aliases-imoveis.json");
 const ESTADO    = path.join(RAIZ, "controle/estado-publicacao.json");
-const VIDEOS    = path.join(RAIZ, "public/videos");
-const TMP       = path.join(RAIZ, ".tmp-videos");
 const PRIORIDADE_VENDAS_ARQUIVO = path.join(RAIZ, "src/content/prioridade-vendas.json");
 const PESOS_FORMATOS_ARQUIVO = path.join(RAIZ, "config/pesos-formatos.json");
 const CODIGOS_INATIVOS = carregarCodigosInativos();
@@ -56,10 +40,6 @@ const BASE_HOST = "graph.facebook.com";
 const BASE_PATH = "/v22.0";
 const PAGE_ID   = "512040582222121";
 const IG_ID     = "17841461388445580";
-
-// ── Repositório GitHub ────────────────────────────────────────────────────────
-const GH_REPO   = process.env.GITHUB_REPOSITORY || "escritoriocamposfigueira-commits/dashboard";
-const GH_BRANCH = process.env.GITHUB_REF_NAME   || "claude/campos-figueira-growth-qmjsux";
 
 // ── Env (.env.local local ou variável de ambiente no Actions) ─────────────────
 function carregarEnv() {
@@ -155,108 +135,6 @@ function apiGet(endpoint) {
   }).then(r => r.data);
 }
 
-// ════════════════════════════════════════════════════════════════════════════
-// GITHUB CONTENTS API — upload binário para hospedar vídeo
-// ════════════════════════════════════════════════════════════════════════════
-
-async function githubRequest(method, apiPath, ghToken, bodyObj) {
-  const buf = bodyObj ? Buffer.from(JSON.stringify(bodyObj), "utf-8") : null;
-  const headers = {
-    "Authorization": `token ${ghToken}`,
-    "Accept": "application/vnd.github+json",
-    "User-Agent": "campos-figueira-bot/1.0",
-  };
-  if (buf) { headers["Content-Type"] = "application/json"; headers["Content-Length"] = buf.length; }
-  return request({ hostname: "api.github.com", path: apiPath, method, headers }, buf).then(r => r.data);
-}
-
-async function subirVideoGitHub(videoPath, nomeArquivo) {
-  const ghToken = process.env.GITHUB_TOKEN;
-  if (!ghToken) { console.log("  [GH] GITHUB_TOKEN ausente — o vídeo não pode ser hospedado."); return null; }
-
-  const [owner, repo] = GH_REPO.split("/");
-  const filePath = `public/videos/${nomeArquivo}`;
-  const filePathApi = filePath.split("/").map(encodeURIComponent).join("/");
-  const content = fs.readFileSync(videoPath).toString("base64");
-
-  // Buscar SHA atual (necessário se arquivo já existir)
-  const existing = await githubRequest("GET", `/repos/${owner}/${repo}/contents/${filePathApi}?ref=${encodeURIComponent(GH_BRANCH)}`, ghToken);
-
-  const body = {
-    message: `vídeo story: ${nomeArquivo} [skip ci]`,
-    content,
-    branch: GH_BRANCH,
-    ...(existing.sha ? { sha: existing.sha } : {}),
-  };
-
-  console.log(`  [GH] Uploading ${nomeArquivo} (${Math.round(fs.statSync(videoPath).size / 1024)}KB)...`);
-  const result = await githubRequest("PUT", `/repos/${owner}/${repo}/contents/${filePathApi}`, ghToken, body);
-
-  if (result.content && result.content.download_url) {
-    const rawUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${GH_BRANCH}/${filePath}`;
-    console.log(`  [GH] ✅ URL: ${rawUrl}`);
-    return rawUrl;
-  }
-  console.log("  [GH] ❌ Upload falhou:", JSON.stringify(result).slice(0, 200));
-  return null;
-}
-
-// ════════════════════════════════════════════════════════════════════════════
-// FFMPEG — gerar vídeo 15s com montagem profissional + trilha aprovada
-// ════════════════════════════════════════════════════════════════════════════
-
-function encontrarFFmpeg() {
-  // 1) Caminho real via which/where (mais confiável no servidor)
-  try {
-    const cmd = process.platform === "win32" ? "where ffmpeg" : "which ffmpeg";
-    const achado = execSync(cmd, { timeout: 5000 }).toString().split(/\r?\n/)[0].trim();
-    if (achado && fs.existsSync(achado)) return achado;
-  } catch {}
-  // 2) Candidatos conhecidos
-  const candidatos = [
-    "/usr/bin/ffmpeg",
-    "/usr/local/bin/ffmpeg",
-    "ffmpeg",
-    "C:\\Users\\Henrique\\ffmpeg\\bin\\ffmpeg.exe",
-    path.join(process.env.USERPROFILE || "", "ffmpeg", "bin", "ffmpeg.exe"),
-  ];
-  for (const c of candidatos) {
-    try {
-      if (spawnSync(c, ["-version"], { timeout: 8000 }).status === 0) return c;
-    } catch {}
-  }
-  return null;
-}
-
-function ffmpegParaRenderizacao() {
-  const instalado = encontrarFFmpeg();
-  if (instalado || process.env.GITHUB_ACTIONS !== "true" || process.platform !== "linux") return instalado;
-  console.log("  FFmpeg ausente: instalação com limite de tempo só para esta renderização.");
-  for (const args of [["update", "-qq"], ["install", "-y", "ffmpeg"]]) {
-    const resultado = spawnSync("sudo", ["-n", "timeout", "--kill-after=10s", "80s", "apt-get", "-o", "Acquire::Retries=1", ...args], { stdio: "inherit", timeout: 95000 });
-    if (resultado.status !== 0) return null;
-  }
-  return encontrarFFmpeg();
-}
-
-function detectarEmocao(caption = "") {
-  const t = caption.toLowerCase();
-  if (/urgência|oportunidade|não perd|última unidade|agora|corre|rápido/.test(t)) return "urgencia";
-  if (/família|filho|criança|lazer|reunir|amor/.test(t))                          return "familiar";
-  if (/conquista|patrimônio|vitória|realizou|sonho se tornou/.test(t))            return "conquista";
-  if (/escritório|profissional|advocacia|comercial|negócio/.test(t))              return "confianca";
-  return "sonho";
-}
-
-function dataBrasiliaISO(data = new Date()) {
-  return new Intl.DateTimeFormat("en-CA", {
-    timeZone: "America/Sao_Paulo",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(data);
-}
-
 function ehErroRedeTransitorio(msg = "") {
   return /ENOTFOUND|EAI_AGAIN|ECONNRESET|ECONNREFUSED|ETIMEDOUT|EPIPE|socket hang up|network|timeout|timed out|HTTP (?:408|425|429|5\d\d)\b/i.test(msg);
 }
@@ -275,55 +153,6 @@ async function comRetryRede(fn, label, vezes = 3, esperaBaseMs = 2_000) {
     }
   }
   throw ultimoErro;
-}
-
-function baixarImagemUmaVez(url, destino) {
-  return new Promise((resolve, reject) => {
-    const fazer = (u, redirecionamentos = 0) => {
-      if (redirecionamentos > 5) return reject(new Error("Imagem excedeu o limite de redirecionamentos."));
-      const req = https.get(u, {
-        headers: { "User-Agent": "campos-figueira-bot/1.0" },
-      }, (res) => {
-        if ([301, 302, 307, 308].includes(res.statusCode) && res.headers.location) {
-          res.resume();
-          return fazer(new URL(res.headers.location, u).toString(), redirecionamentos + 1);
-        }
-        const contentType = String(res.headers["content-type"] || "").toLowerCase();
-        if (res.statusCode < 200 || res.statusCode >= 300) {
-          res.resume();
-          return reject(new Error(`Imagem respondeu HTTP ${res.statusCode}: ${u}`));
-        }
-        if (!contentType.startsWith("image/")) {
-          res.resume();
-          return reject(new Error(`URL não retornou imagem (${contentType || "sem Content-Type"}): ${u}`));
-        }
-        const arquivo = fs.createWriteStream(destino);
-        res.pipe(arquivo);
-        arquivo.on("finish", () => {
-          arquivo.close();
-          if (!fs.existsSync(destino) || fs.statSync(destino).size < 10_000) {
-            return reject(new Error(`Imagem vazia ou pequena demais: ${u}`));
-          }
-          resolve();
-        });
-        arquivo.on("error", reject);
-      });
-      req.setTimeout(20_000, () => req.destroy(new Error("timeout ao baixar imagem")));
-      req.on("error", reject);
-    };
-    fazer(url);
-  });
-}
-
-async function baixarImagem(url, destino) {
-  return comRetryRede(async () => {
-    try {
-      await baixarImagemUmaVez(url, destino);
-    } catch (erro) {
-      try { if (fs.existsSync(destino)) fs.unlinkSync(destino); } catch {}
-      throw erro;
-    }
-  }, "download da imagem", 3);
 }
 
 function validarImagemRemota(url, rotulo, redirecionamentos = 0, metodo = "HEAD") {
@@ -371,50 +200,6 @@ function validarImagemRemota(url, rotulo, redirecionamentos = 0, metodo = "HEAD"
 
 function validarImagemRemotaComRetry(url, rotulo, vezes = 3) {
   return comRetryRede(() => validarImagemRemota(url, rotulo), rotulo, vezes);
-}
-
-async function gerarVideoStory(
-  ffmpeg,
-  imagemUrl,
-  nomeArquivo,
-  emocao,
-  trilhaSelecionada,
-  modeloSelecionado,
-) {
-  fs.mkdirSync(TMP, { recursive: true });
-  fs.mkdirSync(VIDEOS, { recursive: true });
-
-  const imgPath   = path.join(TMP, nomeArquivo.replace(".mp4", ".png"));
-  const videoPath = path.join(VIDEOS, nomeArquivo);
-
-  // Reusar se já gerado
-  if (fs.existsSync(videoPath)) {
-    console.log(`  [FFmpeg] ⏭️  Vídeo já existe: ${nomeArquivo}`);
-    return videoPath;
-  }
-
-  console.log(`  [FFmpeg] Baixando imagem...`);
-  await baixarImagem(imagemUrl, imgPath);
-
-  const trilha = trilhaSelecionada?.caminho || null;
-  const modeloId = modeloSelecionado?.id || "topo-cinematografico";
-  if (trilha) {
-    console.log(`  [FFmpeg] Trilha: ${trilhaSelecionada.id} · ${path.basename(trilha)} (${emocao})`);
-  } else {
-    console.log(`  [FFmpeg] Sem trilha disponível — gerando vídeo mudo.`);
-  }
-  console.log(`  [FFmpeg] Modelo: ${modeloId}`);
-  console.log(`  [FFmpeg] Gerando vídeo ${DURACAO_PADRAO}s 1080×1920...`);
-  gerarVideoStoryProfissional({
-    ffmpeg,
-    imagemPath: imgPath,
-    audioPath: trilha,
-    outputPath: videoPath,
-    modeloId,
-  });
-  const kb = Math.round(fs.statSync(videoPath).size / 1024);
-  console.log(`  [FFmpeg] ✅ ${nomeArquivo} (${kb}KB)`);
-  return videoPath;
 }
 
 // ════════════════════════════════════════════════════════════════════════════
@@ -493,7 +278,13 @@ async function publicarCarrosselInstagram(token, urls, caption) {
 // Verifica se uma URL já está acessível (para o IG conseguir buscar o vídeo)
 function urlPronta(url) {
   return new Promise((resolve) => {
-    https.get(url, (res) => { res.resume(); resolve(res.statusCode >= 200 && res.statusCode < 400); }).on("error", () => resolve(false));
+    const req = https.request(url, { method: "HEAD" }, (res) => {
+      res.resume();
+      resolve(res.statusCode >= 200 && res.statusCode < 300);
+    });
+    req.on("error", () => resolve(false));
+    req.setTimeout(10000, () => req.destroy());
+    req.end();
   });
 }
 async function aguardarUrl(url, tentativas = 10) {
@@ -834,7 +625,7 @@ for (const [codigo, alias] of Object.entries(ALIASES_FOTOS)) {
 
 function captacoesRotativas() {
   return CAPTACAO.map((item, indice) => ({ item, indice }))
-    .filter(({ item }) => item.agenda !== "semanal_fixa");
+    .filter(({ item }) => item.agenda !== "semanal_fixa" && captacaoAprovada(item));
 }
 
 function ordenarVendasPorPrioridade(codigos) {
@@ -1020,8 +811,8 @@ function escolherProximo(manifest, estado, tipoForcado = "auto") {
     return { codigo: selecionada.item.id, tipo: "captacao", captIdx: selecionada.indice, captPos: posicao };
   }
   if (tipoForcado === "captacao_semanal") {
-    const indice = CAPTACAO.findIndex((item) => item.agenda === "semanal_fixa");
-    if (indice < 0) return { codigo: null, tipo: "noop", motivo: "captação semanal fixa não cadastrada" };
+    const indice = CAPTACAO.findIndex((item) => item.agenda === "semanal_fixa" && captacaoAprovada(item));
+    if (indice < 0) return { codigo: null, tipo: "noop", motivo: "sem vídeo aprovado para captação semanal fixa" };
     return { codigo: CAPTACAO[indice].id, tipo: "captacao_semanal", captIdx: indice };
   }
 
@@ -1120,16 +911,14 @@ async function main() {
   const codigo    = plano.codigo;
   const ehCaptacao = plano.tipo === "captacao" || plano.tipo === "captacao_semanal";
   console.log(`  Tipo: ${plano.tipo}`);
-  let urlStory, urlFeed, caption;
+  let urlFeed, caption;
   let captacaoSelecionada = null;
   if (ehCaptacao) {
     const art = CAPTACAO[plano.captIdx];
     captacaoSelecionada = art;
-    urlStory = art.url;
     urlFeed = art.url;
     caption = art.caption;
   } else {
-    urlStory = manifest.urls[codigo];
     urlFeed = manifest.urls_feed?.[codigo];
     caption = mapaCap[codigo];
   }
@@ -1192,17 +981,12 @@ async function main() {
   }
 
   const fotosEspecificas = ehCaptacao ? [] : (FOTOS[String(codigo)] || []);
-  if (!ehCaptacao && fotosEspecificas.length === 0) {
+  if (formatoPrincipal === "feed" && !ehCaptacao && fotosEspecificas.length === 0) {
     throw new Error(`CF-${codigo}: nenhuma foto específica cadastrada. Publicação bloqueada para não usar arte genérica.`);
   }
-  // As duas artes principais são obrigatórias. Fotos extras do carrossel são
-  // validadas individualmente: uma indisponibilidade temporária do Supabase não
-  // pode derrubar Facebook, Stories, Reels, YouTube e as demais fotos válidas.
-  await Promise.all([
-    validarImagemRemotaComRetry(urlFeed, `CF-${codigo} feed 4:5`),
-    validarImagemRemotaComRetry(urlStory, `CF-${codigo} story 9:16`),
-  ]);
-  const fotosValidadas = (await Promise.all(
+  // Uma oscilação no CDN das artes não pode derrubar os vídeos.
+  if (formatoPrincipal === "feed") await validarImagemRemotaComRetry(urlFeed, `CF-${codigo} feed 4:5`);
+  const fotosValidadas = formatoPrincipal === "feed" ? (await Promise.all(
     fotosEspecificas.slice(0, 9).map(async (url, indice) => {
       const rotulo = `CF-${codigo} foto específica ${indice + 1}`;
       try {
@@ -1213,8 +997,8 @@ async function main() {
         return null;
       }
     }),
-  )).filter(Boolean);
-  if (fotosValidadas.length < Math.min(fotosEspecificas.length, 9)) {
+  )).filter(Boolean) : [];
+  if (formatoPrincipal === "feed" && fotosValidadas.length < Math.min(fotosEspecificas.length, 9)) {
     console.log(`  ⚠️  Carrossel seguirá com ${fotosValidadas.length}/${Math.min(fotosEspecificas.length, 9)} fotos reais disponíveis.`);
   }
 
@@ -1223,17 +1007,11 @@ async function main() {
   // (e a legenda em captions-imoveis.json) que ele entra no rodízio no mesmo instante.
   const totalAtivos = filtrarCodigosAtivos(manifest.ordem, CODIGOS_INATIVOS).length;
   console.log(`\n▶ Publicando post #${(estado.publicados?.length || 0) + 1} (rodízio infinito de ${totalAtivos} imóveis ativos) — CF-${codigo}`);
-  console.log(`  Feed URL : ${urlFeed}`);
-  console.log(`  Story URL: ${urlStory}`);
 
-  // ── FFmpeg ──────────────────────────────────────────────────────────────
-  const dataPublicacao = dataBrasiliaISO();
-  let videoPath = null;
-  let videoUrl  = null;
-  let erroVideo = null;
-  let trilhaSelecionada = null;
-  let modeloSelecionado = null;
-
+  // Só publicar um MP4 expressamente aprovado. Não renderizar a arte antiga.
+  if (ehCaptacao && !captacaoAprovada(captacaoSelecionada)) {
+    throw new Error(`Captação ${codigo}: vídeo não aprovado para publicação automática.`);
+  }
   const videoCaptacaoPronto = ehCaptacao
     ? resolverVideoCaptacao(RAIZ, captacaoSelecionada)
     : null;
@@ -1242,74 +1020,23 @@ async function main() {
     ? null
     : resolverVideoImovelPronto(RAIZ, VIDEOS_IMOVEIS_PRONTOS, ALIASES_IMOVEIS, codigo, finalidadeVideo);
   const videoPronto = videoCaptacaoPronto || videoImovelPronto;
-  // O MP4 aprovado já está pronto. Não bloquear sua publicação com instalação de pacotes.
-  const ffmpeg = videoPronto ? null : ffmpegParaRenderizacao();
-
-  if (videoPronto) {
-    try {
-      videoPath = videoPronto.videoPath;
-      videoUrl = videoPronto.videoUrl;
-      trilhaSelecionada = { id: videoCaptacaoPronto ? "audio-original-aprovado" : "narracao-remy-aprovada" };
-      modeloSelecionado = { id: videoCaptacaoPronto ? "captacao-profissional-pronta" : "imovel-v2-narrado-30s" };
-      const pronta = await aguardarUrl(videoUrl, 12);
-      if (!pronta) throw new Error("Vídeo preparado não ficou acessível no CDN após 12 verificações.");
-      console.log(`  [Vídeo preparado] ${path.relative(RAIZ, videoPath)}`);
-      console.log(`  URL vídeo: ${videoUrl} (pronta ✅)`);
-    } catch (e) {
-      erroVideo = e.message;
-      videoPath = null;
-      videoUrl = null;
-      console.log(`  ❌ Vídeo de captação indisponível: ${erroVideo}`);
-    }
-  } else if (ffmpeg) {
-    try {
-      const emocao = detectarEmocao(caption);
-      const chavePublicacao = `${dataPublicacao}|${plano.tipo}|CF-${codigo}`;
-      trilhaSelecionada = selecionarTrilha({
-        emocao,
-        codigo: `CF-${codigo}`,
-        chavePublicacao,
-      });
-      modeloSelecionado = selecionarModeloStory({
-        codigo: `CF-${codigo}`,
-        chavePublicacao,
-      });
-      const tipoArquivo = String(plano.tipo).replace(/[^a-z0-9-]/gi, "-");
-      const nomeVideo = `CF-${codigo}-story-${dataPublicacao}-${tipoArquivo}-${modeloSelecionado.id}-${trilhaSelecionada.id}.mp4`;
-      videoPath = await gerarVideoStory(
-        ffmpeg,
-        urlStory,
-        nomeVideo,
-        emocao,
-        trilhaSelecionada,
-        modeloSelecionado,
-      );
-      registrarUsoTrilha(trilhaSelecionada, { codigo: `CF-${codigo}`, emocao });
-      registrarUsoModelo(modeloSelecionado, { codigo: `CF-${codigo}` });
-
-      // Hospedar no GitHub para que o IG possa acessar a URL
-      const ghUrl = await subirVideoGitHub(videoPath, nomeVideo);
-      if (!ghUrl) throw new Error("Upload do vídeo no GitHub não retornou URL pública.");
-      const pronta = await aguardarUrl(ghUrl, 12); // espera o CDN liberar o vídeo (até ~36s) p/ o IG conseguir buscar
-      if (!pronta) throw new Error("Vídeo não ficou acessível no CDN após 12 verificações.");
-      videoUrl = ghUrl;
-      console.log(`  URL vídeo: ${videoUrl} (pronta ✅)`);
-    } catch (e) {
-      erroVideo = e.message;
-      console.log(`  ❌ Geração de vídeo falhou: ${erroVideo}. Stories/Reels serão marcados como erro.`);
-    }
-  } else {
-    erroVideo = "FFmpeg não encontrado";
-    console.log("  ❌ FFmpeg não encontrado. Stories/Reels serão marcados como erro.");
+  if (!videoPronto) throw new Error(`${codigo}: sem MP4 aprovado para ${plano.tipo}; nenhum canal foi publicado.`);
+  const { videoPath, videoUrl } = videoPronto;
+  if (!(await aguardarUrl(videoUrl, 12))) {
+    throw new Error(`${codigo}: MP4 aprovado indisponível no CDN; nenhum canal foi publicado.`);
   }
+  const arquivoVideo = path.relative(RAIZ, videoPath).split(path.sep).join("/");
+  console.log(`  [Vídeo aprovado] ${arquivoVideo}`);
 
   // ── Publicar ─────────────────────────────────────────────────────────────
   const reg = {
     codigo,
     data: retryAnterior?.data || new Date().toISOString(),
     formato_principal: formatoPrincipal,
-    trilha: trilhaSelecionada?.id || "—",
-    modelo_video: modeloSelecionado?.id || "—",
+    trilha: ehCaptacao ? "audio-original-aprovado" : "narracao-remy-aprovada",
+    modelo_video: ehCaptacao ? "captacao-profissional-pronta" : "imovel-v2-narrado-30s",
+    arquivo_video: arquivoVideo,
+    finalidade_video: ehCaptacao ? "captacao" : finalidadeVideo,
     fb_feed: "—",
     fb_story: "—",
     fb_reel: "—",
@@ -1338,7 +1065,6 @@ async function main() {
 
   if (!manterCanalConcluido("fb_story")) {
     try {
-      if (!videoPath) throw new Error(`Vídeo obrigatório indisponível: ${erroVideo || "motivo desconhecido"}`);
       reg.fb_story = "✅ " + await publicarVideoStoryFacebook(token, videoPath);
     } catch (e) { reg.fb_story = "❌ " + e.message; }
   }
@@ -1349,7 +1075,6 @@ async function main() {
     reg.fb_reel = "— (alternância: Feed nesta execução)";
   } else if (!manterCanalConcluido("fb_reel")) {
     try {
-      if (!videoPath) throw new Error(`Vídeo obrigatório indisponível: ${erroVideo || "motivo desconhecido"}`);
       reg.fb_reel = "✅ " + await publicarReelFacebook(token, videoPath, captionVideo);
     } catch (e) { reg.fb_reel = "❌ " + e.message; }
   }
@@ -1376,7 +1101,6 @@ async function main() {
 
   if (!manterCanalConcluido("ig_story")) {
     try {
-      if (!videoPath || !videoUrl) throw new Error(`Vídeo obrigatório indisponível: ${erroVideo || "motivo desconhecido"}`);
       reg.ig_story = "✅ " + await publicarVideoStoryInstagram(token, videoUrl);
     } catch (e) {
       reg.ig_story = "❌ " + e.message;
@@ -1389,7 +1113,6 @@ async function main() {
     reg.ig_reel = "— (alternância: Feed nesta execução)";
   } else if (!manterCanalConcluido("ig_reel")) {
     try {
-      if (!videoPath || !videoUrl) throw new Error(`Vídeo obrigatório indisponível: ${erroVideo || "motivo desconhecido"}`);
       reg.ig_reel = "✅ " + await publicarReelInstagram(token, videoUrl, captionVideo);
     } catch (e) { reg.ig_reel = "❌ " + e.message; }
   }

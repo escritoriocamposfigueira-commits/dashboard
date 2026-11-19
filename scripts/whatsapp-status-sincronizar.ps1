@@ -30,18 +30,28 @@ function Write-StatusLog {
   [System.IO.File]::AppendAllText($LogPath, "$Line`r`n", $Utf8SemBom)
 }
 
+function Invoke-NativeCaptured {
+  param([string]$Executable, [string[]]$Parameters)
+  # Windows PowerShell 5.1 raises NativeCommandError for redirected stderr.
+  # Capture it as data here and let the caller handle the real exit code.
+  $ErrorActionPreference = "Continue"
+  $OutputLines = & $Executable @Parameters 2>&1
+  $ExitCode = $LASTEXITCODE
+  [pscustomobject]@{ Lines = @($OutputLines | ForEach-Object { "$_" }); ExitCode = $ExitCode }
+}
+
 Write-StatusLog "INICIO: sincronizacao do Status do WhatsApp."
 
 if (-not $SemAtualizarRepositorio) {
-  $FetchOutput = & git fetch --quiet origin 2>&1
-  $FetchExitCode = $LASTEXITCODE
-  foreach ($Line in $FetchOutput) { Write-StatusLog "GIT: $Line" }
-  if ($FetchExitCode -eq 0) {
-    $RemoteHead = (& git symbolic-ref --short refs/remotes/origin/HEAD 2>$null)
+  $Fetch = Invoke-NativeCaptured -Executable git -Parameters @("fetch", "--quiet", "origin")
+  foreach ($Line in $Fetch.Lines) { Write-StatusLog "GIT: $Line" }
+  if ($Fetch.ExitCode -eq 0) {
+    $Head = Invoke-NativeCaptured -Executable git -Parameters @("symbolic-ref", "--short", "refs/remotes/origin/HEAD")
+    $RemoteHead = if ($Head.ExitCode -eq 0) { $Head.Lines | Select-Object -First 1 } else { $null }
     if (-not $RemoteHead) { $RemoteHead = "origin/claude/campos-figueira-growth-qmjsux" }
-    $RemoteState = & git show "${RemoteHead}:controle/estado-publicacao.json" 2>&1
-    if ($LASTEXITCODE -eq 0) {
-      [System.IO.File]::WriteAllText($RemoteStatePath, (($RemoteState -join "`n") + "`n"), $Utf8SemBom)
+    $RemoteState = Invoke-NativeCaptured -Executable git -Parameters @("show", "${RemoteHead}:controle/estado-publicacao.json")
+    if ($RemoteState.ExitCode -eq 0) {
+      [System.IO.File]::WriteAllText($RemoteStatePath, (($RemoteState.Lines -join "`n") + "`n"), $Utf8SemBom)
     } else {
       Write-StatusLog "AVISO: estado remoto indisponivel; usando o estado local."
     }
@@ -57,10 +67,9 @@ $Arguments = @(".\scripts\whatsapp-status-web.js", "sync")
 if ($DryRun) { $Arguments += "--dry-run" }
 for ($Tentativa = 1; $Tentativa -le [Math]::Max(1, $Tentativas); $Tentativa++) {
   Write-StatusLog "TENTATIVA: $Tentativa/$Tentativas"
-  $NodeOutput = & node @Arguments 2>&1
-  $NodeExitCode = $LASTEXITCODE
-  foreach ($Line in $NodeOutput) { Write-StatusLog "$Line" }
-  if ($NodeExitCode -eq 0) {
+  $Execution = Invoke-NativeCaptured -Executable node -Parameters $Arguments
+  foreach ($Line in $Execution.Lines) { if ($Line) { Write-StatusLog "$Line" } }
+  if ($Execution.ExitCode -eq 0) {
     Write-StatusLog "SUCESSO: sincronizacao concluida."
     exit 0
   }

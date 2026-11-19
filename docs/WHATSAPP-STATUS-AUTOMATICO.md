@@ -1,6 +1,6 @@
 # Status automático do WhatsApp Business
 
-O publicador usa o **WhatsApp Web oficial**, em um perfil local exclusivo do Chrome. Não envia mensagens privadas, não publica em grupos e não importa contatos.
+O publicador usa o **WhatsApp Web oficial**, em um perfil local exclusivo do Chrome. Não publica em grupos nem importa contatos. As únicas cópias privadas vão para os dois contatos internos autorizados.
 
 ## Ativação
 
@@ -11,15 +11,15 @@ O publicador usa o **WhatsApp Web oficial**, em um perfil local exclusivo do Chr
 .\scripts\energia-publicacao-agendar.ps1
 ```
 
-O primeiro comando abre o Chrome oficial para escanear o QR uma única vez. Depois, a tarefa agendada verifica a fila a cada 2 minutos e publica apenas os vídeos novos que já passaram pelo robô. A tarefa também inicia no logon, volta após suspensão e tenta novamente quando houver falha temporária.
+O primeiro comando abre o Chrome oficial para escanear o QR quando for necessário vincular a sessão. Depois a tarefa roda sem janela de navegador, às **12h30 e 16h30** (Brasília), e publica somente MP4 aprovados já confirmados em uma das redes. Não há disparo a cada dois minutos nem no logon.
 
-Os vídeos são publicados no Status com legenda e, em seguida, enviados em conversa privada para **Renan Silva** e **Henrique Figueira**, com a mesma descrição, para facilitar o repasse. O WhatsApp Web não oferece menção privada no editor de Status; digitar `@` seria apenas texto e não liberaria o botão de republicar.
+O Status é publicado com legenda antes de qualquer cópia em conversa privada. As cópias seguem para **Renan Silva** e **Henrique Figueira**. Se um contato não estiver disponível, a cópia fica pendente para o próximo horário, sem impedir os Status. A cópia privada não equivale a uma menção no Status.
 
 ## Energia no fim de semana
 
 - sexta-feira, às 20:00, o computador entra em suspensão quando ficar ocioso;
 - sábado e domingo, acorda às 11:50, permanece ativo até 13:00 e volta a suspender;
-- sábado e domingo, acorda às 17:20, permanece ativo até 20:00 e volta a suspender;
+- sábado e domingo, acorda às 15:50, permanece ativo até 17:00 e volta a suspender;
 - se alguém estiver usando o computador, a suspensão é adiada e depois cancelada com segurança ao atingir o limite;
 - o computador deve permanecer na tomada, conectado à internet e sem ser desligado pelo menu do Windows.
 
@@ -41,4 +41,4 @@ node .\scripts\whatsapp-status-web.js audit
 .\scripts\whatsapp-status-sincronizar.ps1 -DryRun -SemAtualizarRepositorio
 ```
 
-O WhatsApp não oferece API oficial para Status. Esta solução automatiza a interface oficial do WhatsApp Web e, por isso, depende do computador ligado, do Chrome instalado e da sessão continuar autorizada. Se o computador estiver desligado, a fila permanece no GitHub e é processada depois que o Windows voltar e o usuário entrar. Nenhum programa consegue executar localmente com o computador desligado.
+Não há endpoint documentado na API oficial da Meta para publicar Status orgânico. Esta solução automatiza a interface do WhatsApp Web e depende do computador acordado em um horário agendado, da internet, do Chrome e da sessão vinculada. Se o computador estiver desligado, a fila permanece no GitHub até o próximo horário em que o Windows e a sessão estiverem disponíveis.

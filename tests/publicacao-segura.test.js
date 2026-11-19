@@ -162,13 +162,16 @@ test("imóvel usa o vídeo V2 narrado correspondente à finalidade", () => {
   assert.match(path.basename(locacao.videoPath), /584-LOCACAO-NARRADO\.mp4$/);
 });
 
-test("captação semanal fixa não entra na rotação normal", () => {
+test("captação recusada e artes legadas não entram na publicação automática", () => {
   const captacoes = JSON.parse(fs.readFileSync(path.join(ROOT, "src/content/captacao.json"), "utf8"));
   const fixa = captacoes.find((item) => item.agenda === "semanal_fixa");
   assert.equal(fixa.id, "CAPT-VENDA-LOCACAO");
+  assert.equal(fixa.publicacao_automatica, false);
   const estado = { indiceCapt: 0, publicados: [] };
-  const plano = escolherProximo(manifest, estado, "captacao_semanal");
-  assert.equal(plano.codigo, "CAPT-VENDA-LOCACAO");
+  assert.equal(escolherProximo(manifest, estado, "captacao_semanal").tipo, "noop");
+  for (let i = 0; i < captacoes.length * 2; i++) {
+    assert.equal(escolherProximo(manifest, { ...estado, indiceCapt: i }, "captacao").codigo, "CAPT-LOCACAO-PROPRIETARIO");
+  }
 });
 
 test("a fila de vendas completa um ciclo sem repetir e volta ao início", () => {

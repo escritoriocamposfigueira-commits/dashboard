@@ -3,6 +3,7 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const { chromium } = require("playwright-core");
+const { captacaoAprovada } = require("./midia-aprovada");
 
 const ROOT = path.resolve(__dirname, "..");
 const PROFILE_DIR = process.env.WHATSAPP_WEB_PROFILE || path.join(ROOT, "controle", "whatsapp-status-web-profile");
@@ -111,20 +112,30 @@ function resolvePending(state) {
     const delivered = DELIVERY_CONTACTS.every((contact) => progress?.contacts?.[contact]);
     if (progress?.message_id && delivered) continue;
 
-    const capture = captures.find((item) => item.id === publication.codigo && item.arquivo_video);
+    const capture = captures.find((item) => item.id === publication.codigo && captacaoAprovada(item));
     if (capture) {
+      if (publication.arquivo_video && publication.arquivo_video !== capture.arquivo_video) continue;
       pending.push({ key, code: publication.codigo, date: publication.data, video: path.join(ROOT, capture.arquivo_video), caption: compactCaption(capture.caption, publication.codigo) });
       continue;
     }
     if (String(publication.codigo).startsWith("CAPT-")) continue;
 
-    const purpose = /-LOCACAO$/i.test(publication.codigo) ? "locacao" : /-VENDA$/i.test(publication.codigo) ? "venda" : "";
+    if (publication.modelo_video !== "imovel-v2-narrado-30s") continue;
+    const purpose = publication.finalidade_video
+      || (/-LOCACAO$/i.test(publication.codigo) ? "locacao" : /-VENDA$/i.test(publication.codigo) ? "venda" : "");
     const canonical = aliases[publication.codigo] || publication.codigo;
     const matches = videos.filter((item) => normalizeCode(item.codigo) === normalizeCode(canonical) && (!purpose || item.finalidade === purpose));
-    if (matches.length !== 1) throw new Error(`Mapeamento ambíguo ou ausente para ${publication.codigo}`);
+    if (matches.length !== 1) {
+      console.warn(`STATUS ignorado: mapeamento ambíguo ou ausente para ${publication.codigo}.`);
+      continue;
+    }
     const video = matches[0];
+    if (publication.arquivo_video && publication.arquivo_video !== video.arquivo_video) continue;
     const caption = findCaption(captions, aliases, video);
-    if (!caption) throw new Error(`Legenda ausente para ${video.codigo}/${video.finalidade}`);
+    if (!caption) {
+      console.warn(`STATUS ignorado: legenda ausente para ${video.codigo}/${video.finalidade}.`);
+      continue;
+    }
     pending.push({ key, code: publication.codigo, date: publication.data, video: path.join(ROOT, video.arquivo_video), caption: compactCaption(caption, video.codigo) });
   }
   return pending.sort((a, b) => Date.parse(a.date) - Date.parse(b.date));
@@ -286,44 +297,75 @@ async function runPost(args) {
   });
 }
 
-async function runSync(args) {
-  const dryRun = args.includes("--dry-run");
+function syncQueue() {
   const { created, state } = loadSyncState();
-  if (created) {
-    if (!dryRun) saveSyncState(state);
-    console.log("Fila inicializada; publicações antigas não serão repetidas.");
-    return;
+  return { created, state, pending: created ? [] : resolvePending(state) };
+}
+
+async function processStatusQueue({ pending, state, contacts, publish, copy, save, warn }) {
+  const progressFor = (item) => state.posted[item.key] ||= {
+    codigo: item.code, data: item.date, video: item.video, contacts: {},
+  };
+  // First pass: copy errors must never be able to hold the Status queue.
+  for (const item of pending) {
+    const progress = progressFor(item);
+    if (!progress.message_id) {
+      progress.message_id = await publish(item);
+      save(state);
+    }
   }
-  const pending = resolvePending(state);
-  if (!pending.length) {
-    console.log("Nenhum Status novo para publicar.");
-    return;
+  // Second pass: if one contact is unavailable, try again next scheduled run.
+  const unavailable = new Set();
+  for (const item of pending) {
+    const progress = progressFor(item);
+    progress.contacts ||= {};
+    for (const contact of contacts) {
+      if (progress.contacts[contact] || unavailable.has(contact)) continue;
+      try {
+        await copy(item, contact);
+      } catch (error) {
+        unavailable.add(contact);
+        warn(`Cópia pendente (${item.code}, ${contact}): ${String(error.message).split("\n")[0]}`);
+        continue;
+      }
+      progress.contacts[contact] = { sent_at: new Date().toISOString() };
+      save(state);
+    }
   }
-  if (dryRun) {
-    for (const item of pending) await publishOnPage(null, item, true);
+}
+
+async function runSync(args) {
+  if (args.includes("--dry-run")) {
+    const { state, pending } = syncQueue();
+    for (const item of pending) {
+      if (state.posted[item.key]?.message_id) {
+        console.log(`DRY-RUN: ${item.code} já no Status; somente cópias pendentes.`);
+      } else {
+        await publishOnPage(null, item, true);
+      }
+    }
     return;
   }
   await withLock(async () => {
+    const { created, state, pending } = syncQueue();
+    if (created) {
+      saveSyncState(state);
+      console.log("Fila inicializada; publicações antigas não serão repetidas.");
+      return;
+    }
+    if (!pending.length) {
+      console.log("Nenhum Status novo para publicar.");
+      return;
+    }
     const context = await launch(true);
     try {
       const page = await getPage(context);
       await waitLoggedIn(page);
-      for (const item of pending) {
-        const progress = state.posted[item.key] || { codigo: item.code, data: item.date, video: item.video, contacts: {} };
-        progress.contacts ||= {};
-        if (!progress.message_id) {
-          progress.message_id = await publishOnPage(page, item);
-          state.posted[item.key] = progress;
-          saveSyncState(state);
-        }
-        for (const contact of DELIVERY_CONTACTS) {
-          if (progress.contacts[contact]) continue;
-          await sendCopyToContact(page, item, contact);
-          progress.contacts[contact] = { sent_at: new Date().toISOString() };
-          state.posted[item.key] = progress;
-          saveSyncState(state);
-        }
-      }
+      await processStatusQueue({
+        pending, state, contacts: DELIVERY_CONTACTS, save: saveSyncState, warn: console.warn,
+        publish: (item) => publishOnPage(page, item),
+        copy: (item, contact) => sendCopyToContact(page, item, contact),
+      });
     } catch (error) {
       fs.mkdirSync(SCREENSHOT_DIR, { recursive: true });
       const page = context.pages()[0];
@@ -339,7 +381,7 @@ async function audit() {
   const videos = readJson(path.join("src", "content", "videos-imoveis.json"));
   const captions = readJson(path.join("src", "content", "captions-imoveis.json"));
   const aliases = readJson(path.join("src", "content", "aliases-imoveis.json"));
-  const captures = readJson(path.join("src", "content", "captacao.json")).filter((item) => item.arquivo_video);
+  const captures = readJson(path.join("src", "content", "captacao.json")).filter(captacaoAprovada);
   const errors = [];
   for (const video of videos) {
     try { validateVideo(path.join(ROOT, video.arquivo_video)); } catch (error) { errors.push(error.message); }
@@ -371,4 +413,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { confirmedVideoPublications };
+module.exports = { confirmedVideoPublications, processStatusQueue };

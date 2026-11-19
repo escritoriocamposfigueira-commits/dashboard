@@ -3,14 +3,13 @@ name: Publicar imóveis (servidor 24h)
 # Servidor 24h grátis do GitHub. Publica sozinho com o PC desligado.
 # Grade semanal em horário de Brasília (UTC-3):
 # venda diária, locação diária, 1 locação extra, 2 captações rotativas,
-# 1 captação fixa de venda/locação e recuperação diária.
+# e recuperação diária. Captação fixa somente quando houver vídeo aprovado.
 on:
   schedule:
     - cron: "7 15 * * *"      # Venda — 12:07 BRT; Status WhatsApp às 12:30
     - cron: "7 19 * * *"      # Locação — 16:07 BRT; Status WhatsApp às 16:30
     - cron: "0 21 * * 1"      # Locação extra — segunda, 18:00 BRT
     - cron: "10 21 * * 3,6"   # Captação — quarta e sábado, 18:10 BRT
-    - cron: "10 21 * * 0"     # Captação venda/locação fixa — domingo, 18:10 BRT
     - cron: "30 22 * * *"     # Recuperação de canal da locação — 19:30 BRT
   workflow_dispatch:
     inputs:
@@ -46,7 +45,7 @@ jobs:
   publicar:
     runs-on: ubuntu-latest
     steps:
-      - name: Baixar o projeto (com trilhas de música)
+      - name: Baixar o catálogo de vídeos aprovados
         uses: actions/checkout@v4
 
       - name: Instalar Node 20
@@ -54,7 +53,7 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Configurar identidade git (para push do vídeo + estado)
+      - name: Configurar identidade git (para salvar o estado)
         run: |
           git config user.name "Campos Figueira Bot"
           git config user.email "bot@users.noreply.github.com"
@@ -63,9 +62,6 @@ jobs:
         id: publicar
         env:
           META_PAGE_TOKEN: ${{ secrets.META_PAGE_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_REF_NAME: ${{ github.ref_name }}
           GITHUB_SCHEDULE: ${{ github.event.schedule }}
           PUBLICACAO_TIPO: ${{ inputs.tipo_publicacao || '' }}
           PUBLICACAO_CODIGO: ${{ inputs.codigo_imovel || '' }}
@@ -90,8 +86,7 @@ jobs:
 
       - name: Salvar estado da fila no repositório
         run: |
-          git add controle/estado-publicacao.json controle/estado-trilhas.json public/videos/
-          test ! -f controle/estado-modelos-story.json || git add -f controle/estado-modelos-story.json
+          git add controle/estado-publicacao.json
           git diff --staged --quiet || git commit -m "estado: publicação automática [skip ci]"
           for tentativa in 1 2 3; do
             echo "Sincronização do estado: tentativa ${tentativa}/3"
