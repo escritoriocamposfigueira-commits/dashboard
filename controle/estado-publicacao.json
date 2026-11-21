@@ -1,5 +1,5 @@
 {
-  "indice": 236,
+  "indice": 237,
   "publicados": [
     {
       "codigo": "429",
@@ -2934,6 +2934,23 @@
       "ig_reel": "✅ 18085260119351698",
       "youtube": "✅ qYSnw4esk1M",
       "tiktok": "— (TikTok pausado)"
+    },
+    {
+      "codigo": "609B",
+      "data": "2026-11-21T00:47:59.378Z",
+      "formato_principal": "reel",
+      "trilha": "narracao-remy-aprovada",
+      "modelo_video": "imovel-v2-narrado-30s",
+      "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-609-B-LOCACAO-NARRADO.mp4",
+      "finalidade_video": "locacao",
+      "fb_feed": "—",
+      "fb_story": "✅ 3567148433446631",
+      "fb_reel": "✅ 1768036661998174",
+      "ig_feed": "—",
+      "ig_story": "✅ 18118884512032037",
+      "ig_reel": "✅ 18128990174474265",
+      "youtube": "✅ sdeohOc1PEo",
+      "tiktok": "— (TikTok pausado)"
     }
   ],
   "tentativas": 0,
@@ -2941,5 +2958,5 @@
   "indiceVenda": 6,
   "contadorNaoLoc": 127,
   "indiceCapt": 3,
-  "contadorFormato": 8
+  "contadorFormato": 9
 }
