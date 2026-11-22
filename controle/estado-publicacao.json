@@ -1,5 +1,5 @@
 {
-  "indice": 240,
+  "indice": 241,
   "publicados": [
     {
       "codigo": "429",
@@ -3002,12 +3002,29 @@
       "ig_reel": "✅ 18016596581763909",
       "youtube": "✅ CLVlg1nW0X0",
       "tiktok": "— (TikTok pausado)"
+    },
+    {
+      "codigo": "556",
+      "data": "2026-11-22T21:03:20.946Z",
+      "formato_principal": "reel",
+      "trilha": "narracao-remy-aprovada",
+      "modelo_video": "imovel-v2-narrado-30s",
+      "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-556-VENDA-NARRADO.mp4",
+      "finalidade_video": "venda",
+      "fb_feed": "—",
+      "fb_story": "✅ 1128487233155154",
+      "fb_reel": "✅ 1770270738441433",
+      "ig_feed": "—",
+      "ig_story": "✅ 18156785077529226",
+      "ig_reel": "✅ 18261326812308553",
+      "youtube": "✅ DuLJ1dvzeFg",
+      "tiktok": "— (TikTok pausado)"
     }
   ],
   "tentativas": 0,
   "observacao": "Fila de vendas reiniciada em 03/08/2026 para aplicar a prioridade comercial; deduplicação de 30 horas protege reruns e falhas.",
-  "indiceVenda": 7,
-  "contadorNaoLoc": 129,
+  "indiceVenda": 8,
+  "contadorNaoLoc": 130,
   "indiceCapt": 0,
-  "contadorFormato": 12
+  "contadorFormato": 13
 }
