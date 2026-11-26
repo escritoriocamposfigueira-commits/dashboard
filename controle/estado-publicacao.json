@@ -1,5 +1,5 @@
 {
-  "indice": 250,
+  "indice": 251,
   "publicados": [
     {
       "codigo": "429",
@@ -3172,12 +3172,29 @@
       "ig_reel": "✅ 18122144435000639",
       "youtube": "✅ cQ8lEYBIedI",
       "tiktok": "— (TikTok pausado)"
+    },
+    {
+      "codigo": "588",
+      "data": "2026-11-26T23:49:03.195Z",
+      "formato_principal": "reel",
+      "trilha": "narracao-remy-aprovada",
+      "modelo_video": "imovel-v2-narrado-30s",
+      "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-588-VENDA-NARRADO.mp4",
+      "finalidade_video": "venda",
+      "fb_feed": "—",
+      "fb_story": "✅ 1446609657607605",
+      "fb_reel": "✅ 1775470634588110",
+      "ig_feed": "—",
+      "ig_story": "✅ 18654177316031804",
+      "ig_reel": "✅ 18117701659858579",
+      "youtube": "✅ ez6_upXTre0",
+      "tiktok": "— (TikTok pausado)"
     }
   ],
   "tentativas": 0,
   "observacao": "Fila de vendas reiniciada em 03/08/2026 para aplicar a prioridade comercial; deduplicação de 30 horas protege reruns e falhas.",
-  "indiceVenda": 11,
-  "contadorNaoLoc": 134,
+  "indiceVenda": 12,
+  "contadorNaoLoc": 135,
   "indiceCapt": 0,
-  "contadorFormato": 22
+  "contadorFormato": 23
 }
