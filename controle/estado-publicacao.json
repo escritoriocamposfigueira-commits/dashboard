@@ -1,5 +1,5 @@
 {
-  "indice": 249,
+  "indice": 250,
   "publicados": [
     {
       "codigo": "429",
@@ -3155,12 +3155,29 @@
       "ig_reel": "✅ 18084524903409389",
       "youtube": "✅ DLoiBqe30tA",
       "tiktok": "— (TikTok pausado)"
+    },
+    {
+      "codigo": "CAPT-LOCACAO-PROPRIETARIO",
+      "data": "2026-11-26T03:32:05.876Z",
+      "formato_principal": "reel",
+      "trilha": "audio-original-aprovado",
+      "modelo_video": "captacao-profissional-pronta",
+      "arquivo_video": "public/captacao-videos/CAPT-LOCACAO-PROPRIETARIO-30S.mp4",
+      "finalidade_video": "captacao",
+      "fb_feed": "—",
+      "fb_story": "✅ 1474101734805525",
+      "fb_reel": "✅ 1774355721366268",
+      "ig_feed": "—",
+      "ig_story": "✅ 18133073767702120",
+      "ig_reel": "✅ 18122144435000639",
+      "youtube": "✅ cQ8lEYBIedI",
+      "tiktok": "— (TikTok pausado)"
     }
   ],
   "tentativas": 0,
   "observacao": "Fila de vendas reiniciada em 03/08/2026 para aplicar a prioridade comercial; deduplicação de 30 horas protege reruns e falhas.",
   "indiceVenda": 11,
-  "contadorNaoLoc": 133,
+  "contadorNaoLoc": 134,
   "indiceCapt": 0,
-  "contadorFormato": 21
+  "contadorFormato": 22
 }
