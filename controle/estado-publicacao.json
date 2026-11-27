@@ -1,5 +1,5 @@
 {
-  "indice": 251,
+  "indice": 252,
   "publicados": [
     {
       "codigo": "429",
@@ -3189,6 +3189,23 @@
       "ig_reel": "✅ 18117701659858579",
       "youtube": "✅ ez6_upXTre0",
       "tiktok": "— (TikTok pausado)"
+    },
+    {
+      "codigo": "CASA JARDIM ARMENIA",
+      "data": "2026-11-27T02:09:55.810Z",
+      "formato_principal": "reel",
+      "trilha": "narracao-remy-aprovada",
+      "modelo_video": "imovel-v2-narrado-30s",
+      "arquivo_video": "public/videos-remotion-imoveis-v2-narrados/CF-57D16D6F-LOCACAO-NARRADO.mp4",
+      "finalidade_video": "locacao",
+      "fb_feed": "—",
+      "fb_story": "✅ 2196367004291455",
+      "fb_reel": "✅ 1775593767909130",
+      "ig_feed": "—",
+      "ig_story": "✅ 18125320463069257",
+      "ig_reel": "✅ 18130227109863325",
+      "youtube": "✅ HwAD8JhyJBY",
+      "tiktok": "— (TikTok pausado)"
     }
   ],
   "tentativas": 0,
@@ -3196,5 +3213,5 @@
   "indiceVenda": 12,
   "contadorNaoLoc": 135,
   "indiceCapt": 0,
-  "contadorFormato": 23
+  "contadorFormato": 24
 }
